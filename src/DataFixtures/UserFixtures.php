@@ -23,15 +23,19 @@ class UserFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
      $faker = Factory::create('fr_FR');
-          
-        for ($i = 0; $i < 1; $i++) {
+          $gender = [
+            'homme',
+            'femme',
+            'non-précisé'
+          ];
+        for ($i = 0; $i < 5; $i++) {
            
             $user = new User();
             
      
             $user->setEmail($faker->email())
                  ->setPassword('badpassword')
-                 ->setGender($faker->title())
+                 ->setGender(array_rand(array_flip(['homme', 'femme', 'non-précisé'])))
                  ->setFirstName($faker->firstName())
                  ->setRoles($user->getRoles())
                  ->setName($faker->name())
@@ -39,7 +43,7 @@ class UserFixtures extends Fixture
                  ->setPhone($faker->phoneNumber())
                  ->setCreatedAt( $this->randomDateBetween($faker->dateTimeBetween($this::DAYS_MIN_CREATED_AT, 'now')->getTimestamp(), (new \DateTime('NOW'))->getTimestamp()))
                  ->setIsVerified(false)
-                 ->setAccountMustBeVerifiedBefore(new \DateTimeImmutable('+3 days'))
+                 ->setAccountMustBeVerifiedBefore(new \DateTimeImmutable('-3 days'))
                  ->setProfilImage($faker->imageUrl(640, 480, 'animals', true));
                  
 //New \DateTimeImmutable('2020-02-04T16:00:00')
@@ -60,6 +64,8 @@ class UserFixtures extends Fixture
 
         
     }
-   
+
+
+
     
 }

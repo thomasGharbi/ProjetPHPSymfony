@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use Cassandra\Exception\ValidationException;
 use Doctrine\ORM\Mapping as ORM;
 
 use App\Repository\UserRepository;
@@ -10,6 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Validator\Exception\RuntimeException;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -19,6 +21,10 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    /**
+     * @var array|string[]
+     */
+    public static array $rolesUserList = ['ROLE_USER','ROLE_ADMIN'];
     /**
      * @var int
      * @ORM\Id
@@ -52,8 +58,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      * @ORM\Column(type="string")
      * @ORM\Column(type="string")
-     * @Assert\Regex(pattern = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/",
-     *               message = "Le mot de passe doit contenir au moins: huit caractères dont une lettre, un chiffre et un caractère spécial(@$!%*?&)")
+     *
      *
      */
     private $password;

@@ -53,7 +53,7 @@ class RegistrationType extends AbstractType
               ])->add('birth', BirthdayType::class,[
                 'widget' => 'choice',
                 'input'  => 'string',
-                'format' => 'dd-MM-yyyy'
+                'format' => 'dd/MM/yyyy'
               ])
                 ->add('phone', TextType::class)
                 ->add('email', EmailType::class,)

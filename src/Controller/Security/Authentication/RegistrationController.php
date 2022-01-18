@@ -42,22 +42,22 @@ class RegistrationController extends AbstractController
 
         $registrationForm->handleRequest($request);
 
-        if ($registrationForm->isSubmitted() && $registrationForm->isValid()) {
+        if($registrationForm->isSubmitted() && $registrationForm->isValid()) {
             $registrationToken = $tokenGenerator->generateToken();
 
-            $plainPassword = $registrationForm->getData()->getPassword();
 
+            // converti les valeur du nom et prènom en "nocase".
             $creadentialsFormated = ['name' => strtolower($registrationForm->getData()->getName()),
                 'firstName' => strtolower($registrationForm->getData()->getFirstName())];
 
 
             $user->setName($creadentialsFormated['name'])
-                ->setFirstName($creadentialsFormated['firstName'])
-                ->setRegistrationToken($registrationToken)
-                ->setPassword($plainPassword) // Le Hachage est effectué via le UserPasswordHasherListener
-                ->setCreatedAt(new \DateTimeImmutable('NOW'))
-                ->setRoles($user->getRoles())
-                ->setAccountMustBeVerifiedBefore(new \DateTimeImmutable('+ 3days'));
+                 ->setFirstName($creadentialsFormated['firstName'])
+                 ->setRegistrationToken($registrationToken)
+                 ->setCreatedAt(new \DateTimeImmutable('NOW'))
+                 ->setRoles($user->getRoles())
+                 ->setAccountMustBeVerifiedBefore(new \DateTimeImmutable('+ 3days'));
+                 // Le Hachage du mot de passe est effectué via le UserPasswordHasherListener.
 
             $manager->persist($user);
 
