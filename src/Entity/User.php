@@ -34,7 +34,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * 
      * 
      */
-    private $id;
+    private int $id;
 
     /**
      * @var string
@@ -45,14 +45,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * 
      * 
      */
-    private $email;
+    private string $email;
 
     /**
      * @var array<string>
      * @ORM\Column(type="json")
      * 
      */
-    private $roles = [];
+    private array $roles = [];
 
     /**
      * @var string The hashed password
@@ -61,28 +61,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      *
      *
      */
-    private $password;
+    private string $password;
 
     /**
      * @var string 
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
      */
-    private $name;
+    private string $name;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
      */
-    private $firstName;
+    private string $firstName;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
      */
-    private $birth;
+    private string $birth;
 
     /**
      * @var string|null
@@ -90,7 +90,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @Assert\Regex(pattern = "/^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/", 
      *               message = "le numéro de téléphone saisit n'est pas valide")
      */
-    private $phone;
+    private string|null $phone;
 
     /**
      * @var string|null
@@ -98,74 +98,74 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * 
      * 
      */
-    private $profilImage;
+    private string|null $profilImage;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
      */
-    private $gender;
+    private string $gender;
 
     /**
      * @var \DateTimeImmutable
      * @ORM\Column(type="datetime_immutable")
      */
-    private $createdAt;
+    private \DateTimeImmutable $createdAt;
 
     /**
      * @var bool
      * @ORM\Column(type="boolean" )
      */
-    private $isVerified = false;
+    private bool $isVerified = false;
 
     /**
      * @var string|null
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $registrationToken;
+    private string|null $registrationToken;
 
     /**
      * @var \DateTimeImmutable
      * @ORM\Column(type="datetime_immutable")
      */
-    private $accountMustBeVerifiedBefore;
+    private \DateTimeImmutable $accountMustBeVerifiedBefore;
 
     /**
      * @var \DateTimeImmutable|null
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    private $accountVerifiedAt;
+    private \DateTimeImmutable|null $accountVerifiedAt;
 
     /**
      * @var bool
      * @ORM\Column(type="boolean")
      */
-    private $passwordModified = false;
+    private bool $passwordModified = false;
 
     /**
      * @var \DateTimeImmutable|null
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    private $passwordModifiedAt;
+    private \DateTimeImmutable|null $passwordModifiedAt;
 
     /**
      * @var string|null
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private $forgotPasswordToken;
+    private string|null $forgotPasswordToken;
 
     /**
      * @var \DateTimeImmutable|null
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    private $forgotPasswordMustBeVerifiedBefore;
+    private \DateTimeImmutable|null $forgotPasswordMustBeVerifiedBefore;
 
     /**
      * @var \DateTimeImmutable|null
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    private $ForgotPasswordRequestedAt;
+    private \DateTimeImmutable|null $ForgotPasswordRequestedAt;
 
 
     

@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<div class="container">
+
+{{form_start(registrationForm)}}
+
+{{form_label(registrationForm.name, 'Prénom')}} 
+{{form_row(registrationForm.firstname)}}
+{{form_label(registrationForm.name, 'Nom')}} 
+{{form_row(registrationForm.name)}}
+{{form_row(registrationForm.email)}}
+    <fieldset class="additional-values">
+        {{ form_label(registrationForm.adreeess) }}
+        {{ form_errors(registrationForm.adreeess) }}
+        {{ form_widget(registrationForm.adreeess) }}
+    </fieldset>
+    <fieldset class="additional-values">
+        {{ form_label(registrationForm.villle) }}
+        {{ form_errors(registrationForm.villle) }}
+        {{ form_widget(registrationForm.villle) }}
+    </fieldset>
+
+
+<button type="submit"> ok </button>
+{{form_end(registrationForm)}}
+</div>
+{% endblock %}

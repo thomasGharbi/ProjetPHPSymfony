@@ -1,3 +1,10 @@
 parameters:
+ level: 8
+ paths:
+    - src
  excludes_analyse:
             - src/Security/UserAuthenticator.php
+            - src/Command/CreateUserCommand.php
+
+
+ checkGenericClassInNonGenericObjectType: false

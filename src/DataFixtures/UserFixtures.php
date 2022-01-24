@@ -43,7 +43,7 @@ class UserFixtures extends Fixture
                  ->setPhone($faker->phoneNumber())
                  ->setCreatedAt( $this->randomDateBetween($faker->dateTimeBetween($this::DAYS_MIN_CREATED_AT, 'now')->getTimestamp(), (new \DateTime('NOW'))->getTimestamp()))
                  ->setIsVerified(false)
-                 ->setAccountMustBeVerifiedBefore(new \DateTimeImmutable('-3 days'))
+                 ->setAccountMustBeVerifiedBefore(new \DateTimeImmutable('+3 days'))
                  ->setProfilImage($faker->imageUrl(640, 480, 'animals', true));
                  
 //New \DateTimeImmutable('2020-02-04T16:00:00')

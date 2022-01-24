@@ -37,6 +37,7 @@ class RegistrationController extends AbstractController
         ValidatorInterface      $validator
     ): Response
     {
+
         $user = new User;
         $registrationForm = $this->createForm(RegistrationType::class, $user);
 

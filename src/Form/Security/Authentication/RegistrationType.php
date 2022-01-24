@@ -11,7 +11,7 @@
 namespace App\Form\Security\Authentication;
 
 use App\Entity\User;
-use Symfony\Component\Form\AbstractType;
+use App\Form\Security\Authentication\FormExtension\HoneyPotType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -23,7 +23,7 @@ use App\Form\Security\Authentication\FormExtension\RepeatedPasswordType;
 
 
 
-class RegistrationType extends AbstractType
+class RegistrationType extends HoneyPotType
 {
      
     /**
@@ -34,6 +34,7 @@ class RegistrationType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        parent::buildForm($builder, $options);
         $builder->add('firstname', TextType::class, [
             
             'required' => true,
@@ -46,7 +47,7 @@ class RegistrationType extends AbstractType
                   'choices' => [
                   'Femme' => 'Femme',
                   'Homme' => 'Homme',
-                  'non précisé' => 'non-précisé'
+                  'non précisé' => 'non-précise'
                   ] ,
                   
                       

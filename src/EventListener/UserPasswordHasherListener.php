@@ -34,7 +34,7 @@ class UserPasswordHasherListener
         if(array_key_exists('password', $userChange))
         {
             $this->hasherUserPassword($user, $userChange['password'][1]);
-            $this->securityLogger->info("AUTHENTICATION (MODIFY PASSWORD): l'utilisateur avec l'adresse email '$userEmail' a effectué une modification de mot de passe ");
+            $this->securityLogger->info("'AUTHENTICATION (MODIFY PASSWORD)': l'utilisateur avec l'adresse email '$userEmail' a effectué une modification de mot de passe ");
         }
     }
 

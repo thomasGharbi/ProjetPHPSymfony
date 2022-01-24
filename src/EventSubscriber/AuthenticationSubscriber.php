@@ -4,6 +4,8 @@
 namespace App\EventSubscriber;
 
 
+use App\Repository\AuthenticationLogRepository;
+use App\Security\BrutForceChecker;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Http\Event\LogoutEvent;
@@ -16,19 +18,23 @@ class AuthenticationSubscriber implements EventSubscriberInterface
 {
 
     private LoggerInterface $securityLogger;
-
     private RequestStack $requestStack;
+    private BrutForceChecker $brutForceChecker;
+    private AuthenticationLogRepository $authLogRepository;
 
 
     public function __construct(
-        LoggerInterface $securityLogger,
-        RequestStack    $requestStack,
-
+        LoggerInterface  $securityLogger,
+        RequestStack     $requestStack,
+        BrutForceChecker $brutForceChecker,
+        AuthenticationLogRepository $authLogRepository
     )
     {
 
         $this->requestStack = $requestStack;
         $this->securityLogger = $securityLogger;
+        $this->brutForceChecker = $brutForceChecker;
+        $this->authLogRepository = $authLogRepository;
 
 
     }
@@ -53,10 +59,13 @@ class AuthenticationSubscriber implements EventSubscriberInterface
         $route = $this->getUserInfo()['route'];
 
 
-        $this->securityLogger->info("AUTHENTIFICATION FAILLED : Authentification échoué avec l'adresse email : '$emailEntered' et l'ip : '$clientIp' venant de la route : '$route");
+        $this->securityLogger->info("'AUTHENTIFICATION FAILLED' : Authentification échoué avec l'adresse email : '$emailEntered' et l'ip : '$clientIp' venant de la route : '$route");
 
+        $this->brutForceChecker->addAuthenticationFailure($clientIp, $emailEntered);
 
     }
+
+
 
     public function onLoginSuccess(LoginSuccessEvent $event): void
     {
@@ -65,9 +74,9 @@ class AuthenticationSubscriber implements EventSubscriberInterface
         $clientIp = $this->getUserInfo()['clientIp'];
         $route = $this->getUserInfo()['route'];
 
-        $this->securityLogger->info("AUTHENTIFICATION SUCCESS : Authentification réussi avec l'adresse email : '$userEmail' et l'ip : '$clientIp' venant de la route : '$route'");
+        $this->securityLogger->info("'AUTHENTIFICATION SUCCESS' : Authentification réussi avec l'adresse email : '$userEmail' et l'ip : '$clientIp' venant de la route : '$route'");
+        $this->authLogRepository->addAuthenticationSuccess($clientIp, $userEmail);
     }
-
 
     public function onLogoutEvent(LogoutEvent $event): void
     {
@@ -78,14 +87,13 @@ class AuthenticationSubscriber implements EventSubscriberInterface
         $route = $this->getUserInfo()['route'];
 
 
-        $this->securityLogger->info("AUTHENTIFICATION LOGOUT : déconnexion de l'utilisateur avec l'adresse email: '$userEmail' et l'ip : '$clientIp' venant de la route : '$route' ");
+        $this->securityLogger->info("'AUTHENTIFICATION LOGOUT' : déconnexion de l'utilisateur avec l'adresse email: '$userEmail' et l'ip : '$clientIp' venant de la route : '$route' ");
 
     }
 
-    /**
-     * @return array<mixed>
-     *
-     */
+     /**
+      * @return array<mixed>
+      */
     public function getUserInfo(): array
     {
         $request = $this->requestStack->getCurrentRequest();

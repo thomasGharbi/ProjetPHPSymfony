@@ -2,7 +2,9 @@
 
 namespace App\Security;
 
+use App\Repository\AuthenticationLogRepository;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Exception\CustomUserMessageAccountStatusException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -24,6 +26,8 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
 
     private UrlGeneratorInterface $urlGenerator;
 
+    private BrutForceChecker $brutForceChecker;
+
     
     /**
      * __construct
@@ -31,13 +35,22 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
      * @param  UrlGeneratorInterface $urlGenerator
      * @
      */
-    public function __construct(UrlGeneratorInterface $urlGenerator)
+    public function __construct(UrlGeneratorInterface $urlGenerator, BrutForceChecker $brutForceChecker)
     {
         $this->urlGenerator = $urlGenerator;
+        $this->brutForceChecker = $brutForceChecker;
     }
 
     public function authenticate(Request $request): PassportInterface
     {
+        $userIp = $request->getClientIp();
+
+        $isBlackListed = $this->brutForceChecker->checkIfBlackListed($userIp);
+        //verification de la permission de connexion via brutForceChecker
+        if($isBlackListed){
+            throw new CustomUserMessageAccountStatusException("Trop de tentatives de connexion, Vous ne pouvez pas vous reconnectez avant $isBlackListed");
+        }
+
         $email = $request->request->get('email', '');
 
         $request->getSession()->set(Security::LAST_USERNAME, $email);
