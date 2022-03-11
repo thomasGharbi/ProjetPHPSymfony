@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Utils\CreateRandomUsername;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
@@ -18,10 +19,13 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {    
-    
-    public function __construct(ManagerRegistry $registry)
+    private CreateRandomUsername $createRandomUsername;
+
+    public function __construct(ManagerRegistry $registry, CreateRandomUsername $createRandomUsername)
     {
         parent::__construct($registry, User::class);
+        $this->createRandomUsername = $createRandomUsername;
+
     }
 
     /**
@@ -38,32 +42,86 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->_em->flush();
     }
 
-    // /**
-    //  * @return User[] Returns an array of User objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @param string $provider
+     * @param string $OAuthID
+     * @param string $email
+     * @return User|null
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * Verifie si un utilisateur corespondant a l'adresse email existe deja et si il a un compte OAuth relié
+     */
+    public function getUserFromOAuth(
+        string $provider,
+        string $OAuthID,
+        string $email
+    ): ?User
     {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('u.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
 
-    /*
-    public function findOneBySomeField($value): ?User
-    {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+
+       $user = $this->findOneBy(['email' => $email]);
+
+       if(!$user){
+           return null;
+       }
+
+
+       if ($provider == 'google' && $user->getGoogleID() !== $OAuthID) {
+
+           $user->setGoogleID($OAuthID);
+
+           $this->_em->flush();
+       }
+
+        if ($provider == 'github' && $user->getGithubID() !== $OAuthID) {
+
+           $user->setGithubID($OAuthID);
+
+           $this->_em->flush();
+        }
+
+
+        return $user;
     }
-    */
+
+
+    /**
+     * @param string $provider
+     * @param array<mixed> $OAuthUserData
+     */
+    public function createUserFromOAuth(
+        string $provider,
+        array $OAuthUserData
+    ): User
+    {
+        $user = new User();
+
+
+        $user->setIsVerified($OAuthUserData['verified'])
+             ->setEmail($OAuthUserData['email'])
+             ->setPassword($OAuthUserData['random_password'])
+             ->setGender('non-précisé')
+             ->setCreatedAt(new \DateTimeImmutable('NOW'))
+             ->setUsername($this->createRandomUsername->createRandomUsername());
+
+        if($provider == 'google'){
+            $user->setGoogleID($OAuthUserData['oauth_id'])
+                 ->setFirstName($OAuthUserData['first_name'])
+                 ->setName($OAuthUserData['name']);
+        }elseif ($provider == 'github'){
+            $user->setGithubID($OAuthUserData['oauth_id']);
+        }
+
+        if(array_key_exists('must_be_verified_before', $OAuthUserData) && $OAuthUserData['must_be_verified_before'] instanceof \DateTimeImmutable && $OAuthUserData['validation_Token'])
+        {
+            $user->setAccountMustBeVerifiedBefore($OAuthUserData['must_be_verified_before'])
+                 ->setRegistrationToken($OAuthUserData['validation_Token']);
+        }
+
+        $this->_em->persist($user);
+        $this->_em->flush();
+
+        return $user;
+    }
+
 }

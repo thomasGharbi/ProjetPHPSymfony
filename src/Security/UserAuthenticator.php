@@ -3,6 +3,7 @@
 namespace App\Security;
 
 use App\Repository\AuthenticationLogRepository;
+use App\Service\Captcha;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAccountStatusException;
 use Symfony\Component\Security\Core\Security;
@@ -24,9 +25,12 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
 
     public const LOGIN_ROUTE = 'app_login';
 
+
     private UrlGeneratorInterface $urlGenerator;
 
     private BrutForceChecker $brutForceChecker;
+
+    private Captcha $Captcha;
 
     
     /**
@@ -35,10 +39,14 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
      * @param  UrlGeneratorInterface $urlGenerator
      * @
      */
-    public function __construct(UrlGeneratorInterface $urlGenerator, BrutForceChecker $brutForceChecker)
+    public function __construct(
+        UrlGeneratorInterface $urlGenerator,
+        BrutForceChecker $brutForceChecker,
+        Captcha $Captcha)
     {
         $this->urlGenerator = $urlGenerator;
         $this->brutForceChecker = $brutForceChecker;
+        $this->Captcha = $Captcha;
     }
 
     public function authenticate(Request $request): PassportInterface
@@ -47,7 +55,7 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
 
         $isBlackListed = $this->brutForceChecker->checkIfBlackListed($userIp);
         //verification de la permission de connexion via brutForceChecker
-        if($isBlackListed){
+        if(!$this->Captcha->isHCaptchaValid()){
             throw new CustomUserMessageAccountStatusException("Trop de tentatives de connexion, Vous ne pouvez pas vous reconnectez avant $isBlackListed");
         }
 
@@ -80,6 +88,6 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
     {
         
         return $this->urlGenerator->generate(self::LOGIN_ROUTE);
-        dump($request);
+
     }
 }

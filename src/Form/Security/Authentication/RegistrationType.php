@@ -56,7 +56,8 @@ class RegistrationType extends HoneyPotType
                 'input'  => 'string',
                 'format' => 'dd/MM/yyyy'
               ])
-                ->add('phone', TextType::class)
+                ->add('phone', TextType::class,
+                ['required' => false])
                 ->add('email', EmailType::class,)
                 ->add('password', RepeatedPasswordType::class);
               

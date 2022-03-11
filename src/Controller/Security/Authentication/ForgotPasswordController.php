@@ -3,12 +3,12 @@
 namespace App\Controller\Security\Authentication;
 
 use App\Service\SendEmail;
-use App\Form\Security\Authentication\ForgotPasswordType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Form\Security\Authentication\ForgotPasswordType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 

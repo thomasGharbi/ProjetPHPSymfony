@@ -4,6 +4,8 @@ namespace App\DataFixtures;
 
 
 
+use App\Utils\CreateRandomPassword;
+use App\Utils\CreateRandomUsername;
 use Faker\Factory;
 use App\Entity\User;
 use DateTimeImmutable;
@@ -13,11 +15,15 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFixtures extends Fixture
 {
+    private CreateRandomUsername $createRandomUsername;
+    private CreateRandomPassword $createRandomPassword;
     public const  DAYS_MIN_CREATED_AT = '-3days';
     private UserPasswordHasherInterface $passwordHasher;
 
-    public function __construct( UserPasswordHasherInterface $passwordHasher){
+    public function __construct( UserPasswordHasherInterface $passwordHasher, CreateRandomUsername $createRandomUsername,CreateRandomPassword $createRandomPassword){
         $this->passwordHasher = $passwordHasher;
+        $this->createRandomUsername = $createRandomUsername;
+        $this->createRandomPassword = $createRandomPassword;
     }
 
     public function load(ObjectManager $manager): void
@@ -34,7 +40,8 @@ class UserFixtures extends Fixture
             
      
             $user->setEmail($faker->email())
-                 ->setPassword('badpassword')
+                 ->setUsername($this->createRandomUsername->createRandomUsername())
+                 ->setPassword($this->createRandomPassword->createRandomPassword())
                  ->setGender(array_rand(array_flip(['homme', 'femme', 'non-précisé'])))
                  ->setFirstName($faker->firstName())
                  ->setRoles($user->getRoles())

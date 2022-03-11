@@ -26,10 +26,10 @@ class AuthenticationLog
     private \DateTimeImmutable $authAttemptAt;
 
     /**
-     * @var string
-     * @ORM\Column(type="string", length=255)
+     * @var string|null
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private string $emailEntered;
+    private ?string $emailEntered;
 
     /**
      * @var string
@@ -55,12 +55,32 @@ class AuthenticationLog
      */
     private ?\DateTime $blackListedUntil;
 
-    public function __construct(string $userIp, string $emailEntered,bool $authSuccessful)
+    /**
+     * @var bool
+     * @ORM\Column(type="boolean")
+     */
+    private bool $oauth;
+
+    /**
+     * @var string|null
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $oauthProvider;
+
+    public function __construct(
+        string $userIp,
+        ?string $emailEntered,
+        bool $authSuccessful,
+        bool $oauth ,
+        ?string $oauthProvider
+    )
     {
         $this->authAttemptAt = new \DateTimeImmutable('NOW');
-        $this->emailEntered = $emailEntered;
+        $this->emailEntered = $emailEntered ;
         $this->userIp = $userIp;
         $this->authSuccessful = $authSuccessful;
+        $this->oauth = $oauth;
+        $this->oauthProvider = $oauthProvider;
     }
 
     public function getId(): ?int
@@ -136,6 +156,30 @@ class AuthenticationLog
     public function setBlackListedUntil(?\DateTime $blackListedUntil): self
     {
         $this->blackListedUntil = $blackListedUntil;
+
+        return $this;
+    }
+
+    public function getOauth(): ?bool
+    {
+        return $this->oauth;
+    }
+
+    public function setOauth(bool $oauth): self
+    {
+        $this->oauth = $oauth;
+
+        return $this;
+    }
+
+    public function getOauthProvider(): ?string
+    {
+        return $this->oauthProvider;
+    }
+
+    public function setOauthProvider(?string $oauthProvider): self
+    {
+        $this->oauthProvider = $oauthProvider;
 
         return $this;
     }

@@ -28,10 +28,11 @@ class AuthenticationLogRepository extends ServiceEntityRepository
      * @param string $userEmail
      * @return void
      * Ajoute une Authentification reussi a l'entité AuthenticationLog
+     *
      */
-public function addAuthenticationSuccess( string $userIp, string $userEmail):void
+    public function addAuthenticationSuccess( string $userIp, ?string $userEmail,bool $oauth = false, ?string $oauthProvider = null):void
 {
-        $authentication = new AuthenticationLog($userIp, $userEmail, true);
+        $authentication = new AuthenticationLog($userIp, $userEmail, true, $oauth, $oauthProvider);
 
         $this->_em->persist($authentication);
 
@@ -45,10 +46,10 @@ public function addAuthenticationSuccess( string $userIp, string $userEmail):voi
      * @return \DateTime|null
      * Ajoute une Authentification échoué a l'entité AuthenticationLog
      */
-public function addAuthenticationFailure(string $userIp, string $emailEntered): ?\DateTime
+public function addAuthenticationFailure(string $userIp, ?string $emailEntered, bool $oauth = false, ?string $oauthProvider = null): ?\DateTime
 {
 
-    $authentication = new AuthenticationLog($userIp, $emailEntered, false);
+    $authentication = new AuthenticationLog($userIp, $emailEntered, false, $oauth, $oauthProvider );
 
     $mustBeBlackListed = $this->getRecentFailureAttempt($userIp);
 

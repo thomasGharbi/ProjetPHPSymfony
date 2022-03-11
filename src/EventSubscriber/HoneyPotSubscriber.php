@@ -39,17 +39,20 @@ class HoneyPotSubscriber implements EventSubscriberInterface
         if(!$request){
             return;
         }
-        $form = $event->getForm();
+        //$form = $event->getForm();
 
         $data = $event->getData();
 
-        if (!array_key_exists('adresse-HP', $data) || !array_key_exists('ville-HP', $data)) {
+
+
+        if (!array_key_exists('adreeess', $data) || !array_key_exists('villle', $data)  ) {
             throw new HttpException(400);
+            //dd($data);
         }
 
         [
-            'adresse-HP'  => $adress,
-            'ville-HP'    => $city
+            'adreeess'  => $adress,
+            'villle'    => $city
         ] = $data;
 
         if ($adress !== "" || $city !== "") {

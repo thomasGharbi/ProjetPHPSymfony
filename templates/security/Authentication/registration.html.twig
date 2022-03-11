@@ -1,9 +1,13 @@
 {% extends 'base.html.twig' %}
+{% block javascripts %}
 
+    <script src="https://www.google.com/recaptcha/api.js"></script>
+    {% include '_partials/_captcha_callback_script.html.twig' %}
+{% endblock %}
 {% block body %}
 
 <div class="container">
-
+<form id="demo-form" method="POST">
 {{form_start(registrationForm)}}
 
 {{form_label(registrationForm.name, 'Prénom')}} 
@@ -22,8 +26,15 @@
         {{ form_widget(registrationForm.villle) }}
     </fieldset>
 
+    <button class="g-recaptcha"
+            data-sitekey="{{ captcha_site_key }}"
+            data-callback='onSubmit'
+            data-action='submit'
+            type="submit">Submit</button>
 
-<button type="submit"> ok </button>
 {{form_end(registrationForm)}}
+
+
+</form>
 </div>
 {% endblock %}

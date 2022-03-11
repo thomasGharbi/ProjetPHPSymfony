@@ -25,9 +25,9 @@ class BrutForceChecker
      * @param string $emailEntered
      * @return void
      */
-    public function addAuthenticationFailure(string $userIp,string $emailEntered): void
+    public function addAuthenticationFailure(string $userIp,?string $emailEntered, bool $oauth = false, ?string $oauthProvider = null): void
     {
-        $this->authRepository->addAuthenticationFailure($userIp, $emailEntered);
+        $this->authRepository->addAuthenticationFailure($userIp, $emailEntered, $oauth, $oauthProvider);
 
     }
 

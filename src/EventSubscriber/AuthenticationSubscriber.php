@@ -8,6 +8,7 @@ use App\Repository\AuthenticationLogRepository;
 use App\Security\BrutForceChecker;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Http\Event\LogoutEvent;
 use Symfony\Component\Security\Http\Event\LoginFailureEvent;
 use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
@@ -21,13 +22,15 @@ class AuthenticationSubscriber implements EventSubscriberInterface
     private RequestStack $requestStack;
     private BrutForceChecker $brutForceChecker;
     private AuthenticationLogRepository $authLogRepository;
+    private SessionInterface $session;
 
 
     public function __construct(
         LoggerInterface  $securityLogger,
         RequestStack     $requestStack,
         BrutForceChecker $brutForceChecker,
-        AuthenticationLogRepository $authLogRepository
+        AuthenticationLogRepository $authLogRepository,
+        SessionInterface $session
     )
     {
 
@@ -35,6 +38,7 @@ class AuthenticationSubscriber implements EventSubscriberInterface
         $this->securityLogger = $securityLogger;
         $this->brutForceChecker = $brutForceChecker;
         $this->authLogRepository = $authLogRepository;
+        $this->session = $session;
 
 
     }
@@ -53,7 +57,12 @@ class AuthenticationSubscriber implements EventSubscriberInterface
 
     public function onLoginFailure(): void
     {
+        $oauthProvider = $this->session->get('oauthProvider');
+
+        $oauthProvider !== null ? $oauth = true : $oauth = false;
+
         $emailEntered = $this->requestStack->getCurrentRequest()?->get('email');
+
 
         $clientIp = $this->getUserInfo()['clientIp'];
         $route = $this->getUserInfo()['route'];
@@ -61,7 +70,7 @@ class AuthenticationSubscriber implements EventSubscriberInterface
 
         $this->securityLogger->info("'AUTHENTIFICATION FAILLED' : Authentification échoué avec l'adresse email : '$emailEntered' et l'ip : '$clientIp' venant de la route : '$route");
 
-        $this->brutForceChecker->addAuthenticationFailure($clientIp, $emailEntered);
+        $this->brutForceChecker->addAuthenticationFailure($clientIp, $emailEntered, $oauth, $oauthProvider);
 
     }
 
@@ -69,13 +78,17 @@ class AuthenticationSubscriber implements EventSubscriberInterface
 
     public function onLoginSuccess(LoginSuccessEvent $event): void
     {
+            $oauthProvider = $this->session->get('oauthProvider');
+
+            $oauthProvider !== null ? $oauth = true : $oauth = false;
+
         $userEmail = $event->getAuthenticatedToken()->getUserIdentifier();
 
         $clientIp = $this->getUserInfo()['clientIp'];
         $route = $this->getUserInfo()['route'];
 
         $this->securityLogger->info("'AUTHENTIFICATION SUCCESS' : Authentification réussi avec l'adresse email : '$userEmail' et l'ip : '$clientIp' venant de la route : '$route'");
-        $this->authLogRepository->addAuthenticationSuccess($clientIp, $userEmail);
+        $this->authLogRepository->addAuthenticationSuccess($clientIp, $userEmail, $oauth, $oauthProvider);
     }
 
     public function onLogoutEvent(LogoutEvent $event): void

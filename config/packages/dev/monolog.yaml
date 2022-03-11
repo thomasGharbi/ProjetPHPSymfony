@@ -1,10 +1,19 @@
 monolog:
+    channels:
+        - "oauth"
     handlers:
+        oauth:
+            level: info
+            type: rotating_file
+            max_files: 10
+            path: "%kernel.logs_dir%/security/oauth/oauth.%kernel.environment%.log"
         security:
             level: info
             type: rotating_file
             max_files: 15
-            channels: ["security"]
+            channels:
+                - "security"
+
             path: "%kernel.logs_dir%/security/security.%kernel.environment%.log"
         security_debug:
             level: DEBUG
@@ -25,6 +34,7 @@ monolog:
             channels:
                 - "!event"
                 - "!security"
+                - "!google_oauth"
         # uncomment to get logging in your browser
         # you may have to allow bigger header sizes in your Web server configuration
         #firephp:

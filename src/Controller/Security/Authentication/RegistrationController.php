@@ -3,6 +3,7 @@
 namespace App\Controller\Security\Authentication;
 
 use App\Entity\User;
+use App\Service\Captcha;
 use App\Service\SendEmail;
 use App\Form\Security\Authentication\RegistrationType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -34,9 +35,12 @@ class RegistrationController extends AbstractController
         Request                 $request,
         SendEmail               $sendEmail,
         TokenGeneratorInterface $tokenGenerator,
-        ValidatorInterface      $validator
+        ValidatorInterface      $validator,
+        Captcha                 $Captcha
+
     ): Response
     {
+
 
         $user = new User;
         $registrationForm = $this->createForm(RegistrationType::class, $user);
@@ -44,7 +48,15 @@ class RegistrationController extends AbstractController
         $registrationForm->handleRequest($request);
 
         if($registrationForm->isSubmitted() && $registrationForm->isValid()) {
+
+
+            if(!$Captcha->isHCaptchaValid())
+            {
+                return  $this->redirectToRoute('app_login');
+            }
             $registrationToken = $tokenGenerator->generateToken();
+
+
 
 
             // converti les valeur du nom et prènom en "nocase".

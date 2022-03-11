@@ -2,9 +2,20 @@ parameters:
  level: 8
  paths:
     - src
+
+ ignoreErrors:
+ 	- '#Method [a-zA-Z0-9\\_]+::dispatch\(\) invoked with 2 parameters, 1 required.#'
+
+
+
+
+
+
  excludes_analyse:
             - src/Security/UserAuthenticator.php
             - src/Command/CreateUserCommand.php
 
 
  checkGenericClassInNonGenericObjectType: false
+
+

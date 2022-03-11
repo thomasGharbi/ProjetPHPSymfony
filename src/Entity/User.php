@@ -30,9 +30,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * 
-     * 
-     * 
      */
     private int $id;
 
@@ -42,8 +39,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @Assert\NotBlank()
      * @Assert\Email(message="Cette adresse email n'est pas valide")
      *
-     * 
-     * 
      */
     private string $email;
 
@@ -53,6 +48,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * 
      */
     private array $roles = [];
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=255, unique=true)
+     * @Assert\NotBlank()
+     */
+    private string $username;
 
     /**
      * @var string The hashed password
@@ -65,24 +67,24 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @var string 
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
+     * @ORM\Column(type="string", length=255, nullable=true)
+     *
      */
     private string $name;
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
+     * @ORM\Column(type="string", length=255, nullable=true)
+     *
      */
     private string $firstName;
 
     /**
-     * @var string
-     * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank()
+     * @var string|null
+     * @ORM\Column(type="string", length=255, nullable=true)
+     *
      */
-    private string $birth;
+    private ?string $birth;
 
     /**
      * @var string|null
@@ -90,7 +92,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @Assert\Regex(pattern = "/^(?:(?:\+|00)33|0)\s*[1-9](?:[\s.-]*\d{2}){4}$/", 
      *               message = "le numéro de téléphone saisit n'est pas valide")
      */
-    private string|null $phone;
+    private ?string $phone;
 
     /**
      * @var string|null
@@ -98,7 +100,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * 
      * 
      */
-    private string|null $profilImage;
+    private ?string $profilImage;
 
     /**
      * @var string
@@ -123,19 +125,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string|null
      * @ORM\Column(type="string", length=255, nullable=true)
      */
-    private string|null $registrationToken;
-
-    /**
-     * @var \DateTimeImmutable
-     * @ORM\Column(type="datetime_immutable")
-     */
-    private \DateTimeImmutable $accountMustBeVerifiedBefore;
+    private ?string $registrationToken;
 
     /**
      * @var \DateTimeImmutable|null
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    private \DateTimeImmutable|null $accountVerifiedAt;
+    private ?\DateTimeImmutable $accountMustBeVerifiedBefore;
+
+    /**
+     * @var \DateTimeImmutable|null
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     */
+    private ?\DateTimeImmutable $accountVerifiedAt;
 
     /**
      * @var bool
@@ -147,7 +149,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var \DateTimeImmutable|null
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    private \DateTimeImmutable|null $passwordModifiedAt;
+    private ?\DateTimeImmutable $passwordModifiedAt;
 
     /**
      * @var string|null
@@ -159,13 +161,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var \DateTimeImmutable|null
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    private \DateTimeImmutable|null $forgotPasswordMustBeVerifiedBefore;
+    private ?\DateTimeImmutable $forgotPasswordMustBeVerifiedBefore;
 
     /**
      * @var \DateTimeImmutable|null
      * @ORM\Column(type="datetime_immutable", nullable=true)
      */
-    private \DateTimeImmutable|null $ForgotPasswordRequestedAt;
+    private ?\DateTimeImmutable $ForgotPasswordRequestedAt;
+
+    /**
+     * @var string|null
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $googleID;
+
+    /**
+     * @var string|null
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private ?string $githubID;
+
+
 
 
     
@@ -376,7 +392,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->accountMustBeVerifiedBefore;
     }
 
-    public function setAccountMustBeVerifiedBefore(\DateTimeImmutable $accountMustBeVerifiedBefore): self
+    public function setAccountMustBeVerifiedBefore(?\DateTimeImmutable $accountMustBeVerifiedBefore): self
     {
         $this->accountMustBeVerifiedBefore = $accountMustBeVerifiedBefore;
 
@@ -451,6 +467,37 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setForgotPasswordRequestedAt(?\DateTimeImmutable $ForgotPasswordRequestedAt): self
     {
         $this->ForgotPasswordRequestedAt = $ForgotPasswordRequestedAt;
+
+        return $this;
+    }
+
+    public function getGoogleID(): ?string
+    {
+        return $this->googleID;
+    }
+
+    public function setGoogleID(?string $googleID): self
+    {
+        $this->googleID = $googleID;
+
+        return $this;
+    }
+
+    public function getGithubID(): ?string
+    {
+        return $this->githubID;
+    }
+
+    public function setGithubID(?string $githubID): self
+    {
+        $this->githubID = $githubID;
+
+        return $this;
+    }
+
+    public function setUsername(string $username): self
+    {
+        $this->username = $username;
 
         return $this;
     }

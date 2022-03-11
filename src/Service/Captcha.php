@@ -6,28 +6,32 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 
-final class HCaptcha
+final class Captcha
 {
-    private const HCAPTCHA_ENDPOINT = 'https://www.google.com/recaptcha/api/siteverify';
+    private const CAPTCHA_ENDPOINT = 'https://www.google.com/recaptcha/api/siteverify';
 
     private HttpClientInterface $httpClient;
 
     private RequestStack $requestStack;
 
-    private string $HCaptchaSecretkey;
+    private string $CaptchaSecretkey;
 
 
     public function __construct(
         HttpClientInterface $httpClient,
         RequestStack $requestStack,
-        string $HCaptchaSecretkey)
+        string $CaptchaSecretkey)
     {
         $this->httpClient = $httpClient;
         $this->requestStack = $requestStack;
-        $this->HCaptchaSecretkey = $HCaptchaSecretkey;
+        $this->CaptchaSecretkey = $CaptchaSecretkey;
     }
 
-    public  function isHCaptchaValid(): bool
+    /**
+     * @return array<mixed>|bool
+     *
+     */
+    public  function isHCaptchaValid(): array|bool
     {
         $request = $this->requestStack->getCurrentRequest();
 
@@ -38,20 +42,25 @@ final class HCaptcha
         $options = [
             'headers' => [
                 'Accept'  => 'application/json',
-                //'Content' => 'application/x-www-form-urlencoded'
+                'Content-Type' => 'application/x-www-form-urlencoded'
             ],
             'body' => [
-                'secret' => $this->HCaptchaSecretkey,
+                'secret' => $this->CaptchaSecretkey,
                 'response' =>  $request->request->get('g-recaptcha-response')
             ]
         ];
 
-        $response = $this->httpClient->request('POST', self::HCAPTCHA_ENDPOINT, $options);
+        $response = $this->httpClient->request('POST', self::CAPTCHA_ENDPOINT, $options);
 
         $data = $response->toArray();
 
-        dd($data);
+        if(is_array($data) && array_key_exists('success', $data))
+        {
+            return $data['success'];
 
+        }
+
+        return false;
     }
 
 }
