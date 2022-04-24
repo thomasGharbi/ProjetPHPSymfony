@@ -3,15 +3,16 @@
 namespace App\Controller\Security\Authentication;
 
 use App\Entity\User;
+use Symfony\Component\Routing\Annotation\Route;
+use App\Form\Security\Authentication\ModifyPasswordType;
 use App\Repository\UserRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use App\Form\Security\Authentication\ModifyPasswordType;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class ModifyPasswordController extends AbstractController
@@ -32,7 +33,7 @@ class ModifyPasswordController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        $isRequestedInTime = (new \DateTimeImmutable('NOW') > $user->getAccountMustBeVerifiedBefore()) ? false : true;
+        $isRequestedInTime = (new DateTimeImmutable('NOW') > $user->getAccountMustBeVerifiedBefore()) ? false : true;
 
         if ($user->getForgotPasswordToken() === null || $user->getForgotPasswordToken() !== $token || !$isRequestedInTime) {
             throw new AccessDeniedException();
@@ -56,23 +57,33 @@ class ModifyPasswordController extends AbstractController
         UserRepository         $userRepository): Response
     {
 
-        $userEmail = $session->get('modify-password-user-email');
-        $user = $userRepository->findOneBy(['email' => $userEmail]);
+        $user = $this->getUser();
 
-        if (!$session->get('authorization-modify-password') || !$userEmail || !$user) {
+        if (!$user) {
+            $userEmail = $session->get('modify-password-user-email');
+            $user = $userRepository->findOneBy(['email' => $userEmail]);
+        }
+
+
+        if (!$session->get('authorization-modify-password') || !$user) {
+
+
             throw new AccessDeniedException();
+
+
         }
 
         $modifyPasswordForm = $this->createForm(ModifyPasswordType::class);
         $modifyPasswordForm->handleRequest($request);
 
-        if ($modifyPasswordForm->isSubmitted() && $modifyPasswordForm->isValid()) {
+        if ($modifyPasswordForm->isSubmitted() && $modifyPasswordForm->isValid() && $user instanceof User) {
 
             $password = $modifyPasswordForm->get('modifyPassword')->getData();
 
-            $user->setPassword($password) // Le Hachage est effectué via le UserPasswordHasherListener
-            ->setPasswordModifiedAt(new \DateTimeImmutable('NOW'))
-                ->setForgotPasswordToken(null);
+            // Le Hachage est effectué via le UserPasswordHasherListener
+            $user->setPassword($password)
+                 ->setPasswordModifiedAt(new DateTimeImmutable('NOW'))
+                 ->setForgotPasswordToken(null);
 
             $session->set('autorization-modify-password', null);
             $session->set('modify-password-user-email', null);

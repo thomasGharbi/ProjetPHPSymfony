@@ -2311,16 +2311,16 @@
         },
         {
             "name": "symfony/asset",
-            "version": "v5.3.11",
+            "version": "v5.3.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/asset.git",
-                "reference": "547d3d91c759bae8e302630e68f6c4d415715bc3"
+                "reference": "fb60377bfa717aef01de9dfe0ce1c371f546de21"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/asset/zipball/547d3d91c759bae8e302630e68f6c4d415715bc3",
-                "reference": "547d3d91c759bae8e302630e68f6c4d415715bc3",
+                "url": "https://api.github.com/repos/symfony/asset/zipball/fb60377bfa717aef01de9dfe0ce1c371f546de21",
+                "reference": "fb60377bfa717aef01de9dfe0ce1c371f546de21",
                 "shasum": ""
             },
             "require": {
@@ -2365,7 +2365,7 @@
             "description": "Manages URL generation and versioning of web assets such as CSS stylesheets, JavaScript files and image files",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/asset/tree/v5.3.11"
+                "source": "https://github.com/symfony/asset/tree/v5.3.14"
             },
             "funding": [
                 {
@@ -2381,7 +2381,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-11-05T16:25:46+00:00"
+            "time": "2022-01-02T09:51:59+00:00"
         },
         {
             "name": "symfony/cache",

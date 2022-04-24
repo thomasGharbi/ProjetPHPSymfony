@@ -100,6 +100,7 @@ class AuthenticationSubscriber implements EventSubscriberInterface
         $route = $this->getUserInfo()['route'];
 
 
+
         $this->securityLogger->info("'AUTHENTIFICATION LOGOUT' : déconnexion de l'utilisateur avec l'adresse email: '$userEmail' et l'ip : '$clientIp' venant de la route : '$route' ");
 
     }

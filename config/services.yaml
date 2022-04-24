@@ -11,6 +11,10 @@ parameters:
     app.oauth_google_client_secret: '%env(OAUTH_GOOGLE_CLIENT_SECRET)%'
     app.oauth_github_client_id: '%env(OAUTH_GITHUB_CLIENT_ID)%'
     app.oauth_github_client_secret: '%env(OAUTH_GITHUB_CLIENT_SECRET)%'
+    app.profil_image_directory: '%kernel.project_dir%/public/uploads/profil_image'
+    app.profil_image_directory_render: 'uploads/profil_image/'
+
+
 services:
 
     # default configuration for services in *this* file
@@ -35,6 +39,18 @@ services:
             - { name: 'doctrine.orm.entity_listener', event: 'preUpdate', entity: 'App\Entity\User'}
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    App\EventListener\CustomLogoutListener:
+        tags:
+            - name: 'kernel.event_listener'
+              event: 'Symfony\Component\Security\Http\Event\LogoutEvent'
+              dispatcher: security.event_dispatcher.main
+
+    App\EventListener\DOSListener:
+        tags:
+            - name: 'kernel.event_listener'
+              event: 'App\Event\DOSEvent'
+              method: 'onDOSEvent'
+
     App\Service\SendEmail:
         arguments:
             $senderEmail: '%app.sender_email%'  

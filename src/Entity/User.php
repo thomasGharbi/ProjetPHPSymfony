@@ -10,6 +10,7 @@ use Stringable;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints\Unique;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Validator\Exception\RuntimeException;
 
@@ -17,6 +18,7 @@ use Symfony\Component\Validator\Exception\RuntimeException;
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @UniqueEntity("email", message="Cette adresse email n'est pas valide")
  * @UniqueEntity("phone", message="Ce numéro n'est pas valide")
+ * @UniqueEntity("username", message="Ce nom d'utilisateur est déjà pris")
  * 
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
@@ -36,9 +38,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Assert\NotBlank()
+     * @Assert\NotBlank(message="l'adresse email doit être saisi")
      * @Assert\Email(message="Cette adresse email n'est pas valide")
-     *
      */
     private string $email;
 
@@ -51,8 +52,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=255, unique=true)
-     * @Assert\NotBlank()
+     * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank(message="Le nom d'utilisateur doit être saisi")
+     *
+     *
      */
     private string $username;
 
@@ -66,18 +69,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $password;
 
     /**
-     * @var string 
+     * @var string|null
      * @ORM\Column(type="string", length=255, nullable=true)
      *
      */
-    private string $name;
+    private ?string $name;
 
     /**
-     * @var string
+     * @var string|null
      * @ORM\Column(type="string", length=255, nullable=true)
      *
      */
-    private string $firstName;
+    private ?string $firstName;
 
     /**
      * @var string|null
@@ -184,6 +187,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 
 
+    public function __construct(){
+        $this->profilImage = '/uploads/profil_image_default/user_profil_image_default.jpg';
+    }
+
     
 
     public function getId(): ?int
@@ -214,11 +221,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
     /**
-     * @deprecated since Symfony 5.3, use getUserIdentifier instead
+     *
      */
     public function getUsername(): string
     {
-        return (string) $this->email;
+        return (string) $this->username;
     }
 
     /**
@@ -501,4 +508,5 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
 }

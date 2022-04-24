@@ -1,0 +1,45 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+
+    {% block js %}
+
+        <script type="module" src="{{ asset('/javascript/authentication/confirm_identity_user_dashboard.js') }}"></script>
+
+
+    {% endblock %}
+
+    <main>
+        {% if isVerified == false %}
+            <div class="alert alert-danger"><p>Votre compte n'est pas verifié vous ne pouvez rien modifié tant qu'il n'a
+                    pas était verifié</p></div>
+
+        {% endif %}
+        <img src="{{ asset(profil_image) }}" width="100" height="100"/>
+        <div class="container">
+
+            {{ userInfo.email }}
+            {{ form_start(userDashboardForm) }}
+
+            {{ form_label(userDashboardForm.name, 'Prénom') }}
+            {{ form_row(userDashboardForm.firstname) }}
+            {{ form_label(userDashboardForm.name, 'Nom') }}
+            {{ form_row(userDashboardForm.name) }}
+            {{ form_row(userDashboardForm.email) }}
+            {{ form_row(userDashboardForm.profil_image) }}
+
+
+            <button id="button-modal" type="button" class="btn btn-primary"
+                    data-target="#confirm_identity_password_modal">Submiiiit
+            </button>
+
+            {{ form_end(userDashboardForm) }}
+
+
+        </div>
+        {% include "_partials/_confirm_password_modal.html.twig" %}
+
+        <a id="modify_password">Modifier mon mot de passe</a>
+    </main>
+{% endblock %}
