@@ -5,7 +5,7 @@
 
     {% block js %}
 
-        <script type="module" src="{{ asset('/javascript/authentication/confirm_identity_user_dashboard.js') }}"></script>
+        <script type="module" src="{{ asset('/javascript/authentication/confirm_identity/confirm_identity_for_user_dashboard.js') }}"></script>
 
 
     {% endblock %}
@@ -19,7 +19,7 @@
         <img src="{{ asset(profil_image) }}" width="100" height="100"/>
         <div class="container">
 
-            {{ userInfo.email }}
+
             {{ form_start(userDashboardForm) }}
 
             {{ form_label(userDashboardForm.name, 'Prénom') }}
@@ -37,9 +37,26 @@
             {{ form_end(userDashboardForm) }}
 
 
-        </div>
-        {% include "_partials/_confirm_password_modal.html.twig" %}
+        </div> <h2> mes entreprise :</h2>
 
+            <div>
+
+                {% for key, company in list_companies  %}
+                {% if(company) %}
+
+                    <a href="{{ path('app_company_dashboard', { uuidCompany: company.uuid_of_company }) }}">{{ company.name_of_company  }}</a>
+
+
+
+{% endif %}
+                {% endfor %}
+
+
+            </div>
+
+
+        {% include "_partials/_confirm_password_modal.html.twig" %}
+        <br>
         <a id="modify_password">Modifier mon mot de passe</a>
     </main>
 {% endblock %}

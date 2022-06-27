@@ -1,0 +1,15 @@
+ input[id^='add_company_image']:not(#add_company_image1){
+    display:none;
+}
+
+ label[for^='add_company_image']:not([for = 'add_company_image1']){
+     display: none;
+ }
+
+ #add_company_otherSector, #user_companies_dashboard_otherSector{
+     display: none;
+ }
+
+ label[id="otherSector"]{
+     display: none;
+ }

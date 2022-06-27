@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello UserCompaniesDashboardController!{% endblock %}
+
+{% block body %}
+    {% block js %}
+
+
+        <script type="module" src="{{ asset('/javascript/authentication/confirm_identity/confirm_identity_for_company_dashboard.js') }}"></script>
+        <script type="module" src="{{ asset('/javascript/add_inputs_form_company.js') }}"></script>
+    {% endblock %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+
+    <img src="{{ asset(imagesRender.profile_image) }}" width="100" height="100"/>
+
+    {{form_start(companyDashboardForm)}}
+
+
+
+
+
+
+    <div class="example-wrapper">
+        <button  type="button" id="button-modify-company"   class="button-modal"
+                data-target="#confirm_identity_password_modal" >Submiiiit
+        </button>
+        <img src="{{ asset(  imagesRender.image1 ) }}" width="100" height="100"/>
+        {% if imagesRender.image2 is not null  %}
+        <img src="{{ asset(  imagesRender.image2 ) }}" width="100" height="100"/>
+        {% endif %}
+        {% if imagesRender.image3 is not null and imagesRender.image3 is defined %}
+            <img src="{{ asset(  imagesRender.image3 ) }}" width="100" height="100"/>
+        {% endif %}
+        {% if imagesRender.image4 is not null and imagesRender.image4 is defined %}
+            <img src="{{ asset(  imagesRender.image4 ) }}" width="100" height="100"/>
+        {% endif %}
+        {% if imagesRender.image5 is not null and imagesRender.image5 is defined %}
+            <img src="{{ asset(  imagesRender.image5 ) }}" width="100" height="100"/>
+        {% endif %}
+
+
+
+
+
+
+
+
+
+
+    {{form_end(companyDashboardForm)}}
+</div>
+
+    {{form_start(companyDelete)}}
+    <button  data-target="#confirm_identity_password_modal" class="button-modal" type="button"  id="button-delete-company" >detete</button>
+    {{form_end(companyDelete)}}
+    {% include "_partials/_confirm_password_modal.html.twig" %}
+{% endblock %}

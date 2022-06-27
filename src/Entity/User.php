@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use Cassandra\Exception\ValidationException;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 use App\Repository\UserRepository;
@@ -16,7 +18,7 @@ use Symfony\Component\Validator\Exception\RuntimeException;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
- * @UniqueEntity("email", message="Cette adresse email n'est pas valide")
+ * @UniqueEntity("email", message="Cette adresse email est déjà utilisé")
  * @UniqueEntity("phone", message="Ce numéro n'est pas valide")
  * @UniqueEntity("username", message="Ce nom d'utilisateur est déjà pris")
  * 
@@ -54,7 +56,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Le nom d'utilisateur doit être saisi")
-     *
+     * @Assert\Regex(pattern = "/^[A-Za-z][A-Za-z0-9]{5,30}$/",
+     *               message = "Votre nom d'utilisateur doit comprendre entre 5 et 30 caractère et contenir uniquement des lettres des chiffres.")
      *
      */
     private string $username;
@@ -63,6 +66,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string The hashed password
      * @ORM\Column(type="string")
      * @ORM\Column(type="string")
+     * @Assert\NotBlank(message="Le mot de passe doit être saisi")
      *
      *
      */
@@ -71,6 +75,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string|null
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(max = 50,
+     *      maxMessage = "Le nom ne peut pas contenir moins de {{ limit }} caractères")
      *
      */
     private ?string $name;
@@ -78,6 +84,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string|null
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(max = 50,
+     *      maxMessage = "Le prènom ne peut pas contenir moins de {{ limit }} caractères")
      *
      */
     private ?string $firstName;
@@ -85,7 +93,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string|null
      * @ORM\Column(type="string", length=255, nullable=true)
-     *
+     * @Assert\Length(max = 20)
      */
     private ?string $birth;
 
@@ -99,8 +107,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     /**
      * @var string|null
-     * @ORM\Column(type="string", length=255, nullable=true, unique=true)
-     * 
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Assert\Length(max = 250)
      * 
      */
     private ?string $profilImage;
@@ -109,6 +117,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @var string
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank()
+     * @Assert\Length(max = 20)
      */
     private string $gender;
 
@@ -184,21 +193,41 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private ?string $githubID;
 
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity=Company::class, mappedBy="user")
+     */
+    private $companies;
+
+    /**
+     * @var ArrayCollection
+     * @ORM\OneToMany(targetEntity=Notices::class, mappedBy="user")
+     */
+    private $notices;
+
+    /**
+     * @var string
+     * @ORM\Column(type="string", length=255)
+     */
+    private $uuid;
+
 
 
 
     public function __construct(){
         $this->profilImage = '/uploads/profil_image_default/user_profil_image_default.jpg';
+        $this->companies = new ArrayCollection();
+        $this->notices = new ArrayCollection();
     }
 
     
 
-    public function getId(): ?int
+    public function getId(): int
     {
         return $this->id;
     }
 
-    public function getEmail(): ?string
+    public function getEmail(): string
     {
         return $this->email;
     }
@@ -505,6 +534,78 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUsername(string $username): self
     {
         $this->username = $username;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Company[]
+     */
+    public function getCompanies(): Collection
+    {
+        return $this->companies;
+    }
+
+    public function addCompany(Company $company): self
+    {
+        if (!$this->companies->contains($company)) {
+            $this->companies[] = $company;
+            $company->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompany(Company $company): self
+    {
+        if ($this->companies->removeElement($company)) {
+            // set the owning side to null (unless already changed)
+            if ($company->getUser() === $this) {
+                $company->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Notices[]
+     */
+    public function getNotices(): Collection
+    {
+        return $this->notices;
+    }
+
+    public function addNotice(Notices $notice): self
+    {
+        if (!$this->notices->contains($notice)) {
+            $this->notices[] = $notice;
+            $notice->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotice(Notices $notice): self
+    {
+        if ($this->notices->removeElement($notice)) {
+            // set the owning side to null (unless already changed)
+            if ($notice->getUser() === $this) {
+                $notice->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getUuid(): string
+    {
+        return $this->uuid;
+    }
+
+    public function setUuid(string $uuid): self
+    {
+        $this->uuid = $uuid;
 
         return $this;
     }

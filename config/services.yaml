@@ -4,15 +4,23 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    #Email
     app.sender_email: '%env(MAILER_SENDER_EMAIL)%'
     app.sender_name: '%env(MAILER_SENDER_NAME)%'
+    #Captcha
     app.captcha_secret_key: '%env(CAPTCHA_SECRET_KEY)%'
+    #OAUTH2 Authentication
     app.oauth_google_client_id: '%env(OAUTH_GOOGLE_CLIENT_ID)%'
     app.oauth_google_client_secret: '%env(OAUTH_GOOGLE_CLIENT_SECRET)%'
     app.oauth_github_client_id: '%env(OAUTH_GITHUB_CLIENT_ID)%'
     app.oauth_github_client_secret: '%env(OAUTH_GITHUB_CLIENT_SECRET)%'
+    # Images Directories
     app.profil_image_directory: '%kernel.project_dir%/public/uploads/profil_image'
     app.profil_image_directory_render: 'uploads/profil_image/'
+    app.company_image_directory: '%kernel.project_dir%/public/uploads/company_image'
+    app.company_image_directory_render: 'uploads/company_image/'
+    app.company_profile_image_directory: '%kernel.project_dir%/public/uploads/company_profile_image'
+    app.company_profile_image_directory_render: 'uploads/company_profile_image/'
 
 
 services:

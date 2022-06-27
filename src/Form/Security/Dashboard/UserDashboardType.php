@@ -1,17 +1,20 @@
 <?php
 
-namespace App\Form\Security;
+namespace App\Form\Security\Dashboard;
 
+use App\Form\Security\Authentication\FormExtension\ImagesType;
 use App\Repository\UserRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
+
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
-use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 
@@ -33,33 +36,44 @@ class UserDashboardType extends AbstractType
         $rep = $this->userRepository;
         parent::buildForm($builder, $options);
 
-        parent::buildForm($builder, $options);
-        //dd($options['data']['birth']);
-        $builder->add('firstname', TextType::class, ['required' => false])
-            ->add('name', TextType::class, ['required' => false])
+
+        $builder->add('firstname', TextType::class,[
+            'constraints' => new Length(['max' => 50,
+                'maxMessage' => "Le prènom ne peut pas contenir moins de {{ limit }} caractères. ",
+            ])
+        ])
+            ->add('name', TextType::class,[
+                'constraints' => new Length(['max' => 50,
+                    'maxMessage' => "Le nom ne peut pas contenir moins de {{ limit }} caractères. ",
+                ])
+            ] )
             ->add('gender', ChoiceType::class, [
+                'constraints' =>new Length(['max' => 20]),
                 'expanded' => true,
                 'multiple' => false,
                 'choices' => [
                     'Femme' => 'Femme',
                     'Homme' => 'Homme',
                     'non précisé' => 'non-précisé'
-                ], 'data' => $options['data']['gender']
+                ], 'data' => $options['data']->getGender()
 
             ])->add('birth', BirthdayType::class, [
+                'constraints' =>new Length(['max' => 20]),
                 'widget' => 'choice',
                 'input' => 'string',
                 'format' => 'dd/MM/yyyy',
-                'data' => $options['data']['birth']
-            ])->add('phone', TextType::class, ['required' => false])
+                'data' => $options['data']->getBirth()
+            ])->add('phone', TextType::class, )
             ->add('email', EmailType::class, [
-                'required' => false,
+                'data' => $options['data']->getEmail(),
+                'mapped' => false,
                 'constraints' => [
 
+                    new Email(['message' => 'Cette adresse email n\'est pas valide']),
                     new Callback([
-                        'callback' => static function (?string $value, ExecutionContextInterface $context) use ($rep) {
+                        'callback' => static function (?string $value, ExecutionContextInterface $context) use ($rep, $options) {
 
-                            if (!empty($value)) {
+                            if (!empty($value) && $value != $options['data']->getEmail()) {
                                 $user = $rep->findBy(['email' => $value]);
 
                                 if ($user) {
@@ -75,12 +89,13 @@ class UserDashboardType extends AbstractType
                 ]
             ])
             ->add('username', TextType::class, [
-                'required' => false,
+                'data' => $options['data']->getUsername(),
+                'mapped' => false,
                 'constraints' => [
                     new Callback([
-                        'callback' => static function (?string $value, ExecutionContextInterface $context) use ($rep) {
+                        'callback' => static function (?string $value, ExecutionContextInterface $context) use ($rep, $options) {
 
-                            if (!empty($value)) {
+                            if (!empty($value) && $value !== $options['data']->getUsername()) {
                                 $user = $rep->findBy(['username' => $value]);
 
                                 if ($user) {
@@ -98,24 +113,23 @@ class UserDashboardType extends AbstractType
                         },
                     ]),
                 ]
-            ])->add('profil_image', FileType::class, [
-                'required' => false,
-                'constraints' =>
-                    new File([
-                        'maxSize' => '2M',
-                        'mimeTypes' => [
-                            'image/jpg',
-                            'image/jpeg,',
-                            'image/pjpeg',
-                            'image/png',
-                            'image/gif'
-                        ],
-                        'mimeTypesMessage' => 'format de fichier incorrecte (jpg, jpeg, pjpeg, png, gif)',
-                        'maxSizeMessage' => 'la taille du fichier est trop grande 2Mo maximum'])
+            ])->add('profil_image', ImagesType::class, [
+              'data_class' => null,
+                'mapped' => false
+
             ]);
 
 
     }
 
-
+    /**
+     * @param OptionsResolver $resolver
+     * @return void
+     */
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'required' => false
+        ]);
+    }
 }

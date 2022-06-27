@@ -6,11 +6,13 @@ use App\Entity\User;
 use App\Service\Captcha;
 use App\Service\SendEmail;
 use App\Form\Security\Authentication\RegistrationType;
+
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -18,25 +20,17 @@ use Symfony\Component\Security\Csrf\TokenGenerator\TokenGeneratorInterface;
 
 class RegistrationController extends AbstractController
 {
-    #[Route('/registration', name: 'registration')]
-    public function index(): Response
-    {
-        return $this->render('registration/Authentication/index.html.twig',
-            [
-                'controller_name' => 'RegistrationController',
-            ]);
-    }
 
-    /**
-     * @Route("/Inscription", name="app_registration")
-     */
+
+    #[Route('/Inscription', name: 'app_registration')]
     public function registration(
         EntityManagerInterface  $manager,
         Request                 $request,
         SendEmail               $sendEmail,
         TokenGeneratorInterface $tokenGenerator,
         ValidatorInterface      $validator,
-        Captcha                 $Captcha
+        Captcha                 $Captcha,
+
 
     ): Response
     {
@@ -69,7 +63,8 @@ class RegistrationController extends AbstractController
                  ->setRegistrationToken($registrationToken)
                  ->setCreatedAt(new \DateTimeImmutable('NOW'))
                  ->setRoles($user->getRoles())
-                 ->setAccountMustBeVerifiedBefore(new \DateTimeImmutable('+ 3days'));
+                 ->setAccountMustBeVerifiedBefore(new \DateTimeImmutable('+ 3days'))
+                 ->setUuid(Uuid::v1());
                  // Le Hachage du mot de passe est effectué via le UserPasswordHasherListener.
 
             $manager->persist($user);

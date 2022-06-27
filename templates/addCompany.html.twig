@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <h1>bonjour</h1>
+    <script type="module" src="{{ asset('/javascript/add_inputs_form_company.js') }}"></script>
+
+    {{form_start(addCompanyForm, { 'attr' : { 'id' : 'form_file'}})}}
+
+
+
+    <button class=""
+
+            type="submit">Submit</button>
+
+    {{form_end(addCompanyForm)}}
+{% endblock %}
