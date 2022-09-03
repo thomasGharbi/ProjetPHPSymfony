@@ -6,7 +6,7 @@ namespace App\Controller\Security\Dashboard;
 use App\Entity\User;
 use App\Form\Security\Dashboard\UserDashboardType;
 use App\Service\ConfirmIdentitySecurity;
-use App\Utils\SaveImages;
+use App\Service\SaveImages;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
@@ -64,7 +64,7 @@ class UserDashboardController extends AbstractController
 
         $listCompanies = $this->getCompanies($user);
 
-        return $this->render('security/dashboard/userDashboard.html.twig', ['userDashboardForm' => $userDashboardForm->createView(), 'isVerified' => $user->getIsVerified(), 'profil_image' => $user->getProfilImage(), 'list_companies' => $listCompanies]);
+        return $this->render('security/dashboard/userDashboard.html.twig', ['userDashboardForm' => $userDashboardForm->createView(), 'isVerified' => $user->getIsVerified(), 'profil_image' => $user->getProfileImage(), 'list_companies' => $listCompanies]);
     }
 
 
@@ -75,17 +75,17 @@ class UserDashboardController extends AbstractController
      */
     public function userUpdate(FormInterface $formDashboard, SaveImages $saveImages, User $user): void
     {
-        $profilImageEntered = $formDashboard->get('profil_image')->getData();
+        $profileImageEntered = $formDashboard->get('profil_image')->getData();
 
 
-        if ($profilImageEntered) {
+        if ($profileImageEntered) {
 
-            $profilImage = $saveImages->formateAndSaveImage(
-                $profilImageEntered,
+            $profileImage = $saveImages->formateAndSaveImage(
+                $profileImageEntered,
                 $this->getParameter('app.profil_image_directory'),
                 $this->getParameter('app.profil_image_directory_render'));
 
-            $user->setProfilImage($profilImage);
+            $user->setProfileImage($profileImage);
 
 
         }

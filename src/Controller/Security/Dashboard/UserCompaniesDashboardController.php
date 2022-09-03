@@ -8,7 +8,7 @@ use App\Form\Security\Dashboard\DeleteCompanyType;
 use App\Form\Security\Dashboard\UserCompaniesDashboardType;
 use App\Repository\CompanyRepository;
 use App\Service\ConfirmIdentitySecurity;
-use App\Utils\SaveImages;
+use App\Service\SaveImages;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Exception\LogicException;
@@ -21,7 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class UserCompaniesDashboardController extends AbstractController
 {
     #[Route('/espace-entreprise/{uuidCompany}', name: 'app_company_dashboard')]
-    public function index(
+    public function companyDashboard(
         string                  $uuidCompany,
         Request                 $request,
         EntityManagerInterface  $entityManager,
@@ -47,9 +47,6 @@ class UserCompaniesDashboardController extends AbstractController
 
             return $this->redirectToRoute('app_logout');
         }
-
-
-        $companyImagesRender = $this->companyImagesRender($company);
 
 
         $deleteCompanyForm = $this->createForm(DeleteCompanyType::class);
@@ -83,26 +80,10 @@ class UserCompaniesDashboardController extends AbstractController
 
         }
 
-        return $this->render('security/dashboard/companyDashboard.html.twig', ['companyDashboardForm' => $companyDashboardForm->createView(), 'companyDelete' => $deleteCompanyForm->createView(), 'imagesRender' => $companyImagesRender]);
+        return $this->render('security/dashboard/companyDashboard.html.twig', ['companyDashboardForm' => $companyDashboardForm->createView(), 'companyDelete' => $deleteCompanyForm->createView(), 'company' => $company]);
     }
 
-    /**
-     * @param Company $company
-     * @return array<string|null>
-     */
-    public function companyImagesRender(Company $company): array
-    {
-        return [
-            'profile_image' => $company->getProfileImage(),
-            'image1' => $company->getImages()[0],
-            'image2' => $company->getImages()[1] ?? null,
-            'image3' => $company->getImages()[2] ?? null,
-            'image4' => $company->getImages()[3] ?? null,
-            'image5' => $company->getImages()[4] ?? null,
-        ];
 
-
-    }
 
     /**
      * @param FormInterface<mixed> $companyDashboardForm

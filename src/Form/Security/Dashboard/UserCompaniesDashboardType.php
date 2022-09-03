@@ -5,11 +5,11 @@ Namespace App\Form\Security\Dashboard;
 
 
 use App\Entity\Company;
-use App\Form\Security\Authentication\FormExtension\Company\CompanyActivitySinceType;
-use App\Form\Security\Authentication\FormExtension\Company\CompanyActivityZoneType;
-use App\Form\Security\Authentication\FormExtension\Company\CompanySectorType;
-use App\Form\Security\Authentication\FormExtension\DepartmentType;
-use App\Form\Security\Authentication\FormExtension\ImagesType;
+use App\Form\FormExtension\Company\CompanyActivitySinceType;
+use App\Form\FormExtension\Company\CompanyActivityZoneType;
+use App\Form\FormExtension\Company\CompanySectorType;
+use App\Form\FormExtension\DepartmentType;
+use App\Form\FormExtension\ImagesType;
 use App\Repository\CompanyRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -18,9 +18,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
-use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class UserCompaniesDashboardType extends AbstractType

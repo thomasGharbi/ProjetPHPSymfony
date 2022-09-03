@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form\Security\Authentication\FormExtension;
+namespace App\Form\FormExtension;
 
 use App\EventSubscriber\HoneyPotSubscriber;
 use Psr\Log\LoggerInterface;

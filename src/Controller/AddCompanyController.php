@@ -8,14 +8,13 @@ use App\Entity\Company;
 use App\Entity\User;
 use App\Form\addCompanyType;
 use App\Service\CheckNumberCompanies;
-use App\Utils\SaveImages;
+use App\Service\SaveImages;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Uid\Uuid;
 
 
@@ -70,7 +69,9 @@ class AddCompanyController extends AbstractController
                 $this->getParameter('app.company_profile_image_directory'),
                 $this->getParameter('app.company_profile_image_directory_render'));
 
-            $images = $this->uniteImages($addCompanyForm, $saveImages);
+
+            $images = $saveImages->uniteImages($addCompanyForm);
+
 
             $company->setProfileImage($profileImage)
                 ->setImages($images)
@@ -82,49 +83,13 @@ class AddCompanyController extends AbstractController
             $user->addCompany($company);
             $manager->persist($company);
             $manager->flush();
+            return $this->redirectToRoute('app_user_dashboard');
         }
         return $this->render('addCompany.html.twig', ['addCompanyForm' => $addCompanyForm->createView()]);
     }
 
 
-    /**
-     * @param FormInterface<mixed> $addCompanyForm
-     * @param SaveImages $saveImages
-     * @return array<string>
-     */
-    public function uniteImages(FormInterface $addCompanyForm, SaveImages $saveImages): array
-    {
 
-        $imagesFormated = [$saveImages->formateAndSaveImage(
-            $addCompanyForm->get('image1')->getData(),
-            $this->getParameter('app.company_image_directory'),
-            $this->getParameter('app.company_image_directory_render'))];
-
-        $images = [
-            $addCompanyForm->get('image2')->getData(),
-            $addCompanyForm->get('image3')->getData(),
-            $addCompanyForm->get('image4')->getData(),
-            $addCompanyForm->get('image5')->getData(),
-        ];
-
-
-        $images = array_filter($images);
-
-        foreach ($images as $image) {
-
-            if ($image instanceof UploadedFile) {
-                $imagesFormated[] = $saveImages->formateAndSaveImage(
-                    $image,
-                    $this->getParameter('app.company_image_directory'),
-                    $this->getParameter('app.company_image_directory_render'));
-
-            }
-
-
-        }
-        return $imagesFormated;
-
-    }
 
     /**
      * @param FormInterface<mixed> $form

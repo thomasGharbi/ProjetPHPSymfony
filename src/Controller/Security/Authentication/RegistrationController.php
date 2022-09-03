@@ -6,7 +6,6 @@ use App\Entity\User;
 use App\Service\Captcha;
 use App\Service\SendEmail;
 use App\Form\Security\Authentication\RegistrationType;
-
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -63,8 +62,8 @@ class RegistrationController extends AbstractController
                  ->setRegistrationToken($registrationToken)
                  ->setCreatedAt(new \DateTimeImmutable('NOW'))
                  ->setRoles($user->getRoles())
-                 ->setAccountMustBeVerifiedBefore(new \DateTimeImmutable('+ 3days'))
-                 ->setUuid(Uuid::v1());
+                 ->setAccountMustBeVerifiedBefore(new \DateTimeImmutable('+ 3days'));
+
                  // Le Hachage du mot de passe est effectué via le UserPasswordHasherListener.
 
             $manager->persist($user);
@@ -94,6 +93,7 @@ class RegistrationController extends AbstractController
     /**
      * @Route("/Verification/{id<\d+>}/{token}", name="app_verify_account", methods={"GET"})
      */
+
     public function verifyAccount(
         User                   $user,
         string                 $token,

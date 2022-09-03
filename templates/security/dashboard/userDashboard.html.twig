@@ -9,7 +9,7 @@
 
 
     {% endblock %}
-
+    <a href="{{ path('app_add_company') }}">Ajouter une entreprise</a>
     <main>
         {% if isVerified == false %}
             <div class="alert alert-danger"><p>Votre compte n'est pas verifié vous ne pouvez rien modifié tant qu'il n'a
@@ -57,6 +57,6 @@
 
         {% include "_partials/_confirm_password_modal.html.twig" %}
         <br>
-        <a id="modify_password">Modifier mon mot de passe</a>
+        <a id="modify_password"  href="mot-de-passe-oublié" >Modifier mon mot de passe</a>
     </main>
 {% endblock %}

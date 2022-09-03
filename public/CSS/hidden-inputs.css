@@ -13,3 +13,7 @@
  label[id="otherSector"]{
      display: none;
  }
+
+ #create_conversation_talker, label[for='create_conversation_talker']{
+     display: none;
+ }

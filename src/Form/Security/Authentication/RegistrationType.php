@@ -4,15 +4,14 @@
 namespace App\Form\Security\Authentication;
 
 use App\Entity\User;
-use App\Form\Security\Authentication\FormExtension\HoneyPotType;
-use App\Form\Security\Authentication\FormExtension\RepeatedPasswordType;
+use App\Form\FormExtension\HoneyPotType;
+use App\Form\FormExtension\RepeatedPasswordType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Validator\Constraints\Unique;
 
 
 class RegistrationType extends HoneyPotType

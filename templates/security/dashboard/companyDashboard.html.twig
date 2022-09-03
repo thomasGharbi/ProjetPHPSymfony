@@ -15,7 +15,7 @@
 </style>
 
 
-    <img src="{{ asset(imagesRender.profile_image) }}" width="100" height="100"/>
+    <img src="{{ asset(company.profileImage) }}" width="100" height="100"/>
 
     {{form_start(companyDashboardForm)}}
 
@@ -28,19 +28,14 @@
         <button  type="button" id="button-modify-company"   class="button-modal"
                 data-target="#confirm_identity_password_modal" >Submiiiit
         </button>
-        <img src="{{ asset(  imagesRender.image1 ) }}" width="100" height="100"/>
-        {% if imagesRender.image2 is not null  %}
-        <img src="{{ asset(  imagesRender.image2 ) }}" width="100" height="100"/>
+        {% for image in company.images %}
+        {% if image is defined %}
+            <img src="{{ asset(  image ) }}" width="100" height="100"/>
         {% endif %}
-        {% if imagesRender.image3 is not null and imagesRender.image3 is defined %}
-            <img src="{{ asset(  imagesRender.image3 ) }}" width="100" height="100"/>
-        {% endif %}
-        {% if imagesRender.image4 is not null and imagesRender.image4 is defined %}
-            <img src="{{ asset(  imagesRender.image4 ) }}" width="100" height="100"/>
-        {% endif %}
-        {% if imagesRender.image5 is not null and imagesRender.image5 is defined %}
-            <img src="{{ asset(  imagesRender.image5 ) }}" width="100" height="100"/>
-        {% endif %}
+        {% endfor %}
+
+
+
 
 
 

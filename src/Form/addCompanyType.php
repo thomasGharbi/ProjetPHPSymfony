@@ -4,11 +4,11 @@ namespace App\Form;
 
 
 use App\Entity\Company;
-use App\Form\Security\Authentication\FormExtension\Company\CompanyActivitySinceType;
-use App\Form\Security\Authentication\FormExtension\Company\CompanyActivityZoneType;
-use App\Form\Security\Authentication\FormExtension\Company\CompanySectorType;
-use App\Form\Security\Authentication\FormExtension\DepartmentType;
-use App\Form\Security\Authentication\FormExtension\ImagesType;
+use App\Form\FormExtension\Company\CompanyActivitySinceType;
+use App\Form\FormExtension\Company\CompanyActivityZoneType;
+use App\Form\FormExtension\Company\CompanySectorType;
+use App\Form\FormExtension\DepartmentType;
+use App\Form\FormExtension\ImagesType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;

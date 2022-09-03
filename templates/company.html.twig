@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CompanyController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+
+    {% block js %}<script type="module" src="{{ asset('/javascript/add_input_form_conversation.js') }}"></script>{% endblock %}
+        <p>ok</p>
+       {# {% if is_granted('NOTICE_MODIFY', notices) %}  #}
+                {% if conversationForm is not null %}
+                        {{ form_start(conversationForm) }}
+                        {{ form_end(conversationForm) }}
+                {% endif %}
+    <div >nom de l'entreprise : {{ company.nameOfCompany }}<br>
+          responsable :  {{ company.firstNameOfCompanyManager }} {{ company.nameOfCompanyManager }}<br>
+          secteur d'activité : {{ company.sector }}<br>
+          specialisation : {{ company.specialization }}<br>
+          ville : {{ company.city }} {{ company.postalCode }}<br>
+          zone maximale d'activité : {{ company.areaActivity }}<br>
+          contact : {{ company.phone }} {{ company.email }}<br>
+          cette entreprise existe depuis : {{ company.inActivitySince }}<br><br>
+
+        Note globale : {{ company.generalNotice }}
+        Note de qualité : {{ company.qualityNotice }}
+        Note de rapidité : {{ company.speedNotice }}
+        Note de prix : {{ company.priceNotice }}
+
+        {% if company.notices is not empty %}
+
+        {% else %}
+            {{ 'pas d\'Avis' }}
+        {% endif %}
+          </div>
+
+    <hr>
+        {% if notices.owner_notices is defined %}
+                <br><br>
+            <hr>
+                <div>
+
+                        <p>Vos Avis</p>
+                {% for notice in notices.owner_notices %}
+                      <div>titre : {{ notice.title }} <br> domaine : {{ notice.serviceType }} <br> ville :{{ notice.servicePlace }}
+                          <br> commentaire : {{ notice.comment }} <br> note generale : {{ notice.generalNotice }} <br> note de qualité : {{ notice.qualityNotice }}
+                          <br>note de rapidité : {{ notice.speedNotice }} <br> note de prix : {{ notice.priceNotice }}<a href="{{ path('app_delete_notice',{uuidNotice:notice.uuid}) }}">suppimer l'avis</a></div>
+                    {% for image in notice.images %}
+                        {% if image is defined %}
+                            <img src="{{ asset( image) }}" width="100" height="100"/>
+                        {% endif %}
+
+
+                    {% endfor %}
+
+                        <br><br>
+                </div>
+            {% endfor %}
+            <hr>
+        {% endif %}
+        {% if noticeForm is not null %}
+                {{ form_start(noticeForm) }}
+                <button type="submit">vazi</button>
+                {{ form_end(noticeForm) }}
+        {% endif %}
+     {% if notices.notices is defined %}
+             {% for notice in notices.notices %}
+                 <div>titre : {{ notice.title }} <br> domaine : {{ notice.serviceType }} <br> ville :{{ notice.servicePlace }}
+                     <br> commentaire : {{ notice.comment }} <br> note generale : {{ notice.generalNotice }} <br> note de qualité : {{ notice.qualityNotice }}
+                     <br>note de rapidité : {{ notice.speedNotice }} <br> note de prix : {{ notice.priceNotice }}<a href="{{ path('app_delete_notice',{uuidNotice:notice.uuid}) }}">suppimer l'avis</a></div>
+                 {% for image in notice.images %}
+                     {% if image is defined %}
+                         <img src="{{ asset( image) }}" width="100" height="100"/>
+                     {% endif %}
+                 {% endfor %}
+
+             {% endfor %}
+
+     {% endif %}
+
+
+
+
+
+</div>
+{% endblock %}
+
+

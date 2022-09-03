@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 use App\Repository\UserRepository;
 use Stringable;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -111,7 +112,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @Assert\Length(max = 250)
      * 
      */
-    private ?string $profilImage;
+    private ?string $profileImage;
 
     /**
      * @var string
@@ -211,13 +212,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $uuid;
 
+    /**
+     * @var ArrayCollection
+     * @ORM\ManyToMany(targetEntity=Conversation::class, mappedBy="users")
+     */
+    private $conversations;
+
 
 
 
     public function __construct(){
-        $this->profilImage = '/uploads/profil_image_default/user_profil_image_default.jpg';
+        $this->profileImage = '/uploads/profil_image_default/user_profil_image_default.jpg';
         $this->companies = new ArrayCollection();
         $this->notices = new ArrayCollection();
+        $this->conversations = new ArrayCollection();
+        $this->uuid = Uuid::v1();
+        $this->roles = ['ROLE_USER'];
     }
 
     
@@ -265,7 +275,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
+        //$roles[] = 'ROLE_USER';
 
         return array_unique($roles);
     }
@@ -363,14 +373,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getProfilImage(): ?string
+    public function getProfileImage(): ?string
     {
-        return $this->profilImage;
+        return $this->profileImage;
     }
 
-    public function setProfilImage(string $profilImage): self
+    public function setProfileImage(string $profilImage): self
     {
-        $this->profilImage = $profilImage;
+        $this->profileImage = $profilImage;
 
         return $this;
     }
@@ -606,6 +616,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setUuid(string $uuid): self
     {
         $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Conversation[]
+     */
+    public function getConversations(): Collection
+    {
+        return $this->conversations;
+    }
+
+    public function addConversation(Conversation $conversation): self
+    {
+        if (!$this->conversations->contains($conversation)) {
+            $this->conversations[] = $conversation;
+            $conversation->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConversation(Conversation $conversation): self
+    {
+        if ($this->conversations->removeElement($conversation)) {
+            $conversation->removeUser($this);
+        }
 
         return $this;
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form\Security\Authentication\FormExtension;
+namespace App\Form\FormExtension;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;

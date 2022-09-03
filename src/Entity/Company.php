@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\CompanyRepository;
+use ContainerXLbvlVp\getSecurity_Logout_Listener_CsrfTokenClearingService;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -177,26 +178,26 @@ class Company
     private $images = [];
 
     /**
-     * @var int
-     * @ORM\Column(type="integer")
+     * @var float
+     * @ORM\Column(type="float")
      */
-    private $generalNotice;
+    private $generalNotice = 8;
 
     /**
-     * @var int
-     * @ORM\Column(type="integer")
+     * @var float
+     * @ORM\Column(type="float")
      */
     private $qualityNotice;
 
     /**
-     * @var int
-     * @ORM\Column(type="integer")
+     * @var float
+     * @ORM\Column(type="float")
      */
     private $speedNotice;
 
     /**
-     * @var int
-     * @ORM\Column(type="integer")
+     * @var float
+     * @ORM\Column(type="float")
      */
     private $priceNotice;
 
@@ -227,14 +228,32 @@ class Company
      */
     private $uuid;
 
+    /**
+     * @var Collection
+     * @ORM\ManyToMany(targetEntity=Conversation::class, mappedBy="Companies")
+     */
+    private $conversations;
+
+    /**
+     * @var int
+     * @ORM\Column(type="integer", nullable=true)
+     */
+    private $countNotice;
+
     public function __construct()
     {
+
         $this->notices = new ArrayCollection();
         $this->generalNotice = 0;
         $this->qualityNotice = 0;
         $this->speedNotice = 0;
         $this->priceNotice = 0;
+        $this->conversations = new ArrayCollection();
     }
+
+
+
+
 
     public function getId(): ?int
     {
@@ -495,51 +514,71 @@ class Company
         return $this;
     }
 
-    public function getGeneralNotice(): ?int
+    public function getGeneralNotice(): ?float
     {
+
         return $this->generalNotice;
     }
 
-    public function setGeneralNotice(int $generalNotice): self
+    public function setGeneralNotice(float $generalNotice, bool $average = true): self
     {
-        $this->generalNotice = $generalNotice;
+
+        if($average) {
+            $this->generalNotice = ($this->generalNotice * ($this->getCountNotice() - 1) + $generalNotice) / ($this->getCountNotice());
+
+        }else {
+            $this->generalNotice = $generalNotice;
+        }
+
 
         return $this;
     }
 
-    public function getQualityNotice(): ?int
+    public function getQualityNotice(): ?float
     {
         return $this->qualityNotice;
     }
 
-    public function setQualityNotice(int $qualityNotice): self
+    public function setQualityNotice(float $qualityNotice,bool $average = true ): self
     {
-        $this->qualityNotice = $qualityNotice;
+        if($average){
+            $this->qualityNotice = ($this->qualityNotice * ($this->getCountNotice() - 1) + $qualityNotice) / ($this->getCountNotice());
+        }else{
+            $this->qualityNotice = $qualityNotice;
+        }
 
         return $this;
     }
 
-    public function getSpeedNotice(): ?int
+    public function getSpeedNotice(): ?float
     {
         return $this->speedNotice;
     }
 
-    public function setSpeedNotice(int $speedNotice): self
+    public function setSpeedNotice(float $speedNotice, bool $average = true ): self
     {
-        $this->speedNotice = $speedNotice;
+
+        if ($average){
+            $this->speedNotice = ($this->speedNotice * ($this->getCountNotice() - 1) + $speedNotice) / ($this->getCountNotice());
+        }else{
+            $this->speedNotice = $speedNotice;
+        }
 
         return $this;
     }
 
-    public function getPriceNotice(): ?int
+    public function getPriceNotice(): ?float
     {
         return $this->priceNotice;
     }
 
-    public function setPriceNotice(int $priceNotice): self
+    public function setPriceNotice(float $priceNotice,  bool $average = true ): self
     {
-        $this->priceNotice = $priceNotice;
-
+        if ($average){
+            $this->priceNotice = ($this->priceNotice * ($this->getCountNotice() - 1) + $priceNotice) / ($this->getCountNotice());
+        } else {
+            $this->priceNotice = $priceNotice;
+        }
         return $this;
     }
 
@@ -611,6 +650,45 @@ class Company
     public function setUuid(string $uuid): self
     {
         $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Conversation[]
+     */
+    public function getConversations(): Collection
+    {
+        return $this->conversations;
+    }
+
+    public function addConversation(Conversation $conversation): self
+    {
+        if (!$this->conversations->contains($conversation)) {
+            $this->conversations[] = $conversation;
+            $conversation->addCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function removeConversation(Conversation $conversation): self
+    {
+        if ($this->conversations->removeElement($conversation)) {
+            $conversation->removeCompany($this);
+        }
+
+        return $this;
+    }
+
+    public function getCountNotice(): ?int
+    {
+        return $this->countNotice;
+    }
+
+    public function setCountNotice(?int $countNotice): self
+    {
+        $this->countNotice += $countNotice;
 
         return $this;
     }

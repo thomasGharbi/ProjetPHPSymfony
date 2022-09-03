@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+    {% block js %}<script type="module" src="{{ asset('/javascript/add_input_form_conversation.js') }}"></script>{% endblock %}
+    <p></p>
+{{ user.firstName }}
+    {% if (conversationForm) %}
+        {{ form_start(conversationForm) }}
+        {{ form_end(conversationForm) }}
+    {% endif %}
+    <img src="{{ asset( user.profileImage) }}" width="100" height="100"/>
+nom d'utilisateur : {{ user.username }}<br>
+
+    {% if user.isVerified %}
+        vérifé
+        {% else %}
+        non-vérifié
+    {% endif %}<br>
+    compte créé le : {{ user.createdAt|date("d/m/Y" ) }}
+
+    <hr><br>
+        {% for notice in notices %}
+            <div>titre : {{ notice.title }} <br> domaine : {{ notice.serviceType }} <br> ville :{{ notice.servicePlace }}
+                <br> commentaire : {{ notice.comment }} <br> note generale : {{ notice.generalNotice }} <br> note de qualité : {{ notice.qualityNotice }}
+                <br>note de rapidité : {{ notice.speedNotice }} <br> note de prix : {{ notice.priceNotice }} {% if him_self %}
+                    <a href="{{ path('app_delete_notice',{uuidNotice:notice.uuid}) }}">suppimer l'avis</a>
+                {% endif %} </div>
+            {% for image in notice.images %}
+                {% if image is defined %}
+                    <img src="{{ asset( image) }}" width="100" height="100"/>
+                {% endif %}
+            {% endfor %}
+
+        {% endfor %}
+
+
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello ConversationsController!{% endblock %}
+
+{% block body %}
+    <style>
+        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+    </style>
+
+
+
+    <div class="example-wrapper">
+    <h1>Hello {{ controller_name }}! ✅</h1>
+
+    This friendly message is coming from:
+    <ul>
+        <li>Your controller at <code><a href="{{ 'C:/Users/thoma/DEV/Projets/publico/src/Controller/ConversationsController.php'|file_link(0) }}">src/Controller/ConversationsController.php</a></code></li>
+        <li>Your template at <code><a href="{{ 'C:/Users/thoma/DEV/Projets/publico/templates/conversations/conversations.html.twig'|file_link(0) }}">templates/conversations/index.html.twig</a></code></li>
+    </ul>
+    </div>
+
+    {% for conversation in conversations %}
+
+        {% if( conversation.who.username is defined) %}
+
+        {% if( conversation.width.username is defined) %}
+
+{{ conversation.conversation.createdAt|date("d/m/Y H:i") }}<a href="/conversation/{{ conversation.conversation.uuid }}"><img src="{{  asset(conversation.width.profileImage)}}" width="50" height="50"/>
+             {{ conversation.width.username }}
+        {% else %}
+    {{ conversation.conversation.createdAt|date("d/m/Y H:i") }}<a href="/conversation/{{ conversation.conversation.uuid }}"><img src="{{  asset(conversation.width.profileImage)}}" width="50" height="50"/>
+            {{ conversation.width.nameOfCompany }}
+            {% endif %}
+
+
+
+
+                <img src="{{  asset(conversation.who.profileImage)}}" width="50" height="50"/>
+            {{ '(utilisateur)' }}  {{ conversation.who.username }}<br></a>{% if(conversation.is_read == false) %} non lu {% endif %}
+    <br>
+
+
+
+        {% else %}
+
+            {% if( conversation.width.username is defined) %}
+
+                {{ conversation.conversation.createdAt|date("d/m/Y H:i") }}<a href="/conversation/{{ conversation.conversation.uuid }}"><img src="{{  asset(conversation.width.profileImage)}}" width="50" height="50"/>
+                {{ conversation.width.username }}
+            {% else %}
+        {{ conversation.conversation.createdAt|date("d/m/Y H:i") }}<a href="/conversation/{{ conversation.conversation.uuid }}"><img src="{{  asset(conversation.width.profileImage)}}" width="50" height="50"/>
+                {{ conversation.width.nameOfCompany }}
+            {% endif %}
+
+
+                <img src="{{  asset(conversation.who.profileImage)}}" width="50" height="50"/>
+                {{ '(entreprise) ' }}{{  conversation.who.nameOfCompany }}<br></a>{% if(conversation.is_read == false) %} non lu {% endif %}
+        <br>
+
+        {% endif %}
+
+
+
+    {% endfor %}
+
+
+
+{% endblock %}

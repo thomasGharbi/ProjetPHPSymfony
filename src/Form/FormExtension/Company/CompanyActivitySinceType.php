@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Form\Security\Authentication\FormExtension\Company;
+namespace App\Form\FormExtension\Company;
 
 use DateTime;
 use Symfony\Component\Form\AbstractType;

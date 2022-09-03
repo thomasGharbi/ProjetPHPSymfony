@@ -19,7 +19,7 @@ new ConfirmIdentity({
 
 
 addEventListener('submitEvent', (e) => {
-    document.getElementById('modify_password').setAttribute('href', "Modification_mot_de_passe");
+    //document.getElementById('modify_password').setAttribute('href', "Modification_mot_de_passe");
     if (e.detail.identity === 'password_is_confirmed') {
         document.getElementById('button-modal').click();
     }else if(e.detail.identity === 'identity_is_verified') {

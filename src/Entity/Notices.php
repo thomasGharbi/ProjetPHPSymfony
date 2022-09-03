@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\NoticesRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Uid\Uuid;
 
 /**
  * @ORM\Entity(repositoryClass=NoticesRepository::class)
@@ -56,7 +57,7 @@ class Notices
 
     /**
      * @var array<mixed>
-     * @ORM\Column(type="array", nullable=true)
+     * @ORM\Column(type="simple_array", nullable=true)
      */
     private $images = [];
 
@@ -84,23 +85,26 @@ class Notices
      */
     private $priceNotice;
 
+
+
     /**
      * @var \DateTimeImmutable
      * @ORM\Column(type="datetime_immutable")
      */
     private $createdAt;
 
-    /**
-     * @var boolean
-     * @ORM\Column(type="boolean")
-     */
-    private $modified;
 
     /**
-     * @var \DateTimeInterface|null
-     * @ORM\Column(type="datetime", nullable=true)
+     * @var string
+     * @ORM\Column(type="string")
      */
-    private $modifiedAt;
+    private $uuid;
+
+    public function __construct()
+    {
+        $this->createdAt = new \DateTimeImmutable('NOW');
+        $this->uuid = Uuid::v1();
+    }
 
     public function getId(): ?int
     {
@@ -246,6 +250,7 @@ class Notices
         return $this;
     }
 
+
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
@@ -258,25 +263,15 @@ class Notices
         return $this;
     }
 
-    public function getModified(): ?bool
+
+    public function getUuid(): string
     {
-        return $this->modified;
+        return $this->uuid;
     }
 
-    public function setModified(bool $modified): self
+    public function setUuid(string $uuid): self
     {
-        $this->modified = $modified;
-
-        return $this;
-    }
-
-    public function getModifiedAt(): ?\DateTimeInterface    {
-        return $this->modifiedAt;
-    }
-
-    public function setModifiedAt(?\DateTimeInterface $modifiedAt): self
-    {
-        $this->modifiedAt = $modifiedAt;
+        $this->uuid = $uuid;
 
         return $this;
     }
