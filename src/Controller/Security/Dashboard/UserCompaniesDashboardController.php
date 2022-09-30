@@ -8,6 +8,7 @@ use App\Form\Security\Dashboard\DeleteCompanyType;
 use App\Form\Security\Dashboard\UserCompaniesDashboardType;
 use App\Repository\CompanyRepository;
 use App\Service\ConfirmIdentitySecurity;
+use App\Service\DeleteCompany;
 use App\Service\SaveImages;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,6 +29,7 @@ class UserCompaniesDashboardController extends AbstractController
         CompanyRepository       $companyRepository,
         SaveImages              $saveImages,
         ConfirmIdentitySecurity $confirmIdentitySecurity,
+        DeleteCompany           $deleteCompany,
 
     ): Response
     {
@@ -56,8 +58,9 @@ class UserCompaniesDashboardController extends AbstractController
             $confirmIdentitySecurity->checkIfBypassConfirmIdentity();
 
 
-            $entityManager->remove($company);
-            $entityManager->flush();
+            $deleteCompany->deleteCompany($company);
+           // $entityManager->remove($company);
+           // $entityManager->flush();
             $this->addFlash('alert alert-primary', 'votre entreprise a été supprimez ');
             return $this->redirectToRoute('app_user_dashboard');
         }

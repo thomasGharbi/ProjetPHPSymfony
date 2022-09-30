@@ -19,6 +19,19 @@ class NoticeRepository extends ServiceEntityRepository
         parent::__construct($registry, Notices::class);
     }
 
+    /**
+     * @return mixed
+     */
+public function findLastNotices():mixed
+{
+    return $this->createQueryBuilder('notices')
+
+        ->orderBy('notices.createdAt', 'DESC')
+        ->setMaxResults(5)
+        ->getQuery()
+        ->getResult();
+}
+
     // /**
     //  * @return Notice[] Returns an array of Notice objects
     //  */

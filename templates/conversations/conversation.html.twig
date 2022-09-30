@@ -13,17 +13,26 @@
 
     <img src="{{  asset(conversation.width.profileImage)}}" width="100" height="100"/> <img src="{{  asset(conversation.who.profileImage)}}" width="100" height="100"/>
 {{ '(utilisateur)' }}  {{ conversation.who.username }}
-        {% else %}
+        {% elseif (conversation.who.SIRETNumber is defined)%}
             <img src="{{  asset(conversation.who.profileImage)}}" width="100" height="100"/>
 {{ '(entreprise)' }}{{  conversation.who.nameOfCompany }}
+        {% else %}
+            <img src="{{  asset(conversation.who.profileImage)}}" width="100" height="100"/>
+            {% if (conversation.who.entity == 'user') %}
+               {{  '(utilisateur supprimé) ' }}{{conversation.who.nameOfEntity }}
+                {% else %}
+                    {{  '(entreprise supprimé) '}}{{conversation.who.nameOfEntity }}
+            {% endif %}
         {% endif %}
     </div>
     {% for  message in messages  %}
         {% if(message.companyOwner) %}
 
             <div>{{ message.createdAt|date("d/m/Y H:s" ) }}{{ message.companyOwner.nameOfCompany }}<img src="{{  asset(message.companyOwner.profileImage)}}" width="50" height="50"/><p class="{{  (message.companyOwner ==  conversation.who) ?  'recipient'  :  'talker'  }}">{{ message.message }}</p></div>
-        {% else %}
+        {% elseif(message.userOwner) %}
             <div>{{ message.createdAt|date("d/m/Y H:s" ) }} - {{ message.userOwner.username }}<img src="{{  asset(message.userOwner.profileImage)}}" width="50" height="50"/><p class="{{  (message.userOwner ==  conversation.who) ?  'recipient'  :  'talker'  }}">{{ message.message }}</p></div>
+            {% else %}
+                <div>{{ message.createdAt|date("d/m/Y H:s" ) }} - {{ message.talkerDeleted.nameOfEntity }}<img src="{{  asset(message.talkerDeleted.profileImage)}}" width="50" height="50"/><p class="{{  (message.talkerDeleted.uuid ==  conversation.who.uuid) ?  'recipient'  :  'talker'  }}">{{ message.message }}</p></div>
         {% endif %}
 
         <br>

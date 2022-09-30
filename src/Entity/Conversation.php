@@ -41,7 +41,7 @@ class Conversation
 
     /**
      * @var Collection
-     * @ORM\OneToMany(targetEntity=Messages::class, mappedBy="conversation")
+     * @ORM\OneToMany(targetEntity=Messages::class, mappedBy="conversation", cascade={"remove"})
      */
     private $messages;
 
@@ -50,6 +50,12 @@ class Conversation
      * @ORM\Column(type="string", length=255)
      */
     private $uuid;
+
+    /**
+     * @var array<mixed>|null
+     * @ORM\Column(type="json", nullable=true)
+     */
+    private $talkerDeleted = [];
 
     public function __construct()
     {
@@ -158,6 +164,25 @@ class Conversation
     public function setUuid(string $uuid): self
     {
         $this->uuid = $uuid;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed[]|null
+     */
+    public function getTalkerDeleted(): ?array
+    {
+        return $this->talkerDeleted;
+    }
+
+    /**
+     * @param array<mixed>|null $talkerDeleted
+     * @return $this
+     */
+    public function setTalkerDeleted(?array $talkerDeleted): self
+    {
+        $this->talkerDeleted = $talkerDeleted;
 
         return $this;
     }

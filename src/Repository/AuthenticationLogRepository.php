@@ -42,20 +42,29 @@ class AuthenticationLogRepository extends ServiceEntityRepository
 
     /**
      * @param string $userIp
-     * @param string $emailEntered
+     * @param string|null $emailEntered
+     * @param bool $oauth
+     * @param string|null $oauthProvider
+     * @param bool $adminAttempt
      * @return \DateTime|null
      * Ajoute une Authentification échoué a l'entité AuthenticationLog
      */
-public function addAuthenticationFailure(string $userIp, ?string $emailEntered, bool $oauth = false, ?string $oauthProvider = null): ?\DateTime
+public function addAuthenticationFailure(
+    string $userIp,
+    ?string $emailEntered,
+    bool $oauth = false,
+    ?string $oauthProvider = null,
+    bool $adminAttempt = false): ?\DateTime
 {
 
-    $authentication = new AuthenticationLog($userIp, $emailEntered, false, $oauth, $oauthProvider );
+    $authentication = new AuthenticationLog($userIp, $emailEntered, false, $oauth, $oauthProvider, $adminAttempt );
 
     $mustBeBlackListed = $this->getRecentFailureAttempt($userIp);
 
     //bloque la connexion de L'utilisateur ayant L'adresse ip($userIp) en cas de trop nombreuses tentatives échouées
     if($mustBeBlackListed >= self::MAX_FAILED_AUTH_ATTEMPTS -1)
     {
+
         $BlackListedDelay = new \DateTime(sprintf('+%d minutes', self::DELAY_OF_BLACKLISTING_IN_MINUTES));
         $authentication->setBlackListed(true)
                        ->setBlackListedUntil($BlackListedDelay);
@@ -116,6 +125,19 @@ public function getIpBlackListed(string $userIp): ?AuthenticationLog
                  ->getQuery()
                  ->getOneOrNullResult();
 }
+
+    /**
+     * @param string $search
+     * @return mixed
+     */
+    public function searchForAdmin(string $search):mixed{
+        $search = str_replace('@', '', $search);
+        $query = $this->createQueryBuilder('auth');
+        $query->andWhere('MATCH_AGAINST(auth.emailEntered, auth.userIp, auth.oauthProvider)
+             AGAINST (:search boolean)>0')->setParameter('search', $search)
+           ->setMaxResults(100);
+        return $query->getQuery()->getResult();
+    }
 
 
 

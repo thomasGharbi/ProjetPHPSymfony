@@ -1,0 +1,17 @@
+{% block navbar %}
+{% if(navbar().user is defined) %}
+    <div class=""><a href="{{ path('app_user_dashboard') }}"><img src="{{ asset( navbar().user.profileImage) }}" width="20" height="20"/>{{ navbar().user.username }}</a>
+        <a href="{{ path('app_conversations') }}">&#9993;{{ navbar().conversation_is_read }}</a> <a href="{{ path('app_logout') }}">&#128682;</a>
+
+        {% if navbar().companies is defined %}
+        {% for company in navbar().companies %}
+
+            <a href="{{ path('app_company_dashboard',{uuidCompany:company.uuid}) }}">{{company.nameOfCompany}}</a>
+        {% endfor %}
+            {% endif %}
+        <a href="{{ path('app_add_company') }}"> ajouter une entreprise</a></div>
+    {% else %}
+        <a href="{{ path('app_login') }}">Connexion/</a><a href="{{ path('app_registration') }}">Inscription</a>
+{% endif %}
+    <a href="{{ path('app_main') }}">&#127968;</a>
+{% endblock %}

@@ -7,6 +7,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=AuthenticationLogRepository::class)
+ * @ORM\Table(name="Athentication_log", indexes={@ORM\Index(columns={
+ * "user_ip","email_entered","oauth_provider"}, flags={"fulltext"})})
  *
  */
 class AuthenticationLog
@@ -67,12 +69,19 @@ class AuthenticationLog
      */
     private ?string $oauthProvider;
 
+    /**
+     * @var null|bool
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $adminAttempt;
+
     public function __construct(
         string $userIp,
         ?string $emailEntered,
         bool $authSuccessful,
         bool $oauth ,
-        ?string $oauthProvider
+        ?string $oauthProvider,
+        bool $attemptAdmin = false
     )
     {
         $this->authAttemptAt = new \DateTimeImmutable('NOW');
@@ -81,6 +90,7 @@ class AuthenticationLog
         $this->authSuccessful = $authSuccessful;
         $this->oauth = $oauth;
         $this->oauthProvider = $oauthProvider;
+        $this->adminAttempt = $attemptAdmin;
     }
 
     public function getId(): ?int
@@ -180,6 +190,18 @@ class AuthenticationLog
     public function setOauthProvider(?string $oauthProvider): self
     {
         $this->oauthProvider = $oauthProvider;
+
+        return $this;
+    }
+
+    public function getAdminAttempt(): ?bool
+    {
+        return $this->adminAttempt;
+    }
+
+    public function setAdminAttempt(?bool $AdminAttempt): self
+    {
+        $this->adminAttempt = $AdminAttempt;
 
         return $this;
     }

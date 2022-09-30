@@ -55,6 +55,12 @@ class Messages
      */
     private $companyOwner;
 
+    /**
+     * @var null|array<mixed>
+     * @ORM\Column(type="json", nullable=true)
+     */
+    private $talkerDeleted = [];
+
     public function getId(): ?int
     {
         return $this->id;
@@ -113,7 +119,7 @@ class Messages
         return $this->userOwner;
     }
 
-    public function setUserOwner(User $userOwner): self
+    public function setUserOwner(User|null $userOwner): self
     {
         $this->userOwner = $userOwner;
 
@@ -125,9 +131,28 @@ class Messages
         return $this->companyOwner;
     }
 
-    public function setCompanyOwner(Company $companyOwner): self
+    public function setCompanyOwner(Company|null $companyOwner): self
     {
         $this->companyOwner = $companyOwner;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed[]|null
+     */
+    public function getTalkerDeleted(): ?array
+    {
+        return $this->talkerDeleted;
+    }
+
+    /**
+     * @param array<mixed>|null $talkerDeleted
+     * @return $this
+     */
+    public function setTalkerDeleted(?array $talkerDeleted): self
+    {
+        $this->talkerDeleted = $talkerDeleted;
 
         return $this;
     }

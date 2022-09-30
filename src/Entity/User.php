@@ -22,6 +22,8 @@ use Symfony\Component\Validator\Exception\RuntimeException;
  * @UniqueEntity("email", message="Cette adresse email est déjà utilisé")
  * @UniqueEntity("phone", message="Ce numéro n'est pas valide")
  * @UniqueEntity("username", message="Ce nom d'utilisateur est déjà pris")
+ * @ORM\Table(name="User", indexes={@ORM\Index(columns={"email",
+ * "username","google_id", "github_id", "phone", "uuid"}, flags={"fulltext"})})
  * 
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface

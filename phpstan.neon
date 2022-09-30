@@ -2,6 +2,10 @@ parameters:
  level: 8
  paths:
     - src
+ excludePaths:
+    analyseAndScan:
+       - src/Extensions/Doctrine/MatchAgainst.php
+
 
  ignoreErrors:
  	- '#Method [a-zA-Z0-9\\_]+::dispatch\(\) invoked with 2 parameters, 1 required.#'
@@ -13,7 +17,7 @@ parameters:
  	- '#Parameter \#1 \$password of class Symfony\\Component\\Security\\Http\\Authenticator\\Passport\\Credentials\\PasswordCredentials constructor expects string, bool\|float\|int\|string\|null given.#'
  	- '#Parameter \#2 \$csrfToken of class Symfony\\Component\\Security\\Http\\Authenticator\\Passport\\Badge\\CsrfTokenBadge constructor expects string\|null, bool\|float\|int\|string\|null given.#'
  	- '#Parameter \#1 \$(user|company) of method App\\Entity\\(Company|Notices)::set(User|Company)\(\) expects App\\Entity\\(User|Company), null given.#'
-
+ 	- '#Binary operation \"\.\" between array\|bool\|float\|int\|string\|null and ''\\\\'' results in an error.#'
 
 
 

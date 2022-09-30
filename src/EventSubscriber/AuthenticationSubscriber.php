@@ -6,6 +6,7 @@ namespace App\EventSubscriber;
 
 use App\Repository\AuthenticationLogRepository;
 use App\Security\BrutForceChecker;
+use App\Service\AddVisitor;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -23,6 +24,7 @@ class AuthenticationSubscriber implements EventSubscriberInterface
     private BrutForceChecker $brutForceChecker;
     private AuthenticationLogRepository $authLogRepository;
     private SessionInterface $session;
+    private AddVisitor $addVisitor;
 
 
     public function __construct(
@@ -30,7 +32,8 @@ class AuthenticationSubscriber implements EventSubscriberInterface
         RequestStack     $requestStack,
         BrutForceChecker $brutForceChecker,
         AuthenticationLogRepository $authLogRepository,
-        SessionInterface $session
+        SessionInterface $session,
+        AddVisitor $addVisitor
     )
     {
 
@@ -39,6 +42,7 @@ class AuthenticationSubscriber implements EventSubscriberInterface
         $this->brutForceChecker = $brutForceChecker;
         $this->authLogRepository = $authLogRepository;
         $this->session = $session;
+        $this->addVisitor = $addVisitor;
 
 
     }
@@ -78,6 +82,7 @@ class AuthenticationSubscriber implements EventSubscriberInterface
 
     public function onLoginSuccess(LoginSuccessEvent $event): void
     {
+            $this->addVisitor->addPointToVisitor('visitor_is_authenticated', 3);
             $oauthProvider = $this->session->get('oauthProvider');
 
             $oauthProvider !== null ? $oauth = true : $oauth = false;

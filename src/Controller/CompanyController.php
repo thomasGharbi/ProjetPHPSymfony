@@ -8,6 +8,7 @@ use App\Entity\User;
 use App\Form\CreateConversationType;
 use App\Form\CreateNoticeType;
 use App\Repository\CompanyRepository;
+use App\Service\AddVisitor;
 use App\Service\SaveImages;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -27,7 +28,8 @@ class CompanyController extends AbstractController
         CreateConversationType $conversationType,
         Request                $request,
         EntityManagerInterface $entityManager,
-        SaveImages             $saveImages): Response|RedirectResponse
+        SaveImages             $saveImages,
+        AddVisitor             $addVisitor): Response|RedirectResponse
     {
 
         $company = $companyRepository->findOneBy(['uuid' => $uuidCompany]);
@@ -45,6 +47,7 @@ class CompanyController extends AbstractController
         $formView = $createNoticeForm = null;
 
 
+        $addVisitor->addPointToVisitor('visitor_company', 2);
         //récupère dans un tableau, toutes les entreprises et l'utilisateur courant dans un tableau
         if (($user instanceof User) && $user !== $company->getUser() ) {
             $allEntities = [$user];

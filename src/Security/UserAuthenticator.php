@@ -54,8 +54,10 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
         $userIp = $request->getClientIp();
 
         $isBlackListed = $this->brutForceChecker->checkIfBlackListed($userIp);
+
+
         //verification de la permission de connexion via brutForceChecker
-        if(!$this->Captcha->isHCaptchaValid()){
+        if(!$this->Captcha->isHCaptchaValid() || $isBlackListed !== null){
             throw new CustomUserMessageAccountStatusException("Trop de tentatives de connexion, Vous ne pouvez pas vous reconnectez avant $isBlackListed");
         }
 

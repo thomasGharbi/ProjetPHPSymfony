@@ -153,12 +153,18 @@ class ConversationController extends AbstractController
     }
 
 
+
+
+
+
+
     #[Route('/conversation/{uuidConversation}', name: 'app_conversation')]
     public function conversations(
         string                 $uuidConversation,
         Request                $request,
     ):Response|RedirectResponse
     {
+
         $conversation = $this->conversationRepository->findOneBy(['uuid' => $uuidConversation]);
 
         $user = $this->getUser();
@@ -168,21 +174,28 @@ class ConversationController extends AbstractController
 
 
         $conversationDetails = $this->conversationDetails->createConversationDetails($conversation, $user);
+
+        //récupère les messages triés par date
         $messages = $this->messagesRepository->findMessagesByDateTime($conversationDetails);
+
         if($messages) {
+
             foreach ($messages as $message) {
-                if ($message->getCompanyOwner() == $conversationDetails['who']) {
+
+                if ($message->getCompanyOwner() == $conversationDetails['who']  ) {
 
                     $message->setIsRead(true);
-                } elseif ($message->getUserOwner() == $conversationDetails['who']) {
+                } elseif ($message->getUserOwner() == $conversationDetails['who'] ) {
+
+                    //dd('ok2');
+                    $message->setIsRead(true);
+                }elseif ($message->getUserOwner() == null && $message->getCompanyOwner() == null){
 
                     $message->setIsRead(true);
                 }
-
-                $this->entityManager->persist($message);
-                $this->entityManager->flush();
-
             }
+            $this->entityManager->persist($message);
+            $this->entityManager->flush();
         }
         $messageForm = $this->createForm(MessageType::class);
         $messageForm->handleRequest($request);
@@ -210,12 +223,17 @@ class ConversationController extends AbstractController
 
 
         }
+        //dd($messages,$conversationDetails);
 
         return $this->render('conversations/conversation.html.twig', [
             'controller_name' => 'ConversationController', 'messages' => $messages, 'conversation' => $conversationDetails, 'messageForm' => $messageForm->createView()
         ]);
 
     }
+
+
+
+
 
     /**
      * @param string $uuid

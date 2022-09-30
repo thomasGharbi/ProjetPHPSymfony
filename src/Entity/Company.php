@@ -12,6 +12,8 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=CompanyRepository::class)
+ * @ORM\Table(name="Company", indexes={@ORM\Index(columns={"name_of_company", "sector",
+ * "specialization","department", "city", "profile_title", "profile_description", "siretnumber", "uuid"}, flags={"fulltext"})})
  * @UniqueEntity("SIRETNumber", message="Ce numéro SIRET n'est pas valide")
  */
 class Company
@@ -181,7 +183,7 @@ class Company
      * @var float
      * @ORM\Column(type="float")
      */
-    private $generalNotice = 8;
+    private $generalNotice ;
 
     /**
      * @var float
@@ -203,7 +205,7 @@ class Company
 
     /**
      * @var ArrayCollection
-     * @ORM\OneToMany(targetEntity=Notices::class, mappedBy="company")
+     * @ORM\OneToMany(targetEntity=Notices::class, mappedBy="company", cascade={"remove"})
      */
     private $notices;
 

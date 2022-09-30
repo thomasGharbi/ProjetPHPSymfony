@@ -5,6 +5,7 @@
 namespace App\Controller\Security\Authentication;
 
 use App\Entity\User;
+use App\Service\AddVisitor;
 use DateTimeImmutable;
 use App\Form\Security\Authentication\RegistrationType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,10 +26,12 @@ class SecurityController extends AbstractController
     /**
      * @Route("/Connexion", name="app_login")
      */
-    public function login(AuthenticationUtils $authenticationUtils, SessionInterface $session, Request $request): Response
+    public function login(AuthenticationUtils $authenticationUtils, SessionInterface $session, Request $request, AddVisitor $addVisitor): Response
     {
+
+        $addVisitor->addPointToVisitor('visitor_login', 1);
          if ($this->getUser()) {
-            return $this->redirectToRoute('test');
+           // return $this->redirectToRoute('app_login');
          }
 
         // get the login error if there is one

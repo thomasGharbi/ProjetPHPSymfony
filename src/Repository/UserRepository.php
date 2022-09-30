@@ -124,4 +124,18 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $user;
     }
 
+    /**
+     * @param string $search
+     * @return mixed
+     */
+    public function searchForAdmin(string $search):mixed
+    {
+        $search = str_replace('@', '', $search);
+        $query = $this->createQueryBuilder('user');
+        $query->andWhere('MATCH_AGAINST(user.email, user.username, user.googleID, user.githubID, user.phone, user.uuid)
+             AGAINST (:search boolean)>0')->setParameter('search', $search)
+            ->setMaxResults(100);
+        return $query->getQuery()->getResult();
+    }
+
 }

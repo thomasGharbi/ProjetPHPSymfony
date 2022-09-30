@@ -19,50 +19,89 @@
         <li>Your template at <code><a href="{{ 'C:/Users/thoma/DEV/Projets/publico/templates/conversations/conversations.html.twig'|file_link(0) }}">templates/conversations/index.html.twig</a></code></li>
     </ul>
     </div>
+    {% set who = null %}
+    {% set width = null %}
+{% for conversation in conversations %}
 
-    {% for conversation in conversations %}
+{% if (conversation.who.username is defined) %}
 
-        {% if( conversation.who.username is defined) %}
+    {% set who = {'entity' : 'user',
+                  'name': conversation.who.username,
+                  'profile_image' : conversation.who.profileImage,
+                  'deleted' : false} %}
+    {% elseif (conversation.who.nameOfCompany is defined)  %}
 
-        {% if( conversation.width.username is defined) %}
+        {% set who = {'entity' : 'company',
+                      'name': conversation.who.nameOfCompany,
+                      'profile_image' : conversation.who.profileImage,
+                      'deleted' : false} %}
+    {% else %}
 
-{{ conversation.conversation.createdAt|date("d/m/Y H:i") }}<a href="/conversation/{{ conversation.conversation.uuid }}"><img src="{{  asset(conversation.width.profileImage)}}" width="50" height="50"/>
-             {{ conversation.width.username }}
-        {% else %}
-    {{ conversation.conversation.createdAt|date("d/m/Y H:i") }}<a href="/conversation/{{ conversation.conversation.uuid }}"><img src="{{  asset(conversation.width.profileImage)}}" width="50" height="50"/>
-            {{ conversation.width.nameOfCompany }}
-            {% endif %}
+        {% set who = {'entity' : conversation.who.entity,
+            'name': conversation.who.nameOfEntity,
+            'profile_image' : conversation.who.profileImage,
+            'deleted' : true }%}
+
+{% endif %}
+
+    {% if (conversation.width.username is defined) %}
+        {% set width = {'entity' : 'user',
+            'name': conversation.width.username,
+            'profile_image' : conversation.width.profileImage,
+            'deleted' : false} %}
+
+    {% elseif(conversation.width.nameOfCompany is defined) %}
+        {% set width = {'entity' : 'company',
+        'name': conversation.width.nameOfCompany,
+        'profile_image' : conversation.width.profileImage,
+        'deleted' : false} %}
+
+    {% else %}
+            {% set width = {'entity' : conversation.width.entity,
+                'name': conversation.width.nameOfEntity,
+                'profile_image' : conversation.width.profileImage,
+                'deleted' : true }%}
+    {% endif %}
+
+        {{ conversation.conversation.createdAt|date("d/m/Y H:i") }} <a href="/conversation/{{ conversation.conversation.uuid }}">
+    <br><img src="{{  asset(conversation.width.profileImage)}}" width="50" height="50"/>{{ width.name }}
+    <br><br>
+              <img src="{{  asset(who.profile_image)}}" width="50" height="50" {{ who.deleted ?  'style="opacity: 0.2"'  }}/>
+    {{ who.entity == 'user' ?  '(utilisateur' :  '(entreprise'  }}
+    {{ who.deleted ?  ' supprimé)' :  ')'  }}
+
+    {{ who.name }}<br><br></a>{% if(conversation.is_read == false) %} non lu {% endif %}
+
+
+
+{% endfor %}
 
 
 
 
-                <img src="{{  asset(conversation.who.profileImage)}}" width="50" height="50"/>
-            {{ '(utilisateur)' }}  {{ conversation.who.username }}<br></a>{% if(conversation.is_read == false) %} non lu {% endif %}
-    <br>
 
 
 
-        {% else %}
-
-            {% if( conversation.width.username is defined) %}
-
-                {{ conversation.conversation.createdAt|date("d/m/Y H:i") }}<a href="/conversation/{{ conversation.conversation.uuid }}"><img src="{{  asset(conversation.width.profileImage)}}" width="50" height="50"/>
-                {{ conversation.width.username }}
-            {% else %}
-        {{ conversation.conversation.createdAt|date("d/m/Y H:i") }}<a href="/conversation/{{ conversation.conversation.uuid }}"><img src="{{  asset(conversation.width.profileImage)}}" width="50" height="50"/>
-                {{ conversation.width.nameOfCompany }}
-            {% endif %}
-
-
-                <img src="{{  asset(conversation.who.profileImage)}}" width="50" height="50"/>
-                {{ '(entreprise) ' }}{{  conversation.who.nameOfCompany }}<br></a>{% if(conversation.is_read == false) %} non lu {% endif %}
-        <br>
-
-        {% endif %}
 
 
 
-    {% endfor %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

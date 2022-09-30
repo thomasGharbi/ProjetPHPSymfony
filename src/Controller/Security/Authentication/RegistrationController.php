@@ -3,6 +3,7 @@
 namespace App\Controller\Security\Authentication;
 
 use App\Entity\User;
+use App\Service\AddVisitor;
 use App\Service\Captcha;
 use App\Service\SendEmail;
 use App\Form\Security\Authentication\RegistrationType;
@@ -29,6 +30,7 @@ class RegistrationController extends AbstractController
         TokenGeneratorInterface $tokenGenerator,
         ValidatorInterface      $validator,
         Captcha                 $Captcha,
+        AddVisitor              $addVisitor
 
 
     ): Response
@@ -37,6 +39,8 @@ class RegistrationController extends AbstractController
 
         $user = new User;
         $registrationForm = $this->createForm(RegistrationType::class, $user);
+
+        $addVisitor->addPointToVisitor('visitor_registration', 1);
 
         $registrationForm->handleRequest($request);
 
@@ -48,6 +52,7 @@ class RegistrationController extends AbstractController
                 return  $this->redirectToRoute('app_login');
             }
             $registrationToken = $tokenGenerator->generateToken();
+
 
 
 

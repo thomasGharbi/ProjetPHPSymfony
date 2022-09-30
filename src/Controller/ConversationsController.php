@@ -13,7 +13,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 class ConversationsController extends AbstractController
 {
-    #[Route('/Conversations', name: 'conversations')]
+    #[Route('/Conversations', name: 'app_conversations')]
     public function conversations(
         ConversationRepository $conversationRepository,
         CreateConversationDetails $conversationDetails): Response
