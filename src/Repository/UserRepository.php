@@ -138,4 +138,13 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $query->getQuery()->getResult();
     }
 
+    public function findOneWidthoutParams():mixed
+    {
+
+        $query = $this->createQueryBuilder('user');
+        $query->select('user')->setMaxResults(1);
+
+        return $query->getQuery()->getOneOrNullResult();
+    }
+
 }

@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\Visitor;
 use DateTime;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -130,6 +131,22 @@ class VisitorRepository extends ServiceEntityRepository
         $dateStart = new DateTime('- 1 days');
 
         return $this->getQueryDate($dateStart, $dateEnd);
+    }
+
+    /**
+     * @param User $user
+     * @return void
+     */
+    public function deleteUserOfVisit(User $user){
+
+        $this->createQueryBuilder('visitor')
+             ->delete()
+             ->Where("visitor.user = {$user->getId()}")
+             ->getQuery()
+             ->getResult();
+
+
+
     }
 
 }

@@ -21,7 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class UserCompaniesDashboardController extends AbstractController
 {
-    #[Route('/espace-entreprise/{uuidCompany}', name: 'app_company_dashboard')]
+    #[Route('/espace-entreprise/{uuidCompany}', name: 'app_company_dashboard', defaults: ['public_access' => false], methods: ['GET'])]
     public function companyDashboard(
         string                  $uuidCompany,
         Request                 $request,

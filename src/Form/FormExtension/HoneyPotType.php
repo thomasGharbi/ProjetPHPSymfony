@@ -10,9 +10,11 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class HoneyPotType extends AbstractType
-//ce honey pot servira a prevenir en cas d'attaque de robot spammer :
-// 2 champs vides ne seront pas visible si un ou plusieurs de ces champs
-// sont remplit a l'envoi du formulaire c'est potentiellement une attaque spam.
+/*
+  Ce "honey pot" servira à prevenir en cas d'attaque de robot spammer :
+  2 champs vides ne seront pas visibles. Si un ou plusieurs de ces champs
+  sont remplient à l'envoi du formulaire, c'est potentiellement une attaque spam.
+*/
 {
 
     private LoggerInterface $securityLogger;
@@ -27,8 +29,10 @@ class HoneyPotType extends AbstractType
         $this->securityLogger = $securityLogger;
         $this->requestStack = $requestStack;
     }
-    //Les constantes ont des noms altéré, car pour google meme si l'attribut autocomplet = off
-    // il autocompletera si le nom des champs comporte "adresse" ou "ville" ce qui créera un faux-positif au niveau du HoneyPot
+    /*
+      Les constantes ont des noms altérés, car pour google même si l'attribut (autocomplet = off)  il autocompletera
+      si le nom des champs comporte "adresse" ou "ville" ce qui créera un faux-positif au niveau du HoneyPot.
+    */
     protected const FAKE_FIELD_FOR_BOT = "adreeess";
 
     protected  const SECOND_FAKE_FIELD_FOR_BOT = "villle";
@@ -45,8 +49,10 @@ class HoneyPotType extends AbstractType
      */
     protected function HoneyPotFieldConfiguration(): array
     {
-        //pour ne pas mettre d'attribut "hidden" ou "display-none" qui pourrait compromettre le HoneyPot
-        // le style est géré dans public/CSS/app.css
+        /*
+         Pour ne pas mettre d'attribut "hidden" ou "display-none" qui pourrait compromettre le HoneyPot,
+         le style est géré dans public/CSS/app.css.
+        */
         return [
             'attr' => [
                 'autocomplete' => 'off',

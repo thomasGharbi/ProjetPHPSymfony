@@ -5,6 +5,8 @@ namespace App\Security;
 use App\Repository\AuthenticationLogRepository;
 use App\Service\Captcha;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAccountStatusException;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\HttpFoundation\Response;
@@ -57,8 +59,10 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
 
 
         //verification de la permission de connexion via brutForceChecker
-        if(!$this->Captcha->isHCaptchaValid() || $isBlackListed !== null){
-            throw new CustomUserMessageAccountStatusException("Trop de tentatives de connexion, Vous ne pouvez pas vous reconnectez avant $isBlackListed");
+        if($isBlackListed !== null){
+            throw new CustomUserMessageAccountStatusException("Trop de tentatives de connexion, vous ne pouvez pas vous reconnecter avant $isBlackListed");
+        }elseif (!$this->Captcha->isHCaptchaValid()){
+            throw new CustomUserMessageAccountStatusException("recapcha invalide.");
         }
 
         $email = $request->request->get('email', '');
@@ -74,6 +78,11 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
         
     }
 
+   public function onAuthenticationFailure(Request $request, AuthenticationException $exception): Response
+   {
+       return parent::onAuthenticationFailure($request, $exception);
+   }
+
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
@@ -82,10 +91,12 @@ class UserAuthenticator extends AbstractLoginFormAuthenticator
         }
 
         // For example:
-        return new RedirectResponse($this->urlGenerator->generate('app_registration'));
+        return new RedirectResponse($this->urlGenerator->generate('app_main'));
         //throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
         
     }
+
+
 
     protected function getLoginUrl(Request $request): string
     {

@@ -67,9 +67,6 @@ class CreateNoticeType extends AbstractType
                 'mapped' => false,
                 'required' => false,
                 'data_class' => null,]);
-        //->add('width', choiceType::class, [
-        //    'choices' => $options['data']]);
-
 
 
 

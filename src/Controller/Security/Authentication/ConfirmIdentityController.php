@@ -19,9 +19,8 @@ class ConfirmIdentityController extends AbstractController
 {
 
 
-    /**
-     * @Route("/confirm-identity", name="app_confirm_identity")
-     */
+
+    #[Route('/confirm-identity', name: 'app_confirm_identity' , defaults: ['public_access' => false],methods: ['GET','POST'])]
     public function confirmIdentity(
         Request                     $request,
         UserPasswordHasherInterface $passwordHasher,

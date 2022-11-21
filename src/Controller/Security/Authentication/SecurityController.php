@@ -23,9 +23,8 @@ class SecurityController extends AbstractController
 {
 
 
-    /**
-     * @Route("/Connexion", name="app_login")
-     */
+
+    #[Route('/Connexion', name: 'app_login' , defaults: ['public_access' => true], methods: ['GET','POST'])]
     public function login(AuthenticationUtils $authenticationUtils, SessionInterface $session, Request $request, AddVisitor $addVisitor): Response
     {
 
@@ -46,9 +45,8 @@ class SecurityController extends AbstractController
         return $this->render('security/Authentication/login.html.twig', ['last_username' => $lastUsername, 'error' => $error]);
     }
 
-    /**
-     * @Route("/Deconnexion", name="app_logout")
-     */
+
+    #[Route('/Deconnexion', name: 'app_logout' , defaults: ['public_access' => false], methods: ['GET','POST'])]
     public function logout(): void
     {
         throw new \LogicException('');

@@ -13,9 +13,8 @@ class OAuthController extends AbstractController
     private const GOOGLE_AUTHORIZATION_ENDPOINT = 'https://accounts.google.com/o/oauth2/v2/auth';
     private const GITHUB_AUTHORIZATION_ENDPOINT = 'https://github.com/login/oauth/authorize';
 
-    /**
-     * @Route("/OAuth/Google", name="app_oauth_Google")
-     */
+
+    #[Route('/OAuth/Google', name: 'app_oauth_Google', methods: ['GET'])]
     public function connectToGoogleAccount(
         CsrfTokenManagerInterface $csrfTokenManager,
         UrlGeneratorInterface     $urlGenerator
@@ -41,9 +40,7 @@ class OAuthController extends AbstractController
     }
 
 
-    /**
-     * @Route("/OAuth/GitHub", name="app_oauth_Github")
-     */
+    #[Route('/OAuth/Github', name: 'app_oauth_Github',methods: ['GET'])]
     public function connectToGithubAccount(
         CsrfTokenManagerInterface $csrfTokenManager,
         UrlGeneratorInterface     $urlGenerator

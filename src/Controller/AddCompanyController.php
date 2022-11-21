@@ -22,8 +22,8 @@ class AddCompanyController extends AbstractController
 {
 
 
-    #[Route('/Ajout-Entreprise', name: 'app_add_company')]
-    public function addCompany(Request $request, EntityManagerInterface $manager, SaveImages $saveImages, CheckNumberCompanies $checkerCompanies,): Response
+    #[Route('/Ajout-Entreprise', name: 'app_add_company', defaults: ['public_access' => false], methods: ['GET','POST'])]
+    public function addCompany(Request $request, EntityManagerInterface $manager, SaveImages $saveImages, CheckNumberCompanies $checkerCompanies): Response
     {
 
         $user = $this->getUser();

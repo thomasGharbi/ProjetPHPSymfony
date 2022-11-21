@@ -25,6 +25,7 @@ use Symfony\Component\Security\Core\Exception\LogicException;
 
 class AdminController extends AbstractController
 {
+
     private CompanyRepository $companyRepository;
     private UserRepository $userRepository;
     private AuthenticationLogRepository $AuthRepository;
@@ -54,15 +55,14 @@ class AdminController extends AbstractController
     }
 
 
-    #[Route('/Admin-demo', name: 'app_admin')]
-    public function index(VisitorRepository $visitorRepository, Request $request): Response|RedirectResponse
+    #[Route('/admin-demo', name: 'app_admin', defaults: ['public_access' => false],methods: ['GET','POST'])]
+    public function adminDashboard(VisitorRepository $visitorRepository, Request $request): Response|RedirectResponse
     {
         $user = $this->getUser();
         if (!($user instanceof User)) {
             throw new AccessDeniedException();
         }
         $searchsForm = $passwordForm = $entities = $visitors = null;
-
         if ($this->session->get('admin_authentification') == null) {
 
             $passwordForm = $this->createForm(AdminPasswordType::class);
@@ -71,7 +71,7 @@ class AdminController extends AbstractController
             if ($passwordForm->isSubmitted() && $passwordForm->isValid()) {
 
 
-                $this->checkIfIsGranted($passwordForm->get('admin_password')->getData(), $user, $request);
+                 return $this->checkIfIsGranted($passwordForm->get('admin_password')->getData(), $user, $request);
             }
 
             //accès à l'administration
@@ -107,11 +107,14 @@ class AdminController extends AbstractController
         if ($this->isGranted('admin_demo', $passwordEntered)) {
 
             $this->session->set('admin_authentification', 'admin_demo');
+
+
             return $this->redirectToRoute('app_admin');
 
         } elseif ($this->isGranted('admin', $passwordEntered)) {
 
             $this->session->set('admin_authentification', 'admin');
+
             return $this->redirectToRoute('app_admin');
         } else {
             if ($this->brutForceChecker->addAdminAttemptFailure($user, $request->getClientIp())) {
@@ -140,7 +143,7 @@ class AdminController extends AbstractController
         throw new LogicException();
     }
 
-    #[Route('/Admin-demo/delete/{uuid}', name: 'app_admin_delete')]
+    #[Route('/Admin-demo/delete/{uuid}', name: 'app_admin_delete' , defaults: ['public_access' => false])]
     public function deleteEntityForAdmin(string $uuid): RedirectResponse
     {
         if ($this->session->get('admin_authentification') == 'admin'){

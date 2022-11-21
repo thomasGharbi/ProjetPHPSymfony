@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Repository\MessagesRepository;
+use App\Repository\VisitorRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 use Symfony\Component\Filesystem\Filesystem;
@@ -15,18 +16,21 @@ class DeleteUser
     private EntityManagerInterface $entityManager;
     private ParameterBagInterface $parameterBag;
     private DeleteCompany         $deleteCompany;
+    private VisitorRepository     $visitorRepository;
 
 
     public function __construct(
         MessagesRepository     $messagesRepository,
         EntityManagerInterface $entityManager,
         ParameterBagInterface  $parameterBag,
-        DeleteCompany         $deleteCompany)
+        DeleteCompany          $deleteCompany,
+        VisitorRepository      $visitorRepository)
     {
         $this->messagesRepository = $messagesRepository;
         $this->entityManager = $entityManager;
         $this->parameterBag = $parameterBag;
         $this->deleteCompany = $deleteCompany;
+        $this->visitorRepository = $visitorRepository;
     }
 
 
@@ -43,6 +47,8 @@ class DeleteUser
         $profileImage = $this->userFilesManagement($user);
         $arrayTalkerDelete =  $this->deleteUserInConversation($user, $profileImage);
         $this->deleteCompanyOfUser($user);
+        $this->visitorRepository->deleteUserOfVisit($user);
+
 
         foreach ($messages as $message){
             $message->setUserOwner(null);
@@ -120,5 +126,7 @@ class DeleteUser
 
         }
     }
+
+
 
 }

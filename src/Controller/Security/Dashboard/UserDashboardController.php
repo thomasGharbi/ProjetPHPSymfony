@@ -18,7 +18,7 @@ class UserDashboardController extends AbstractController
 {
 
 
-    #[Route("/espace-utilisateur", name: "app_user_dashboard")]
+    #[Route("/espace-utilisateur", name: "app_user_dashboard", defaults: ['public_access' => false], methods: ['GET'])]
     public function userDashboard
     (
         Request                 $request,

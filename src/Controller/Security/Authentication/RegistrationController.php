@@ -86,6 +86,7 @@ class RegistrationController extends AbstractController
                 ]
             ]);
             return $this->redirectToRoute('app_login');
+
         }
         $error = $validator->validate($user);
 
@@ -95,10 +96,8 @@ class RegistrationController extends AbstractController
     }
 
 
-    /**
-     * @Route("/Verification/{id<\d+>}/{token}", name="app_verify_account", methods={"GET"})
-     */
 
+    #[Route('/Verification/{id<\d+>}/{token}', name: 'app_verify_account')]
     public function verifyAccount(
         User                   $user,
         string                 $token,

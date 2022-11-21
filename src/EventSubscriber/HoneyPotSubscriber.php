@@ -39,15 +39,16 @@ class HoneyPotSubscriber implements EventSubscriberInterface
         if(!$request){
             return;
         }
-        //$form = $event->getForm();
+
 
         $data = $event->getData();
 
 
 
-        if (!array_key_exists('adreeess', $data) || !array_key_exists('villle', $data)  ) {
+
+                if (!array_key_exists('adreeess', $data) || !array_key_exists('villle', $data)  ) {
             throw new HttpException(400);
-            //dd($data);
+
         }
 
         [
@@ -58,7 +59,7 @@ class HoneyPotSubscriber implements EventSubscriberInterface
         if ($adress !== "" || $city !== "") {
            $this->securityLogger->info("'AUTHENTIFICATION SECURITY' : Une potentielle tentative de création de compte via un robot spammer avec l'adresse IP suivante '{$request->getClientIp()}' a eu lieu
             les champs 'adresse' et 'ville' on été rempli avec les données suivante ('{$adress}', '{$city}') ");
-           throw new HttpException(403);
+           throw new HttpException(403, );
         }
     }
 }

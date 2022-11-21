@@ -15,7 +15,7 @@ use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 class NoticeDeleteController extends AbstractController
 {
 
-    #[Route('/delete-notice/{uuidNotice}', name: 'app_delete_notice')]
+    #[Route('/delete-notice/{uuidNotice}', name: 'app_delete_notice', methods: ['POST'])]
     public function deleteNotice(string $uuidNotice, NoticesRepository $noticesRepository, EntityManagerInterface $entityManager): RedirectResponse
     {
 

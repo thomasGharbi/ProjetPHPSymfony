@@ -25,12 +25,12 @@ class AdminVoter extends Voter
 
     /**
      * @param string $attribute
-     * @param $subject
+     * @param mixed $subject
      * @return bool
      *
      * ADMIN_DEMO ne sert uniquement a accéder au données de l'administration, mais pas de les supprimées
      */
-    protected function supports(string $attribute, $subject): bool
+    protected function supports(string $attribute,mixed $subject): bool
     {
 
         return in_array($attribute, [self::ADMIN_DEMO, self::ADMIN]);

@@ -19,8 +19,8 @@ use Symfony\Component\Validator\Exception\RuntimeException;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
- * @UniqueEntity("email", message="Cette adresse email est déjà utilisé")
- * @UniqueEntity("phone", message="Ce numéro n'est pas valide")
+ * @UniqueEntity("email", message="Cette adresse email est déjà associé à un compte existant")
+ * @UniqueEntity("phone", message="Ce numéro de téléphone est déjà associé à un compte existant")
  * @UniqueEntity("username", message="Ce nom d'utilisateur est déjà pris")
  * @ORM\Table(name="User", indexes={@ORM\Index(columns={"email",
  * "username","google_id", "github_id", "phone", "uuid"}, flags={"fulltext"})})
@@ -43,7 +43,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     /**
      * @var string
      * @ORM\Column(type="string", length=180, unique=true)
-     * @Assert\NotBlank(message="l'adresse email doit être saisi")
+     * @Assert\NotBlank(message="L'adresse email doit être saisi")
      * @Assert\Email(message="Cette adresse email n'est pas valide")
      */
     private string $email;
@@ -60,7 +60,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Le nom d'utilisateur doit être saisi")
      * @Assert\Regex(pattern = "/^[A-Za-z][A-Za-z0-9]{5,30}$/",
-     *               message = "Votre nom d'utilisateur doit comprendre entre 5 et 30 caractère et contenir uniquement des lettres des chiffres.")
+     *               message = "Votre nom d'utilisateur doit comprendre entre 5 et 30 caractère et contenir uniquement des lettres des chiffres")
      *
      */
     private string $username;
@@ -70,7 +70,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string")
      * @ORM\Column(type="string")
      * @Assert\NotBlank(message="Le mot de passe doit être saisi")
-     *
+     * @Assert\Regex(pattern = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,50}$/",
+     *               message = "Le mot de passe doit contenir au moins: huit caractères dont une lettre, un chiffre et un caractère spécial(@$!%*?&)")
      *
      */
     private string $password;
@@ -224,12 +225,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 
     public function __construct(){
-        $this->profileImage = '/uploads/profil_image_default/user_profil_image_default.jpg';
+        $this->profileImage = '/uploads/profile_image_default/user_profil_image_default.jpg';
         $this->companies = new ArrayCollection();
         $this->notices = new ArrayCollection();
         $this->conversations = new ArrayCollection();
         $this->uuid = Uuid::v1();
         $this->roles = ['ROLE_USER'];
+        $this->gender = 'non-précisé';
     }
 
     

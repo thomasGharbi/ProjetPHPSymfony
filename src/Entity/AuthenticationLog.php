@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=AuthenticationLogRepository::class)
- * @ORM\Table(name="Athentication_log", indexes={@ORM\Index(columns={
+ * @ORM\Table(name="Authentication_log", indexes={@ORM\Index(columns={
  * "user_ip","email_entered","oauth_provider"}, flags={"fulltext"})})
  *
  */

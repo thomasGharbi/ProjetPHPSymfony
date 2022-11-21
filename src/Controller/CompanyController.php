@@ -21,7 +21,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 class CompanyController extends AbstractController
 {
-    #[Route('/entreprise/{uuidCompany}', name: 'app_company_page')]
+    #[Route('/entreprise/{uuidCompany}', name: 'app_company_page', defaults: ['public_access' => true,'parameter' => 'company_uuid'], methods: ['GET','POST'])]
     public function index(
         mixed                  $uuidCompany,
         CompanyRepository      $companyRepository,
@@ -119,6 +119,7 @@ class CompanyController extends AbstractController
 
         return $noticesArray;
     }
+
 
 
 }

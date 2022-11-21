@@ -34,7 +34,7 @@ class DOSListener
         $userEmail = $event->getUser()->getUserIdentifier();
 
 
-        $this->securityLogger->info("'DOS (MULTIPLE REQUEST TO SERVER)': Potentielle attaque DOS de l'utilisateur eyant l'adresse email ('$userEmail') ayant l'adresse ip ('$clientIp') venant de la route ('$route') ");
+        $this->securityLogger->info("'DOS (MULTIPLE REQUEST TO SERVER)': Potentielle attaque DOS de l'utilisateur ayant l'adresse email ('$userEmail') ayant l'adresse ip ('$clientIp') venant de la route ('$route') ");
 
     }
 }

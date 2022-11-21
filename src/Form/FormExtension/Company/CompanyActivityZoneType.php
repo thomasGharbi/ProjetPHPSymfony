@@ -12,7 +12,7 @@ class CompanyActivityZoneType extends AbstractType
     /**
      * @var array|string[]
      */
-    private array $sectors = [
+     const  ACTIVITY_ZONE = [
 
         'moins de 10km' => 'moins d 10km',
         '20km' => '20km',
@@ -30,7 +30,7 @@ class CompanyActivityZoneType extends AbstractType
     {
         parent::configureOptions($resolver);
         $resolver->setDefaults([
-            'choices' => $this->sectors
+            'choices' => self::ACTIVITY_ZONE
 
         ]);
     }

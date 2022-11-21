@@ -13,7 +13,7 @@ class DepartmentType extends AbstractType
     {
         parent::configureOptions($resolver);
         $resolver->setDefaults([
-            'choices' => $this->departments
+            'choices' => self::DEPARTMENTS
 
         ]);
     }
@@ -24,10 +24,10 @@ class DepartmentType extends AbstractType
     }
 
     /**
-     * @var array|string[]
+     * @const array|string[]
      *
      */
-    private array $departments =
+     const DEPARTMENTS =
         [
 
             '01-Ain' => '01-Ain',

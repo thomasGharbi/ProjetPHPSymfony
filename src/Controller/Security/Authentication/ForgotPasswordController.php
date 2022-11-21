@@ -16,10 +16,7 @@ class ForgotPasswordController extends AbstractController
 {
 
 
-    /**
-     *
-     * @Route("/mot-de-passe-oublie", name="app_forgot_password")
-     */
+    #[Route('/mot-de-passe-oublie', name: 'app_forgot_password' , defaults: ['public_access' => true],methods: ['POST'])]
     public function forgotPassword(
 
         SendEmail               $sendEmail,

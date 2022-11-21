@@ -53,7 +53,7 @@ class ConversationController extends AbstractController
 
     }
 
-    #[Route('/conversation/{uuidRecipient}/{uuidTalker}', name: 'app_create_conversation')]
+    #[Route('/conversation/{uuidRecipient}/{uuidTalker}', name: 'app_create_conversation', methods: ['GET','POST'])]
     public function createConversation(
         string                 $uuidRecipient,
         string                 $uuidTalker,
@@ -158,7 +158,7 @@ class ConversationController extends AbstractController
 
 
 
-    #[Route('/conversation/{uuidConversation}', name: 'app_conversation')]
+    #[Route('/conversation/{uuidConversation}', name: 'app_conversation', methods: ['GET','POST'])]
     public function conversations(
         string                 $uuidConversation,
         Request                $request,

@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class UserController extends AbstractController
 {
-    #[Route('/utilisateur/{uuidUser}', name: 'app_user_page')]
+    #[Route('/utilisateur/{uuidUser}', name: 'app_user_page', defaults: ['public_access' => true,'parameter' => 'user_uuid'], methods: ['GET','POST'])]
     public function userPage(string $uuidUser, UserRepository $userRepository, CreateConversationType $conversationType, Request $request): Response
     {
 
@@ -34,7 +34,7 @@ class UserController extends AbstractController
                 $allEntities[] = $company;
             }
 
-//dd($allEntities);
+
             $createConversationForm = $this->createForm($conversationType::class, $allEntities);
             $createConversationForm->handleRequest($request);
             if ($createConversationForm->isSubmitted() && $createConversationForm->isValid()) {

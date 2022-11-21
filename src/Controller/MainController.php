@@ -13,8 +13,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MainController extends AbstractController
 {
-    #[Route('/', name: 'app_main')]
-    public function index(
+    #[Route('/', name: 'app_main', defaults: ['public_access' => true], methods: ['GET','POST'])]
+    public function main(
         Request $request,
         CompanyRepository $companyRepository,
         NoticeRepository $noticesRepository,

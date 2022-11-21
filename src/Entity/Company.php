@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\CompanyRepository;
 use ContainerXLbvlVp\getSecurity_Logout_Listener_CsrfTokenClearingService;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -35,7 +36,7 @@ class Company
     /**
      * @var string
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(message="Le Nom de l'entreprise doit être saisi.")
+     * @Assert\NotBlank(message="Le nom de l'entreprise doit être saisi")
      * @Assert\Length(max = 50,
      *      maxMessage = "Le nom de l'entrprise ne peut pas contenir moins de {{ limit }} caractères")
      */
@@ -45,14 +46,14 @@ class Company
      * @var string
      * @ORM\Column(type="string", length=255)
      * @Assert\Regex(pattern = "/^\d{14}$/", message = "Le numéro SIRET inscrit n'est pas valide")
-     * @Assert\NotBlank(message="Le numéro SIRET doit être saisi.")
+     * @Assert\NotBlank(message="Le numéro SIRET doit être saisi")
      */
     private $SIRETNumber;
 
     /**
      * @var string
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(message="Le nom et prenom du ou des responsables doit être saisi.")
+     * @Assert\NotBlank(message="Le nom et prenom du ou des responsables doit être saisi")
      * @Assert\Length(min = 2, max = 50,
      *      minMessage = "Le nom et prenom du ou des responsables doit contenir plus de {{ limit }} caractères",
      *      maxMessage = "Le nom et prenom du ou des responsables ne doit contenir moins de {{ limit }} caractères")
@@ -72,7 +73,7 @@ class Company
     /**
      * @var string
      * @ORM\Column(type="string", length=255)
-     * @Assert\NotBlank(message="Le secteur d'activité doit être saisi.")
+     * @Assert\NotBlank(message="Le secteur d'activité doit être saisi")
      * @Assert\Length(min = 2, max = 50,
      *      minMessage = " Le secteur d'activité doit contenir plus de {{ limit }} caractères",
      *      maxMessage = "Le secteur d'activité ne doit pas contenir moins de {{ limit }} caractères")
@@ -245,12 +246,15 @@ class Company
     public function __construct()
     {
 
+        $this->profileImage = '/uploads/company_profile_image_default/profile_image_default.jpg';
+        $this->images = ['/uploads/company_image_default/image_default.jpg'];
         $this->notices = new ArrayCollection();
         $this->generalNotice = 0;
         $this->qualityNotice = 0;
         $this->speedNotice = 0;
         $this->priceNotice = 0;
         $this->conversations = new ArrayCollection();
+        $this->uuid = Uuid::v1();
     }
 
 

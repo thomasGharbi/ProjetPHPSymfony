@@ -4,7 +4,7 @@
     <script src="https://www.google.com/recaptcha/api.js"></script>
 {% include '_partials/_captcha_callback_script.html.twig' %}
 {% endblock %}
-{% block title %}Log in!{% endblock %}
+{% block title %}<h1>Connexion</h1>{% endblock %}
 
 {% block body %}
 
@@ -31,7 +31,7 @@
 
             {% endfor %}
         {% endfor %}
-        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+        <h1 class="h3 mb-3 font-weight-normal">Connexion</h1>
         <label for="inputEmail">Email</label>
         <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
         <label for="inputPassword">Password</label>
@@ -58,7 +58,7 @@
                 data-sitekey="{{ captcha_site_key }}"
                 data-callback='onSubmit'
                 data-action='submit'
-                type="submit">Submit</button>
+                type="submit">Se connecter</button>
 
     </form>
 

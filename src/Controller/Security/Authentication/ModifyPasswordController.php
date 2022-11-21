@@ -19,9 +19,8 @@ class ModifyPasswordController extends AbstractController
 {
 
 
-    /**
-     * @Route("/Verification_mot_de_passe/{id<\d+>}/{token}", name="app_check_modify_password", methods={"GET"})
-     */
+
+    #[Route('/Verification_mot_de_passe/{id<\d+>}/{token}', name: 'app_check_modify_password',methods: ['GET'])]
     public function checkModifyPassword(
         ?User            $user,
         SessionInterface $session,
@@ -47,9 +46,8 @@ class ModifyPasswordController extends AbstractController
     }
 
 
-    /**
-     * @Route("/Modification_mot_de_passe", name="app_modify_password")
-     */
+
+    #[Route('/Modification_mot_de_passe', name: 'app_modify_password' , defaults: ['public_access' => false],methods: ['POST'])]
     public function ModifyPassword(
 
         Request                $request, SessionInterface $session,

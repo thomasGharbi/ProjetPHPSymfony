@@ -53,7 +53,7 @@ class UserFixtures extends Fixture
                  ->setAccountMustBeVerifiedBefore(new \DateTimeImmutable('+3 days'))
                  ->setProfileImage($faker->imageUrl(640, 480, 'animals', true));
                  
-//New \DateTimeImmutable('2020-02-04T16:00:00')
+                 //New \DateTimeImmutable('2020-02-04T16:00:00')
 
             $manager->persist($user);
         }
