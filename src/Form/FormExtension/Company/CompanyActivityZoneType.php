@@ -14,7 +14,7 @@ class CompanyActivityZoneType extends AbstractType
      */
      const  ACTIVITY_ZONE = [
 
-        'moins de 10km' => 'moins d 10km',
+        'moins de 10km' => 'moins de 10km',
         '20km' => '20km',
         '30km' => '30km',
         '50km' => '50km',
@@ -30,7 +30,7 @@ class CompanyActivityZoneType extends AbstractType
     {
         parent::configureOptions($resolver);
         $resolver->setDefaults([
-            'choices' => self::ACTIVITY_ZONE
+            'choices' => ['Zone d\'activité maximale' => self::ACTIVITY_ZONE]
 
         ]);
     }

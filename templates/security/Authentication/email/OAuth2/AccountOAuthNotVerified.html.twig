@@ -1,6 +1,0 @@
-{% extends 'base.html.twig'%}
-
-{% block body %}
-    il semblerais que vous vous seriez connecté avec votre compte {{ oauthProvider }} qui n'est sois pas verifié, veuillez donc verifiez votre email en cliquant sur ce lien : <a href="{{ absolute_url(path('app_check_modify_password', {'id' : userID , 'token': registrationToken})) }}" >Confirmer mon adresse e-mail</a>
-    ce lien expire le {{ tokenDuration}}
-{% endblock %}

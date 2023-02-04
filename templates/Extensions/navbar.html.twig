@@ -1,17 +1,83 @@
 {% block navbar %}
-{% if(navbar().user is defined) %}
-    <div class=""><a href="{{ path('app_user_dashboard') }}"><img src="{{ asset( navbar().user.profileImage) }}" width="20" height="20"/>{{ navbar().user.username }}</a>
-        <a href="{{ path('app_conversations') }}">&#9993;{{ navbar().conversation_is_read }}</a> <a href="{{ path('app_logout') }}">&#128682;</a>
+    <div class="container-fluid pb-1 app-navbar">
 
-        {% if navbar().companies is defined %}
-        {% for company in navbar().companies %}
 
-            <a href="{{ path('app_company_dashboard',{uuidCompany:company.uuid}) }}">{{company.nameOfCompany}}</a>
-        {% endfor %}
-            {% endif %}
-        <a href="{{ path('app_add_company') }}"> ajouter une entreprise</a></div>
-    {% else %}
-        <a href="{{ path('app_login') }}">Connexion/</a><a href="{{ path('app_registration') }}">Inscription</a>
-{% endif %}
-    <a href="{{ path('app_main') }}">&#127968;</a>
+        <div class="pt-2 {{ (navbar().user is defined) ? 'container' : '' }} d-flex justify-content-between h-25 app-mh50px">
+            <div class="app-w10">
+                <a href="{{ path('app_main') }}">
+                    <img class="h-100 pb-lg-0 " src="{{ asset('app/logo/app_logo.png') }}">
+                </a>
+            </div>
+            <div class="btn-group mr-4 mr-xl-0 {{ (navbar().user is defined) ? 'app-w10' : '' }}">
+
+                {% if(navbar().user is defined) %}
+
+                <button type="button" class="btn dropdown-toggle w-50 pt-0 pr-4 mr-md-4" data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="false">
+                    <span class="app-fs-1-5em">🧰</span>
+                </button>
+
+                <div class="dropdown-menu dropdown-menu-left pt-0 ">
+                    <button class="dropdown-item py-2 color-app" type="button">
+                        <a href="{{ path('app_user_dashboard') }}" class="text-decoration-none dropdown-item-value">
+                            <img class="mr-2 app-round-profile" src="{{ asset( navbar().user.profileImage) }}"/>
+                            {{ navbar().user.username }}
+                        </a>
+                    </button>
+
+
+                    <button class="dropdown-item mt-3" type="button"><a href="{{ path('app_conversations') }}">
+                            <span class="dropdown-item-value app-fs-1em app-vertical-a-m">💬</span>
+                            <span class="app-fs-0-4em app-vertical-a-tt">{{ (navbar().conversation_is_read) ? '🔴' : '' }}</span>
+                            <span class="ml-2 dropdown-item-value app-fs-1em">CONVERSATIONS</span>
+                        </a>
+                    </button>
+
+
+                    {% if navbar().companies is defined %}
+                        <div class="mt-4 mb-3">
+                            <p class="px-3 app-fs-0-7em opacity-50">ENTREPRISES :</p>
+                            {% for company in navbar().companies %}
+
+
+                                <button class="dropdown-item mt-1 app-button-company-navbar" type="button">
+                                    <a href="{{ path('app_company_dashboard',{uuidCompany:company.uuid}) }}">
+                                        <span class="dropdown-item-value">{{ company.nameOfCompany }} </span>
+                                    </a>
+                                </button>
+
+
+
+
+
+                            {% endfor %}
+                        </div>
+                        <hr class="my-3">
+                    {% endif %}
+                    <button class="dropdown-item mt-1" type="button">
+                        <a class="fs-5 " href="{{ path('app_add_company') }}">
+                            <span class="dropdown-item-value app-fs-0-8em">📦
+                                <span class="ml-1">AJOUTER UNE ENTREPRISE</span>
+                            </span>
+                        </a>
+                    </button>
+
+                    <button class="dropdown-item mt-1" type="button">
+                        <a href="{{ path('app_logout') }}">&#128682;
+                            <span class="dropdown-item-value px-3">DECONNEXION</span>
+                        </a>
+                    </button>
+                    {% else %}
+
+
+                        <a class="m-2 app-white app-fs-0-8em" href="{{ path('app_login') }}">CONNEXION</a>
+                        <a class="m-2 app-fs-0-8em app-white" href="{{ path('app_registration') }}">INSCRIPTION</a>
+
+                    {% endif %}
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}

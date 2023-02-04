@@ -1,0 +1,13 @@
+
+
+<style>
+    * {
+        font-family: 'roboto';
+    }
+
+</style>
+
+<h1 style="color:#ff7c00">Votre Inscription par {{oauthProvider}} bien était pris en compte</h1>
+
+<div style="margin-bottom: 5px;"><div style="margin-bottom: 5px;">Il semblerais que vous vous seriez connecté avec votre compte <span style="color: #ff7c00">{{oauthProvider}}</span> qui ne soit pas verifié,</div> veuillez donc verifier votre email en cliquant sur ce lien : <a href="{{ absolute_url(path('app_check_modify_password', {'id' : userID , 'token': registrationToken})) }}" style=" color: #ff7c00 " >Confirmer mon compte</a></div>
+<div><span style="opacity: 0.7">ce lien expire le</span> <span style="color: #ff7c00">{{tokenDuration}}</span></div>

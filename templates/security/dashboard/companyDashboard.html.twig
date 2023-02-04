@@ -1,56 +1,137 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello UserCompaniesDashboardController!{% endblock %}
 
 {% block body %}
     {% block js %}
 
 
-        <script type="module" src="{{ asset('/javascript/authentication/confirm_identity/confirm_identity_for_company_dashboard.js') }}"></script>
+        <script type="module"
+                src="{{ asset('/javascript/authentication/confirm_identity/confirm_identity_for_company_dashboard.js') }}"></script>
         <script type="module" src="{{ asset('/javascript/add_inputs_form_company.js') }}"></script>
     {% endblock %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+
+    <script type="module" src="{{ asset('/javascript/add_inputs_form_company.js') }}"></script>
+
+    <div class="container">
+        <div class="background-notice-app p-4 pb-0 app-border-r-10px mt-5">
+
+            <div class="d-flex justify-content-between">
+                <div class=""><a href="{{ path('app_company_page', { uuidCompany: company.uuid }) }}"><img
+                                src="{{ asset(company.profileImage) }}" class="app-round-profile-company mb-3"/><span
+                                class=" ml-2 app-fs-1-2em app-color-text">{{ company.nameOfCompany }}</span></div>
+                <a href="{{ path('app_user_dashboard') }}">
+                    <div class="align-self-center "><img src="{{ asset(company.user.profileImage) }}"
+                                                         class="app-round-profile "/><span
+                                class="ml-2 app-color-text">{{ company.user.username }}</span>
+                </a></div>
+        </div>
+        {{ form_start(companyDashboardForm, { 'attr' : { 'id' : 'form_file', 'class':'row'}}) }}
+        <div class="col-12 mx-auto px-0 pt-3 row background-notice-main-app  app-border-r-10px mb-3">
+            <span class="app-color-text app-opacity-05 mb-2">Informations de l'entreprise</span>
+            <div class="col-sm-5 col-12">{{ form_row(companyDashboardForm.nameOfCompany, {'label': false,'attr' : {'class':'','placeholder':'Nom de l\'entreprise'}}) }}</div>
+            <div class="col-sm-7 col-12">{{ form_row(companyDashboardForm.SIRETNumber, {'label': false,'attr' : {'class':'','placeholder':'Numéro SIRET de l\'entreprise'}}) }}</div>
+            <div class="col-sm-6 col-12">{{ form_row(companyDashboardForm.nameOfCompanyManager, {'label': false,'attr' : {'class':'','placeholder':'Nom du gérant d\'entreprise'}}) }}</div>
+            <div class="col-sm-6 col-12">{{ form_row(companyDashboardForm.firstnameOfCompanyManager, {'label': false,'attr' : {'class':'','placeholder':'Prénom du gérant d\'entreprise'}}) }}</div>
+            <div class="col-sm-6 col-12">{{ form_row(companyDashboardForm.phone, {'label': false,'attr' : {'class':'','placeholder':'Numéro de téléphone de l\'entreprise'}}) }}</div>
+            <div class="col-sm-6 col-12">{{ form_row(companyDashboardForm.email, {'label': false,'attr' : {'class':'','placeholder':'Email de l\'entreprise'}}) }}</div>
+        </div>
+        <div class="col-12 mx-auto px-0 pt-3 row background-notice-main-app  app-border-r-10px mb-3">
+            <span class="app-color-text app-opacity-05  mb-2">Adresse de l'entreprise</span>
+            <div class="col-12">{{ form_row(companyDashboardForm.address, {'label': false,'attr' : {'class':'','placeholder':'Adresse'}}) }}</div>
+            <div class="col-sm-5 col-6">{{ form_row(companyDashboardForm.city, {'label': false,'attr' : {'class':'','placeholder':'Ville'}}) }}</div>
+            <div class="col-sm-3 col-6">{{ form_row(companyDashboardForm.postalCode, {'label': false,'attr' : {'class':'','placeholder':'Code postal'}}) }}</div>
+            <div class="col-sm-4 col-12">{{ form_row(companyDashboardForm.department, {'label': false,'attr' : {'class':'','placeholder':''}}) }}</div>
+
+        </div>
+        <div class="col-12 mx-auto px-0 pt-3 row background-notice-main-app  app-border-r-10px mb-3">
+            <span class="app-color-text app-opacity-05  mb-2">Activité de l'entreprise</span>
+            <div class="col-sm-6 col-12">{{ form_row(companyDashboardForm.sector, {'label': false,'attr' : {'class':'','placeholder':'Secteur d\'activité'}}) }}</div>
+            <div class="col-sm-6 col-12">{{ form_row(companyDashboardForm.specialization, {'label': false,'attr' : {'class':'','placeholder':'Spécialisation de l\'entreprise'}}) }}</div>
+            <div class=" col-12 ">
+                <div id="company_otherSector" class="w-25 mb-0">
+                    {{ form_row(companyDashboardForm.otherSector, {'label': false,'attr' : {'class':'','placeholder':'Autre secteur d\'activité'}}) }}
+                </div>
+            </div>
+            <div class="col-sm-6 col-12">{{ form_row(companyDashboardForm.inActivitySince, {'label': false,'attr' : {'class':'','placeholder':''}}) }}</div>
+            <div class="col-sm-6 col-12">{{ form_row(companyDashboardForm.areaActivity, {'label': false,'attr' : {'class':'','placeholder':''}}) }}</div>
+
+        </div>
+        <div class="col-12 mx-auto px-0 pt-3 row background-notice-main-app  app-border-r-10px mb-3">
+            <span class="app-color-text app-opacity-05  mb-2">Profile de l'entreprise</span>
+            <div class="col-sm-6 col-12">{{ form_row(companyDashboardForm.profileTitle, {'label': false,'attr' : {'class':'','placeholder':'Titre'}}) }}</div>
+            <div class="col-sm-6 col-12">{{ form_row(companyDashboardForm.profileImage, {'label': false,'attr' : {'class':'','placeholder':''}}) }}</div>
+            <div class="col-12">{{ form_row(companyDashboardForm.profileDescription, {'label': false,'attr' : {'class':'','placeholder':'Description'}}) }}</div>
+
+        </div>
+
+        <span class="app-color-text app-opacity-05  mb-2">Images de présentations</span>
+        <div class="background-notice-main-app  my-2 app-border-r-10px mx-auto row">
+            <div class="images_add_company col-6  pt-3 align-self-center">{{ form_row(companyDashboardForm.image1, {'label': false,'attr' : {'class':'mb-3','placeholder':''}}) }}</div>
+            <div class=" col-6 py-2 app-text-a-end"><img src="/{{ company.images.0 }}" class="app-round-company"></div>
+        </div>
+        <div class="col-6"></div>
 
 
-    <img src="{{ asset(company.profileImage) }}" width="100" height="100"/>
+        <div class=" background-notice-main-app  app-border-r-10px mx-auto mt-3 row">
+            <div class="images_add_company d-inline-block col-6  align-self-center pt-3 ">{{ form_row(companyDashboardForm.image2, {'label': false,'attr' : {'class':'mb-3','placeholder':''}}) }}</div>
+            <div class="d-inline-block col-3 align-self-center pt-3 d-flex">{{ form_row(companyDashboardForm.deleteImage2, {'label': false}) }}
+                <span class="">supprimer</span></div>
+            {% if (1 in company.images|keys) %}
+                <div class="d-inline-block col-3 py-2 app-text-a-end"><img src="/{{ company.images.1 }}" class="app-round-company">
+                </div> {% endif %}
+        </div>
 
-    {{form_start(companyDashboardForm)}}
+
+        <div class=" background-notice-main-app  app-border-r-10px mx-auto mt-3 row">
+            <div class="images_add_company d-inline-block col-6  align-self-center pt-3 ">{{ form_row(companyDashboardForm.image3, {'label': false,'attr' : {'class':'mb-3','placeholder':''}}) }}</div>
+            <div class="d-inline-block col-3 align-self-center pt-3 d-flex">{{ form_row(companyDashboardForm.deleteImage3, {'label': false}) }}
+                <span class="">supprimer</span></div>
+            {% if (2 in company.images|keys) %}
+                <div class="d-inline-block col-3 py-2 app-text-a-end"><img src="/{{ company.images.2 }}" class="app-round-company">
+                </div> {% endif %}
+        </div>
+
+        <div class=" background-notice-main-app  app-border-r-10px mx-auto mt-3 row">
+            <div class="images_add_company d-inline-block col-6  align-self-center pt-3 ">{{ form_row(companyDashboardForm.image4, {'label': false,'attr' : {'class':'mb-3','placeholder':''}}) }}</div>
+            <div class="d-inline-block col-3 align-self-center pt-3 d-flex">{{ form_row(companyDashboardForm.deleteImage4, {'label': false}) }}
+                <span class="">supprimer</span></div>
+            {% if (3 in company.images|keys) %}
+                <div class="d-inline-block col-3 py-2 app-text-a-end"><img src="/{{ company.images.3 }}" class="app-round-company">
+                </div> {% endif %}
+        </div>
+
+        <div class=" background-notice-main-app  app-border-r-10px mx-auto mt-3 row">
+            <div class="images_add_company d-inline-block col-6  align-self-center pt-3 ">{{ form_row(companyDashboardForm.image5, {'label': false,'attr' : {'class':'mb-3','placeholder':''}}) }}</div>
+            <div class="d-inline-block col-3 align-self-center pt-3 d-flex">{{ form_row(companyDashboardForm.deleteImage5, {'label': false}) }}
+                <span class="">supprimer</span></div>
+            {% if (4 in company.images|keys) %}
+                <div class="d-inline-block col-3 py-2 app-text-a-end"><img src="/{{ company.images.4 }}" class="app-round-company">
+                </div> {% endif %}
+        </div>
 
 
+        <div class="col-12 mt-3 d-flex justify-content-end">
+
+            <button type="button" id="button-modify-company" class="button-modal btn btn-primary"
+                    data-target="#confirm_identity_password_modal">modifier
+            </button>
+        </div>
+
+        {{ form_end(companyDashboardForm) }}
 
 
-
-
-    <div class="example-wrapper">
-        <button  type="button" id="button-modify-company"   class="button-modal"
-                data-target="#confirm_identity_password_modal" >Submiiiit
+        {{ form_start(companyDelete) }}
+        <button data-target="#confirm_identity_password_modal"
+                class="button-modal button-modal b-0 w-auto btn btn-danger mb-3" type="button" id="button-delete-company">
+            <span>📦</span>
+            <span class="app-vertical-a-tt app-fs-0-8em app-white  ">supprimé l'entreprise</span>
         </button>
-        {% for image in company.images %}
-        {% if image is defined %}
-            <img src="{{ asset(  image ) }}" width="100" height="100"/>
-        {% endif %}
-        {% endfor %}
+        {{ form_end(companyDelete) }}
 
 
+    </div>
+    </div>
 
 
-
-
-
-
-
-
-
-
-
-    {{form_end(companyDashboardForm)}}
-</div>
-
-    {{form_start(companyDelete)}}
-    <button  data-target="#confirm_identity_password_modal" class="button-modal" type="button"  id="button-delete-company" >detete</button>
-    {{form_end(companyDelete)}}
     {% include "_partials/_confirm_password_modal.html.twig" %}
 {% endblock %}

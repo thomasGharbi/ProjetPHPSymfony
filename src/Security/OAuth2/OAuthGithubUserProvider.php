@@ -212,7 +212,7 @@ class OAuthGithubUserProvider implements userProviderInterface
         $this->sendEmail->send([
             'recipient' => $githubUserData['email'],
             'subject' => "Inscription Avec Github",
-            'html_template' => "Security/Authentication/email/OAuth2/AccountOAuthRandomPassword.html.twig",
+            'html_template' => "email/OAuth2/AccountOAuthRandomPassword.html.twig",
             'context' => [
                 'oauthProvider' => 'Github',
                 'randomPassword' => $githubUserData['random_password'],
@@ -232,7 +232,7 @@ class OAuthGithubUserProvider implements userProviderInterface
         $this->sendEmail->send([
             'recipient' => $githubUserData['email'],
             'subject' => "vérification de votre compte",
-            'html_template' => "Security/Authentication/email/OAuth2/AccountOAuthNotVerified.html.twig",
+            'html_template' => "email/OAuth2/AccountOAuthNotVerified.html.twig",
             'context' => [
                 'randomPassword' => $githubUserData['random_password'],
                 'userID' => $githubUserData['oauth_id'],

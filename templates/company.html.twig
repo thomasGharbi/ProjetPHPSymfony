@@ -1,92 +1,275 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello CompanyController!{% endblock %}
+
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <script src="{{ asset('javascript/viewerjs-master/docs/js/viewer.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('javascript/viewerjs-master/docs/css/viewer.css') }}">
 
-<div class="example-wrapper">
 
-    {% block js %}<script type="module" src="{{ asset('/javascript/add_input_form_conversation.js') }}"></script>{% endblock %}
-        <p>ok</p>
-       {# {% if is_granted('NOTICE_MODIFY', notices) %}  #}
-                {% if conversationForm is not null %}
-                        {{ form_start(conversationForm) }}
-                        {{ form_end(conversationForm) }}
-                {% endif %}
-    <div >nom de l'entreprise : {{ company.nameOfCompany }}<br>
-          responsable :  {{ company.firstNameOfCompanyManager }} {{ company.nameOfCompanyManager }}<br>
-          secteur d'activité : {{ company.sector }}<br>
-          specialisation : {{ company.specialization }}<br>
-          ville : {{ company.city }} {{ company.postalCode }}<br>
-          zone maximale d'activité : {{ company.areaActivity }}<br>
-          contact : {{ company.phone }} {{ company.email }}<br>
-          cette entreprise existe depuis : {{ company.inActivitySince }}<br><br>
 
-        Note globale : {{ company.generalNotice }}
-        Note de qualité : {{ company.qualityNotice }}
-        Note de rapidité : {{ company.speedNotice }}
-        Note de prix : {{ company.priceNotice }}
+
+    {% block js %}
+        <script type="module" src="{{ asset('/javascript/add_input_form_conversation.js') }}"></script>{% endblock %}
+
+
+
+
+
+
+    <div class="row container mx-auto">
+        {% if navbar().user.isVerified == false %}
+            <div class="alert alert-danger mt-3 mx-auto mx-md-0 col-11">
+                <span class="app-fs-0-8em">Votre compte n'est pas vérifié, tant que votre compte n'est pas validé, vous ne pouvez pas ajouter d'Avis.</span></div>
+
+        {% endif %}
+        <div class="col-11  mx-auto my-5  mx-sm-0 background-company-app app-border-r-10px">
+
+            <div class="my-2">
+                <img class="app-round-profile-company" src="/{{ company.profileImage }}" alt="">
+                <span class="ml-3  app-fs-1-3em">{{ company.nameOfCompany }}
+                                    <span class="app-fs-0-5em d-inline-block">(Depuis {{ company.inActivitySince }})</span>
+                                </span>
+            </div>
+
+            <span class="d-block m-2 app-text-a-end">🔨 {{ company.sector }} {{ (company.specialization is not null) ? '(' }}{{ company.specialization }}{{ (company.specialization is not null) ? ')' }}</span>
+
+
+            <div class="app-border-r-10px background-notice-app ">
+                <div class="p-3  text-break">{{ company.profileTitle }}</div>
+                <div class=" m-3 d-inline-block text-break ">{{ company.profileDescription }}</div>
+            </div>
+            <div class="mt-3 col-12"><span class="app-fs-1-3em mr-2">📍</span> {{ company.city }}
+                ( {{ company.postalCode }} ) - {{ company.department }}</div>
+            <div class="mb-2 mt-1"><span class="app-fs-1-3em mr-2">🌍</span>Zone d'activité ( {{ company.areaActivity }}
+                )
+            </div>
+            <div class="col-12 row">
+                <div class="mt-3 col-12 col-md-8"><span
+                            class="app-fs-1-3em  mr-2">📱</span>
+                    {% if(company.phone is not null) %}{{ company.phone|split('', 2).0 }} {{ company.phone|split('', 2).1 }} {{ company.phone|split('', 2).2 }} {{ company.phone|split('', 2).3 }} {{ company.phone|split('', 2).4 }} {% endif %}
+                </div>
+                <div class="mt-3 col-12 col-md-4"><span class="app-fs-1-3em mr-2">✉️</span>{% if(company.email is not null) %} {{ company.email }}{% endif %}</div>
+            </div>
+            <hr class="my-3 app-hr">
+
+            <div class="test">
+                <div id="galley" class="pictures  d-md-flex justify-content-md-start mt-3 ">
+                    {% for image in company.images %}
+                        {% if image is defined %}
+
+                            <div class=" mx-md-1 d-inline-block app-cursor-pointer">
+                                <img class="app-border-r-10px app-image-notice" data-original="{{ asset( image) }}" src="{{ asset( image) }}" alt="Cuo Na Lake">
+                            </div>
+
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-12 my-3">Avis ({{ company.countNotice }})</div>
+
+
+            <div class="row ">
+
+                <div class="col-12 col-sm-7 col-md-6 d-flex justify-content-between ">
+                    <span>Qualité : {{ rating( company.qualityNotice , company.countNotice ).rate }}/10 {{ rating( company.qualityNotice , company.countNotice ).emoji }}</span>
+                    <span>Rapidité : {{ rating( company.speedNotice , company.countNotice ).rate }}/10 {{ rating( company.speedNotice , company.countNotice ).emoji }}</span>
+                    <span>Prix : {{ rating(company.priceNotice , company.countNotice).rate }}/10 {{ rating(company.priceNotice , company.countNotice).emoji }}</span>
+                </div>
+
+                <div class="col-sm-5 col-md-6 col-11 d-flex justify-content-end my-4  ">
+                    <span class="app-fs-1-5em ">{{ rating(company.generalNotice, company.countNotice ).rate }}/10 {{ rating(company.generalNotice , company.countNotice).emoji }}</span>
+                </div>
+            </div>
+
+
+            {% if conversationForm is not null and navbar().user.isVerified %}
+                <div class="col-6">
+                    {{ form_start(conversationForm, { 'label': '✉️ envoyer un message','attr':{'class':''}}) }}
+
+                    {{ form_row(conversationForm.createConversation, { 'label': '✉️ envoyer un message','attr':{'class':'btn btn-dark app-fs-0-8em '}}) }}
+
+                    {{ form_row(conversationForm.talker,{'attr':{'class':''}}) }}
+
+                    {{ form_end(conversationForm) }}
+                </div>
+            {% endif %}
+
+
+        </div>
+
+
+        {% if noticeForm is not null and navbar().user.isVerified %}
+            <div class="col-11 app-text-a-end mb-3">
+                <button id="add_notices_button" class="btn btn-primary"><a href="#add_notice_form" class="app-white" >ajouter un avis<a></button>
+            </div>
+
+        {% endif %}
+
+
+
+        {% if noticeForm is not null %}
+            <div id="add_notice_form" class="col-11 row mx-auto mx-md-0 background-notice-app app-border-r-10px d-none">
+                {{ form_start(noticeForm, {'attr':{'class':'row px-1 py-3'}}) }}
+
+                <div class="col-4">{{ form_row(noticeForm.title,{'label': false,'attr':{'class':'','placeholder': 'Titre'}}) }}</div>
+
+                {{ form_row(noticeForm.comment,{'label': false,'attr':{'class':'mt-2','placeholder': 'Description'}}) }}
+
+                <div class="col-6">{{ form_row(noticeForm.serviceType,{'label': false,'attr':{'class':'mt-2','placeholder': 'Travaux effectué'}}) }}</div>
+                <div class="col-6">{{ form_row(noticeForm.servicePlace, {'label': false,'attr':{'class':'mt-2','placeholder': 'emplacement géographique'}}) }}</div>
+
+                <div class="col-md-4 col-12">
+                    <div class="">{{ form_row(noticeForm.image1, {'label': false,'attr':{'class':'mt-2'}}) }}</div>
+
+                    <div class="">{{ form_row(noticeForm.image2, {'label': false,'attr':{'class':'mt-2'}}) }}</div>
+
+                    <div class="">{{ form_row(noticeForm.image3, {'label': false,'attr':{'class':'mt-2'}}) }}</div>
+
+                    <div class="">{{ form_row(noticeForm.image4, {'label': false,'attr':{'class':'mt-2'}}) }}</div>
+
+                    <div class="">{{ form_row(noticeForm.image5, {'label': false,'attr':{'class':'mt-2'}}) }}</div>
+                </div>
+
+
+                <div class="col-md-7 col-12  mx-auto">
+                    <div class="col-12 "></div>
+                    <div class="row background-notice-main-app app-border-r-10px mt-md-4">
+                        <div class="row mb-2 pt-4">
+                            {{ form_label(noticeForm.generalNotice, 'Note Générale', { 'label_attr': {'class': ' col-md-3 col-12'} }) }}
+                            <div class="col-md-8 col-10">
+                                {{ form_row(noticeForm.generalNotice, {'label': false, 'attr':{'class':''}}) }}
+                            </div>
+                            <span id="general_notice_value" class="col-md-1 col-2"></span>
+                        </div>
+
+
+                        <div class="row my-2">{{ form_label(noticeForm.qualityNotice, 'Note de Qualité', { 'label_attr': {'class': ' col-md-3 col-12'} }) }}
+                            <div class="col-md-8 col-10">
+                                {{ form_row(noticeForm.qualityNotice, {'label': false, 'attr':{'class':''}}) }}
+                            </div>
+                            <span id="quality_notice_value" class="col-md-1 col-2"></span></div>
+
+                        <div class="row my-2">{{ form_label(noticeForm.speedNotice, 'Note de rapidité', { 'label_attr': {'class': ' col-md-3 col-12'} }) }}
+                            <div class="col-md-8 col-10"> {{ form_row(noticeForm.speedNotice, {'label': false, 'attr':{'class':''}}) }}</div>
+                            <span id="speed_notice_value" class="col-md-1 col-2"></span></div>
+
+                        <div class="row mt-2 pb-3">{{ form_label(noticeForm.priceNotice, 'Note de prix', { 'label_attr': {'class': 'col-md-3 col-12'} }) }}
+                            <div class="col-md-8 col-10">{{ form_row(noticeForm.priceNotice, {'label': false, 'attr':{'class':''}}) }}</div>
+
+                            <span id="price_notice_value" class="col-md-1 col-2"></span></div>
+
+
+                    </div>
+
+                </div>
+                <div class="col-12 app-text-a-end mt-4 mt-md-1">
+                    <button type="submit" class="btn btn-primary w-auto app-fs-1-2em mr-3">valider</button>
+                </div>
+                {{ form_end(noticeForm) }}
+            </div>
+        {% endif %}
 
         {% if company.notices is not empty %}
 
         {% else %}
-            {{ 'pas d\'Avis' }}
-        {% endif %}
-          </div>
 
-    <hr>
+        {% endif %}
+
+        {% set countOfNotice = 0 %}
+        <span class="color-app app-fs-1-2em my-3">Avis ( {{ company.countNotice }} )</span>
         {% if notices.owner_notices is defined %}
-                <br><br>
-            <hr>
-                <div>
 
-                        <p>Vos Avis</p>
-                {% for notice in notices.owner_notices %}
-                      <div>titre : {{ notice.title }} <br> domaine : {{ notice.serviceType }} <br> ville :{{ notice.servicePlace }}
-                          <br> commentaire : {{ notice.comment }} <br> note generale : {{ notice.generalNotice }} <br> note de qualité : {{ notice.qualityNotice }}
-                          <br>note de rapidité : {{ notice.speedNotice }} <br> note de prix : {{ notice.priceNotice }}<a href="{{ path('app_delete_notice',{uuidNotice:notice.uuid}) }}">suppimer l'avis</a></div>
-                    {% for image in notice.images %}
-                        {% if image is defined %}
-                            <img src="{{ asset( image) }}" width="100" height="100"/>
-                        {% endif %}
+        <div>
+
+            <div class="col-11 background-notice-main-app app-border-r-10px app-opacity-05 py-2">
+                <span class="ml-2 ">Vos Avis</span>
+            </div>
+
+            {% for notice in notices.owner_notices %}
+
+                {% set countOfNotice = countOfNotice+1 %}
+
+                {% include('Extensions/notices.html.twig') %}
 
 
-                    {% endfor %}
 
-                        <br><br>
-                </div>
             {% endfor %}
-            <hr>
-        {% endif %}
-        {% if noticeForm is not null %}
-                {{ form_start(noticeForm) }}
-                <button type="submit">vazi</button>
-                {{ form_end(noticeForm) }}
-        {% endif %}
-     {% if notices.notices is defined %}
-             {% for notice in notices.notices %}
-                 <div>titre : {{ notice.title }} <br> domaine : {{ notice.serviceType }} <br> ville :{{ notice.servicePlace }}
-                     <br> commentaire : {{ notice.comment }} <br> note generale : {{ notice.generalNotice }} <br> note de qualité : {{ notice.qualityNotice }}
-                     <br>note de rapidité : {{ notice.speedNotice }} <br> note de prix : {{ notice.priceNotice }}<a href="{{ path('app_delete_notice',{uuidNotice:notice.uuid}) }}">suppimer l'avis</a></div>
-                 {% for image in notice.images %}
-                     {% if image is defined %}
-                         <img src="{{ asset( image) }}" width="100" height="100"/>
-                     {% endif %}
-                 {% endfor %}
 
-             {% endfor %}
 
-     {% endif %}
+            {% endif %}
 
 
 
 
 
-</div>
+
+
+
+
+
+
+
+
+
+
+
+            {% if notices.notices is defined %}
+                <div class="col-11 background-notice-main-app app-border-r-10px app-opacity-05 py-2">
+                    <span class="ml-2 ">Avis d'autres utilisateurs</span>
+                </div>
+                {% for notice in notices.notices %}
+
+                    {% set countOfNotice = countOfNotice+1 %}
+
+                    {% include('Extensions/notices.html.twig') %}
+
+
+                {% endfor %}
+
+
+
+            {% endif %}
+            <script src="{{ asset('javascript/range_notice_value.js') }}"></script>
+
+
+        </div>
+
+
+    </div>
+    <script>
+        window.addEventListener('DOMContentLoaded', function () {
+            var galley = document.getElementById('galley');
+            var viewer = new Viewer(galley, {
+                url: 'data-original',
+                toolbar: {
+                    oneToOne: true,
+
+                    prev: function () {
+                        viewer.prev(true);
+                    },
+
+                    play: true,
+
+                    next: function () {
+                        viewer.next(true);
+                    },
+
+                    download: function () {
+                        const a = document.createElement('a');
+
+                        a.href = viewer.image.src;
+                        a.download = viewer.image.alt;
+                        document.body.appendChild(a);
+                        a.click();
+                        document.body.removeChild(a);
+                    },
+                },
+            });
+        });
+    </script>
+
+
 {% endblock %}
 
 

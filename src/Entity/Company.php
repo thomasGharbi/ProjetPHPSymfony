@@ -37,7 +37,7 @@ class Company
      * @var string
      * @ORM\Column(type="string", length=255)
      * @Assert\NotBlank(message="Le nom de l'entreprise doit être saisi")
-     * @Assert\Length(max = 50,
+     * @Assert\Length(max = 28,
      *      maxMessage = "Le nom de l'entrprise ne peut pas contenir moins de {{ limit }} caractères")
      */
     private $nameOfCompany;
@@ -92,7 +92,7 @@ class Company
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255, nullable=false)
      * @Assert\NotBlank(message="L'année de debut d'activité La zone maximal d'activité doit être saisi.")
      * @Assert\Regex(pattern = "/^\d{4}$/", message = "l'année de début d'activité n'est pas valide")
      *
@@ -147,7 +147,7 @@ class Company
      * @Assert\NotBlank(message="Le Titre lié a votre entreprise doit être saisi.")
      * @Assert\Length(
      *      min = 10,
-     *      max = 80,
+     *      max = 50,
      *      minMessage = "Le titre doit contenir plus de {{ limit }} caractères",
      *      maxMessage = "Le titre ne peut pas contenir moins de {{ limit }} caractères")
      */
@@ -160,8 +160,8 @@ class Company
      * @Assert\Length(
      *      min = 30,
      *      max = 250,
-     *      minMessage = "La description doit contenir plus de {{ limit }} caractères",
-     *      maxMessage = "La description ne peut pas contenir moins de {{ limit }} caractères")
+     *      minMessage = "La description doit contenir moins de {{ limit }} caractères",
+     *      maxMessage = "La description ne peut pas contenir plus de {{ limit }} caractères")
      */
     private $profileDescription;
 
@@ -253,6 +253,7 @@ class Company
         $this->qualityNotice = 0;
         $this->speedNotice = 0;
         $this->priceNotice = 0;
+        $this->countNotice = 0;
         $this->conversations = new ArrayCollection();
         $this->uuid = Uuid::v1();
     }

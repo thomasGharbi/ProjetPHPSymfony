@@ -35,9 +35,11 @@ class UserController extends AbstractController
             }
 
 
+
             $createConversationForm = $this->createForm($conversationType::class, $allEntities);
             $createConversationForm->handleRequest($request);
-            if ($createConversationForm->isSubmitted() && $createConversationForm->isValid()) {
+            if ($createConversationForm->isSubmitted()) {
+
                 $talker = $createConversationForm->get('talker')->getData();
                 return $this->redirectToRoute('app_create_conversation', ['uuidRecipient' => $userConcerned->getUuid(), 'uuidTalker' => $talker]);
             }

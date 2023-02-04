@@ -44,6 +44,7 @@ class AdminVoter extends Voter
 
         if (!($user instanceof User)) {
 
+
             return false;
         }
 
@@ -58,6 +59,7 @@ class AdminVoter extends Voter
                 }
 
             case 'admin':
+
                 if (in_array('ROLE_ADMIN', $user->getRoles()) && $this->passwordVerify($password)) {
 
                     return true;
@@ -76,7 +78,7 @@ class AdminVoter extends Voter
     public function passwordVerify(string $password): bool
     {
         $passwordHasher = $this->hasherFactory->getPasswordHasher(User::class);
-        return $passwordHasher->verify('$2y$13$EmDMFqCaf2FedvFxBkWOK.zdr85YQTV5dIcoTNtp15m/zGnGEOsmm', $password);
+        return $passwordHasher->verify('$2y$13$GC7zhwT7Y6Ydo.gVBksdsuSiumkZoX6TPi0vGv1N5rCs9C.wLaSem', $password);
 
     }
 }

@@ -1,27 +1,18 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ConversationsController!{% endblock %}
 
 {% block body %}
-    <style>
-        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-    </style>
+   <div class="container row">
 
 
+<h4 class="mt-5 mb-3 col-6 mx-auto color-app">Conversations</h4>
+       <div class="col-12"></div>
 
-    <div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/Users/thoma/DEV/Projets/publico/src/Controller/ConversationsController.php'|file_link(0) }}">src/Controller/ConversationsController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/Users/thoma/DEV/Projets/publico/templates/conversations/conversations.html.twig'|file_link(0) }}">templates/conversations/index.html.twig</a></code></li>
-    </ul>
-    </div>
     {% set who = null %}
     {% set width = null %}
 {% for conversation in conversations %}
+    <div class="background-notice-app app-border-r-10px col-7 mx-auto p-3 mt-4">
+       <span>{% if(conversation.is_read == false) %}🚨{% endif %}</span>
 
 {% if (conversation.who.username is defined) %}
 
@@ -63,46 +54,32 @@
                 'deleted' : true }%}
     {% endif %}
 
-        {{ conversation.conversation.createdAt|date("d/m/Y H:i") }} <a href="/conversation/{{ conversation.conversation.uuid }}">
-    <br><img src="{{  asset(conversation.width.profileImage)}}" width="50" height="50"/>{{ width.name }}
-    <br><br>
-              <img src="{{  asset(who.profile_image)}}" width="50" height="50" {{ who.deleted ?  'style="opacity: 0.2"'  }}/>
-    {{ who.entity == 'user' ?  '(utilisateur' :  '(entreprise'  }}
-    {{ who.deleted ?  ' supprimé)' :  ')'  }}
 
-    {{ who.name }}<br><br></a>{% if(conversation.is_read == false) %} non lu {% endif %}
+        <a href="/conversation/{{ conversation.conversation.uuid }}" class="app-color-text ">
+            <div class="row">
+            <div class="app-border-right col-7"><img src="{{  asset(who.profile_image)}}" class="app-round-profile-company" {{ who.deleted ?  'style="opacity: 0.2"'  }}/><span class="pl-2 color-app app-fs-1-1em" >{{ who.name }}
+            <span class="app-opacity-05 app-color-text app-fs-0-7em">{{ who.entity == 'user' ?  '(utilisateur' :  '(entreprise'  }}{{ who.deleted ?  ' supprimé)' :  ')'  }}</span></span>
+            </div>
+
+            <div class=" col-5">
+
+            <img src="{{  asset(conversation.width.profileImage)}}" class="app-round-profile " width="50" height="50"/><span class="pl-2 ">{{ width.name }}
+                    <span class="app-opacity-05 app-fs-0-7em">{{ width.entity == 'user' ?  '(utilisateur' :  '(entreprise'  }}{{ width.deleted ?  ' supprimé)' :  ')'  }}</span></span>
+
+            </div>
 
 
+            </div>
+
+            <div class="app-text-a-end "><span class="app-opacity-05 ">{{ conversation.conversation.createdAt|date("d/m/Y H:i") }}</span></div>
+        </a>
+
+
+    </div>
 
 {% endfor %}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+   </div>
 
 {% endblock %}

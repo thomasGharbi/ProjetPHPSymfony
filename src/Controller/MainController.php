@@ -32,8 +32,10 @@ class MainController extends AbstractController
 
         $searchForm = $searchForm->handleRequest($request);
         if($searchForm->isSubmitted() && $searchForm->isValid()) {
+
             $addVisitor->addPointToVisitor('visitor_main_search', 3);
             $companies = $companyRepository->search($searchForm->get('search')->getData(), $searchForm->get('params_search')->getData());
+
 
             if ($companies == null) {
 
@@ -42,7 +44,7 @@ class MainController extends AbstractController
 
         }
 
-        return $this->render('main/index.html.twig', [
+        return $this->render('/main.html.twig', [
             'controller_name' => 'MainController', 'search_form' => $searchForm->createView(), 'companies' => $companies, 'notices' => $notices, 'search_result' => $searchResult
         ]);
     }

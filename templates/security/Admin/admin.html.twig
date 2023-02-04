@@ -1,0 +1,159 @@
+{% extends '../../base.html.twig' %}
+
+
+
+{% block body %}
+
+
+
+<div class="container mx-auto row">
+
+    {% if(search_form is not null) %}
+        <div class="app-h10vh" ></div>
+
+<div class="col-md-7 col-12">
+    {{ form_start(search_form, { 'label': false,'attr':{'class':'row'}}) }}
+
+
+
+        <div class="col-12 col-sm-6 col-xl-5">
+            {{ form_row(search_form.search,{'attr':{'placeholder':'email, username, uuid...'}}) }}
+        </div>
+        <div class="col-6 col-sm-3 col-xl-4 ">
+            {{ form_row(search_form.params_search, { 'label': false,'attr':{'class':'','required':true}}) }}
+        </div>
+        <div class="col-6 col-sm-3 col-xl-3 ">{{ form_row(search_form.submitSearch, { 'label': 'Rechercher' }) }}</div>
+
+
+
+    {{ form_end(search_form) }}
+
+
+    {% if(entities is not null) %}
+
+
+        {% if (entities.entities is not empty) %}
+
+            <div class=""><span>{{ entities.entities|length }} Entité trouvé{{ entities|length >= 2 ? 's' }}</span></div>
+            {% if (entities.entity == "AuthenticationLog") %}
+                {% for auth in entities.entities %}
+    <div class="col-md-10 col-12 mx-auto mx-md-0 row background-notice-main-app app-border-r-10px p-2 mb-2">
+        <div class=" d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Adresse Ip</span><span>{{ (admin_type == 'admin')? auth.userIp : '*************' }}</span></div>
+        <div class=" d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Email</span><span>{{ (admin_type == 'admin')? auth.userEmailEntered : '*************' }}</span></div>
+        <div class=" d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Authentification</span><span>{{ auth.authSuccessful }}</span></div>
+        <div class=" d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Tentative</span><span>{{ auth.authAttemptAt|date("d/m/Y H:i") }}</span></div>
+        <div class=" d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Oauth</span><span>{{ auth.oauthProvider }}</span></div>
+        <div class=" d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Administration</span><span>{{ auth.adminAttempt }}</span></div>
+        <div class=" d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Liste noire</span><span>{{ auth.blackListed }}</span></div>
+        <div class=" d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">liste noire jusqu'à</span><span>{{ auth.blackListedUntil|date("d/m/Y H:i") }}</span></div>
+    </div>
+                {% endfor %}
+            {% elseif (entities.entity == "User") %}
+                {% for user in entities.entities %}
+                    <div class="col-md-10 col-12 mx-auto mx-md-0 row background-notice-main-app app-border-r-10px mb-2 p-2">
+
+                        <div class=" d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Nom d'utilisateur</span><span >{{ user.username }}</span></div>
+                        <div class="d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Prénom</span><span>{{ user.firstName }}</span></div>
+                        <div class="d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Nom</span><span>{{ user.name }}</span></div>
+                        <div class="d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Email</span><span>{{ (admin_type == 'admin')? user.email : '*************' }}</span></div>
+                        <div class="d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Téléphone</span><span>{{ (admin_type == 'admin')? user.phone : '*************' }}</span></div>
+                        <div class="d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Compte vérifié</span><span>{{ (user.isVerified) ? 'oui' : 'non' }}</span></div>
+                        <div class="d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Compte créé</span><span>{{ user.createdAt|date("d/m/Y H:i") }}</span></div>
+                        <div class="d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Identifiant Google</span><span>{{ (user.googleID) ? 'oui' : '-' }}</span></div>
+                        <div class="d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Identifiant Github</span><span>{{ (user.githubID) ? 'oui' : '-' }}</span></div>
+                        <div class="d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Uuid</span><span>{{ user.uuid }}</span></div>
+                        <div class="background-notice-main-app app-border-r-10px mt-4">
+                            <div class="mb-2 app-opacity-05"><span>Entreprises</span></div>
+                        {% for company in user.companies %}
+
+                            <div class="mb-1"><span>{{ company.nameOfCompany }}</span></div>
+
+                        {% endfor %}
+                        </div>
+                        <a href="{{ path('app_admin_delete',{uuid:user.uuid}) }}" class=" mt-3 btn-danger w-auto app-border-r-10px">supprimer l'utilisateur</a>
+                    </div>
+                {% endfor %}
+            {% elseif (entities.entity == "Company") %}
+                {% for company in entities.entities %}
+    <div class="col-md-10 col-12 mx-auto mx-md-0 row background-notice-main-app app-border-r-10px mb-2 p-2">
+        <div class=" d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Utilisateur</span><span>{{ company.user.username }}</span></div>
+        <div class=" d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Nom de l'entreprise</span><span >{{ company.nameOfCompany }}</span></div>
+        <div class="d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Nom du responsable</span><span>{{ company.firstNameOfCompanyManager }} {{ company.nameOfCompanyManager }}</span></div>
+        <div class="d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Secteur d'activité</span><span>{{ company.sector }}</span></div>
+        <div class="d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Ville</span><span>{{ company.city }} - {{ company.department }}</span></div>
+        <div class="d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">En activité depuis</span><span>{{ company.inActivitySince }}</span></div>
+        <div class="d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Téléphone</span><span>{{ company.phone }}</span></div>
+        <div class="d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Email</span><span>{{ company.email }}</span></div>
+        <div class="d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Uuid</span><span>{{ company.uuid }}</span></div>
+        <div class="d-flex justify-content-between background-notice-main-app app-border-r-10px mb-2"><span class="app-opacity-05">Nombre d'avis</span><span>{{ company.countNotice }}</span></div>
+                    <a href="{{ path('app_admin_delete',{uuid:company.uuid}) }}" class=" mt-3 btn-danger w-auto app-border-r-10px">supprimer l'entreprise</a>
+    </div>
+                {% endfor %}
+            {% endif %}
+        {% else %}
+            {{ 'pas d\'entité trouvé' }}
+        {% endif %}
+    {% endif %}
+
+</div>
+        {% else %}
+            <div class="app-h20vh" ></div>
+            <div class="col-md-6 col-12 mx-auto background-notice-app pt-3 pb-2">
+
+                {{ form_start(admin_password_form, { 'attr':{'class':'row pt-4'}}) }}
+
+                <div class="col-8">
+                    {{ form_row(admin_password_form.admin_password, { 'label': false,'attr':{'class':'','placeholder':''}}) }}
+                </div>
+                <div class="col-4 ">
+                   <button class="btn btn-primary w-100">Entrer</button>
+                </div>
+
+                {{ form_end(admin_password_form) }}
+                <span class="app-fs-0-7em app-opacity-05 ">Il est possible que le mot de passe soit </span><span class="color-app app-fs-0-7em">admin_demo</span>
+            </div>
+
+    {% endif %}
+
+    {% if(visitors is not null) %}
+        <div class="col-md-5 col-12 ">
+            <div class=""><span class="app-fs-1-2em  color-app">visiteurs par mois :</span>
+                {% for visitor in visitors.months %}
+                   <div class="w-100 p-1 d-flex justify-content-between background-notice-app"><span class="color-app">{{ visitor.month }}</span><span class="app-opacity-05">{{ visitor.visitors }}</span></div>
+                {% endfor %}
+            </div>
+            <div class="p-1 mt-4 background-notice-app d-flex justify-content-between">
+                <span class="color-app">visiteurs cette semaine </span>
+                <span class="app-opacity-05">{{ visitors.week }}</span>
+            </div>
+            <div class="p-1 background-notice-app d-flex justify-content-between">
+                <span class="color-app">visiteurs aujourd'hui </span>
+                <span class="app-opacity-05">{{ visitors.day }}</span>
+            </div>
+
+
+        </div>
+    {% endif %}
+</div>
+
+    <script>
+        const inputParams = document.getElementById('searchs_admin_params_search');
+        const inputSearch = document.getElementById('searchs_admin_search');
+
+
+        inputParams.addEventListener('input', updateValue);
+
+        function updateValue(e) {
+
+            if(inputParams.value === 'Company'){
+                inputSearch.placeholder = "SIRET, uuid, secteur d'activité..."
+            }else if(inputParams.value === 'AuthenticationLog'){
+                inputSearch.placeholder = "adresse Ip, email saisie, Oauth..."
+            }else{
+                inputSearch.placeholder = "email, username, uuid..."
+            }
+
+        }
+    </script>
+
+{% endblock %}

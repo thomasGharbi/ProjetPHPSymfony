@@ -70,6 +70,7 @@ class ConfirmIdentitySecurity
     public function checkIfBypassConfirmIdentity(): void
     {
         //verifie si il ya eu bypass de verification d'identité (via modification de l'HTML)
+
         if($this->session->get('password_confirmed') !== 'valide'){
 
             throw new LogicException('Le formulaire rempli est invalide');

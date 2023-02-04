@@ -57,6 +57,7 @@ addEventListener('submitEvent', (e) => {
 addEventListener('submitEvent', (e) => {
 
     if (e.detail.identity === 'identity_is_verified') {
+        console.log('here')
         button_to_modify.type = 'submit';
         button_to_delete.addEventListener('click', myfunction);
 

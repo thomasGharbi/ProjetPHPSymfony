@@ -131,13 +131,18 @@ public function getIpBlackListed(string $userIp): ?AuthenticationLog
      * @return mixed
      */
     public function searchForAdmin(string $search):mixed{
-        $search = str_replace('@', '', $search);
+
+        $search = '"' . $search . '"';
         $query = $this->createQueryBuilder('auth');
-        $query->andWhere('MATCH_AGAINST(auth.emailEntered, auth.userIp, auth.oauthProvider)
-             AGAINST (:search boolean)>0')->setParameter('search', $search)
+        $query->andWhere('MATCH_AGAINST(auth.emailEntered, auth.userIp, auth.oauthProvider) AGAINST (:search boolean)>0')->setParameter('search', $search)
            ->setMaxResults(100);
+
         return $query->getQuery()->getResult();
     }
+
+
+
+
 
 
 

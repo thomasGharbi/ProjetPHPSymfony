@@ -1,0 +1,238 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <script src="{{ asset('javascript/viewerjs-master/docs/js/viewer.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('javascript/viewerjs-master/docs/css/viewer.css') }}">
+
+    <div class="container">
+
+        <div class="p-4"></div>
+
+
+        {# Formulaire de recherce #}
+        <div class="form-row align-items-center ">
+            {{ form_start(search_form, {'attr':{'class':'pt-3 '}}) }}
+
+
+            <div class="col-auto row d-flex justify-content-center">
+                <div class="col-12 col-sm-6 col-xl-5">
+                    {{ form_row(search_form.search, { }) }}
+                </div>
+                <div class="col-6 col-sm-3 col-xl-2">
+                    {{ form_row(search_form.params_search, { 'label': false,'placeholder':'Trier par','attr':{'class':''}}) }}
+                </div>
+                <div class="col-6 col-sm-3 col-xl-3 ">{{ form_row(search_form.submitSearch, { 'label': 'Rechercher' }) }}</div>
+            </div>
+
+
+            {{ form_end(search_form) }}
+
+        </div>
+
+
+        {% if (companies is not empty) %}
+            <div class="row ">
+                <div class="col-0 col-sm-1"></div>
+                <div class="col-11">
+                    <span class="color-app" >{{ companies|length }} entreprise{{ (companies|length >= 2) ? 's' }} trouvée{{ (companies|length >= 2) ? 's' : '' }}</span>
+                </div>
+            </div>
+
+
+
+            {# résultat de recherche d'entreprise #}
+            {% for company in companies %}
+
+                <a class="app-color-text" href="{{ path('app_company_page', { uuidCompany: company.uuid }) }}" >
+                    <div class="row ">
+
+                        <div class="col-0 ml-0 ml-md-2 col-sm-1"></div>
+
+
+                        <div class="col-11 mx-auto my-4 col-sm-8 mx-sm-0 background-company-app app-border-r-10px" >
+
+                            <div class="my-2">
+                                <img class="app-round-profile-company" src="{{ company.profileImage }}" alt="">
+                                <span class="ml-3 app-fs-1-5em">{{ company.nameOfCompany }}
+                                    <span class="app-fs-0-5em">(Depuis {{ company.inActivitySince }})</span>
+                                </span>
+                            </div>
+
+                            <span class="d-block m-2 app-text-a-end" >🔨 {{ company.sector }} {{ (company.specialization is not null) ? '(' }}{{ company.specialization }}{{ (company.specialization is not null) ? ')' }}</span>
+
+
+                            <div class="app-border-r-10px background-notice-app " >
+                                <div class="p-3  text-break">{{ company.profileTitle }}</div>
+                                <div class=" m-3 d-inline-block text-break ">{{ company.profileDescription }}</div>
+                            </div>
+                            <div class="mt-3 col-12">📍 {{ company.city }}</div>
+
+                            <hr class="my-3 app-hr">
+
+                            <div class="col-12 my-3">Avis ({{ company.countNotice }})</div>
+
+
+                            <div class="row">
+
+                                <div class="col-12 col-sm-7 col-md-6 d-flex justify-content-between ">
+                                    <span>Qualité : {{ rating( company.qualityNotice , company.countNotice ).rate }}/10 {{ rating( company.qualityNotice , company.countNotice ).emoji }}</span>
+                                    <span>Rapidité : {{ rating( company.speedNotice , company.countNotice ).rate }}/10 {{ rating( company.speedNotice , company.countNotice ).emoji }}</span>
+                                    <span>Prix : {{ rating(company.priceNotice , company.countNotice).rate }}/10 {{ rating(company.priceNotice , company.countNotice).emoji }}</span>
+                                </div>
+
+                                <div class="col-sm-5 col-md-6 col-11 d-flex justify-content-end my-4 ">
+                                    <span class="app-fs-1-5em">{{ rating(company.generalNotice, company.countNotice ).rate }}/10 {{ rating(company.generalNotice , company.countNotice).emoji }}</span>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
+                    </div>
+                </a>
+            {% endfor %}
+
+
+        {% endif %}
+
+        {% if(search_result) %}
+            <span class="color-app" >nous n'avons pas trouver d'entreprise</span>
+        {% endif %}
+
+
+        <hr class="mx-4">
+
+        {# Avis Récents #}
+        {% if notices is not null %}
+            {% set countOfNotice = 0 %}
+            <div class="row ">
+                <div class="col-0 col-sm-1"></div>
+                <div class="col-11"><span class="color-app" >Avis Récents</span></div>
+            </div>
+
+            <div class="row mx-auto app-color-text" >
+                {% for notice in notices %}
+
+                    {% set countOfNotice = countOfNotice+1 %}
+
+
+
+
+
+                    <div class="app-border-r-10px mx-auto w-100  my-4 col-sm-8 mx-sm-0 background-notice-main-app row" >
+
+
+                        <div class="col-12 col-md-6">
+                            <a class="app-color-text" href="{{ path('app_user_page', { uuidUser: notice.user.uuid }) }}" >
+                                <img class="app-round-profile-company my-2" src="{{ asset( notice.user.profileImage) }}" alt="">
+                                <span class="ml-3 d-inline-block app-fs-1-5em">{{ notice.user.username }}</span>
+                            </a>
+                        </div>
+                        <div class="col-12 col-md-6 d-flex justify-content-start justify-content-md-end ">
+                            <div class="m-md-3 mt-3 pt-md-2">
+                                <a href="{{ path('app_company_page', { uuidCompany: notice.company.uuid }) }}" class="text-decoration-none ">
+                                    <img class="mr-2 app-round-profile" src="{{ notice.company.profileImage }}"/>
+                                    <span class="app-color-text" >{{ notice.company.nameOfCompany }}</span>
+                                </a>
+                            </div>
+                        </div>
+
+
+                        <div class="app-border-r-10px background-notice-app mt-3" >
+                            <div class="col-12 pt-3">{{ notice.title }}</div>
+                            <div class="col-12 pb-3 mt-3 text-break">{{ notice.comment[:500] }}{{ (notice.comment|length > 500) ? '...' }}</div>
+                        </div>
+
+                        <div class="mt-3 col-12 d-md-flex justify-content-md-between">
+                            <span class="mr-2 my-1">🔨 {{ notice.serviceType }}</span>
+                            <span class="mr-2 my-1 d-block">📍 {{ notice.servicePlace }}</span>
+                        </div>
+
+
+                        <div id="galley{{ countOfNotice }}" class="pictures  d-md-flex justify-content-md-start mt-3">
+
+                            {% for image in notice.images %}
+                                {% if image is defined %}
+
+                                    <div class=" mx-md-1 d-inline-block app-cursor-pointer" >
+                                        <img  class="app-border-r-10px app-image-notice" data-original="{{ asset( image) }}" src="{{ asset( image) }}" alt="Cuo Na Lake">
+                                    </div>
+
+                                {% endif %}
+                            {% endfor %}
+
+                        </div>
+
+
+                        <hr class="app-hr my-3">
+
+                        <div class="col-12 col-sm-7 col-md-6 d-flex justify-content-between ">
+                            <span>Qualité : {{ notice.qualityNotice }}/10 {{ rating( notice.qualityNotice , 1 ).emoji }}</span>
+                            <span>Rapidité : {{ notice.speedNotice }}/10 {{ rating( notice.speedNotice , 1 ).emoji }}</span>
+                            <span>Prix : {{ notice.priceNotice }}/10 {{ rating( notice.priceNotice , 1 ).emoji }}</span>
+                        </div>
+
+                        <div class="col-sm-5 col-md-6 col-11 d-flex justify-content-end my-4">
+                            <span class="app-fs-1-5em">{{ notice.generalNotice }}/10 {{ rating( notice.generalNotice , 1 ).emoji }}</span>
+                        </div>
+
+
+                        {% if (navbar().user.uuid is defined and notice.user.uuid == navbar().user.uuid) %}
+                            <div class="">
+                                <button class="w-auto  btn btn-danger">
+                                    <a class="app-fs-0-8em mb-2" href="{{ path('app_delete_notice',{uuidNotice:notice.uuid}) }}">
+                                        <span>🗑️</span>
+                                        <span class="app-vertical-a-tt app-fs-0-7em app-white" > supprimé</span> </a></button>
+                            </div>
+                        {% endif %}
+
+                        <div class="col-12 mb-2 d-flex justify-content-end">
+                            publié {{ date_format(notice.createdAt) }}</div>
+                    </div>
+
+                    <script>
+                        window.addEventListener('DOMContentLoaded', function () {
+                            var galley = document.getElementById('galley{{ countOfNotice }}');
+                            var viewer = new Viewer(galley, {
+                                url: 'data-original',
+                                toolbar: {
+                                    oneToOne: true,
+
+                                    prev: function () {
+                                        viewer.prev(true);
+                                    },
+
+                                    play: true,
+
+                                    next: function () {
+                                        viewer.next(true);
+                                    },
+
+                                    download: function () {
+                                        const a = document.createElement('a');
+
+                                        a.href = viewer.image.src;
+                                        a.download = viewer.image.alt;
+                                        document.body.appendChild(a);
+                                        a.click();
+                                        document.body.removeChild(a);
+                                    },
+                                },
+                            });
+                        });
+                    </script>
+
+                {% endfor %}
+            </div>
+
+        {% endif %}
+    </div>
+
+
+
+
+
+
+
+{% endblock %}

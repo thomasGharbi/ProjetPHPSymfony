@@ -1,44 +1,91 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello ConversationController!{% endblock %}
+
 
 {% block body %}
-    <style>
-        .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-        .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-    </style>
 
-    <div class="example-wrapper">
- {% if( conversation.who.username is defined ) %}
 
-    <img src="{{  asset(conversation.width.profileImage)}}" width="100" height="100"/> <img src="{{  asset(conversation.who.profileImage)}}" width="100" height="100"/>
-{{ '(utilisateur)' }}  {{ conversation.who.username }}
-        {% elseif (conversation.who.SIRETNumber is defined)%}
-            <img src="{{  asset(conversation.who.profileImage)}}" width="100" height="100"/>
-{{ '(entreprise)' }}{{  conversation.who.nameOfCompany }}
+    <div class="container">
+        <div class="w-auto app-text-a-end mt-4">
+        <a href="{{ path('app_conversations') }}" ><button class="app-fs-0-8em btn btn-primary">💬 Conversations</button></a>
+        </div>
+        {% if( conversation.who.username is defined ) %}
+
+
+        <a  href="{{ path('app_user_page', { uuidUser: conversation.who.uuid }) }}" >
+            <img src="{{ asset(conversation.who.profileImage) }}" class="app-round-profile-company my-2"/>
+            <span class="ml-3 d-inline-block app-color-text">{{ conversation.who.username }}</span>
+
+        </a>
+        {% elseif (conversation.who.SIRETNumber is defined) %}
+        <a  href="{{ path('app_company_page', { uuidCompany: conversation.who.uuid }) }}" >
+            <img src="{{ asset(conversation.who.profileImage) }}" class="app-round-profile-company my-2"/>
+            <span class="ml-3 d-inline-block app-color-text">{{ conversation.who.nameOfCompany }}</span>
+        </a>
         {% else %}
-            <img src="{{  asset(conversation.who.profileImage)}}" width="100" height="100"/>
+            <img src="{{ asset(conversation.who.profileImage) }}" class="app-round-profile-company app-opacity-05 my-2"/>
             {% if (conversation.who.entity == 'user') %}
-               {{  '(utilisateur supprimé) ' }}{{conversation.who.nameOfEntity }}
-                {% else %}
-                    {{  '(entreprise supprimé) '}}{{conversation.who.nameOfEntity }}
+                <span class="app-opacity-05 ml-3 d-inline-block">{{ '(utilisateur supprimé) ' }}{{ conversation.who.nameOfEntity }}</span>
+            {% else %}
+                <span class="app-opacity-05 ml-3 d-inline-block">{{ '(entreprise supprimé) ' }}{{ conversation.who.nameOfEntity }}</span>
             {% endif %}
         {% endif %}
+        <div id="chat-window" class="background-notice-main-app h-75 app-border-r-10px-for-chat app-scroll-chat">
+            <div class="row">
+                {% for  message in messages %}
+                    {% if(message.companyOwner) %}
+
+                        <div class="{{ (message.companyOwner ==  conversation.who) ?  ''  :  'ml-auto' }} row col-md-6 col-12 mx-2 py-3 ">
+                            <div class="{{ (message.companyOwner ==  conversation.who) ?  ''  :  'app-text-a-end' }}  col-12">
+                                <img src="{{ asset(message.companyOwner.profileImage) }}" class="app-round-profile"/>
+                                <span class="app-fs-0-8em app-opacity-05 ml-2">{{ message.companyOwner.nameOfCompany }}</span>
+                            </div>
+                            <p class="{{ (message.companyOwner ==  conversation.who) ?  'ml-2'  :  'app-text-a-end' }} mt-3 ">
+                    <span class="background-notice-app app-border-r-10px p-2 d-inline-block">{{ message.message }}
+                        <span class="app-fs-0-8em mt-3 d-block app-opacity-05">{{ message.createdAt|date("d/m/Y H:i" ) }}</span>
+                    </span></p><span class="ml-auto"></span></div>
+
+                    {% elseif(message.userOwner) %}
+                        <div class="{{ (message.userOwner ==  conversation.who) ?  ''  :  'ml-auto' }} row col-md-6 col-12 mx-2 py-3 ">
+                            <div class="{{ (message.userOwner ==  conversation.who) ?  ''  :  'app-text-a-end' }}  col-12">
+                                <img src="{{ asset(message.userOwner.profileImage) }}" class="app-round-profile"/>
+                                <span class="app-fs-0-8em app-opacity-05 ml-2">{{ message.userOwner.username }}</span>
+                            </div>
+                            <p class="{{ (message.userOwner ==  conversation.who) ?  'ml-2'  :  'app-text-a-end' }} mt-3 ">
+                    <span class="background-notice-app app-border-r-10px p-2 d-inline-block">{{ message.message }}
+                        <span class="app-fs-0-8em mt-3 d-block app-opacity-05">{{ message.createdAt|date("d/m/Y H:i" ) }}</span>
+                    </span></p></div>
+
+                    {% else %}
+                        <div class="{{ (message.talkerDeleted.uuid ==  conversation.who.uuid) ?  ''  :  'ml-auto' }} row col-md-6 col-12 mx-2 py-3 ">
+                            <div class="{{ (message.talkerDeleted.uuid ==  conversation.who.uuid) ?  ''  :  'app-text-a-end' }}  col-12">
+                                <img src="{{ asset(message.talkerDeleted.profileImage) }}"
+                                     class="app-round-profile app-opacity-05"/>
+                                <span class="app-fs-0-8em app-opacity-05 ml-2">{{ message.talkerDeleted.nameOfEntity }}</span>
+                            </div>
+                            <p class="{{ (message.talkerDeleted.uuid ==  conversation.who.uuid) ?  'ml-2'  :  'app-text-a-end' }} mt-3 ">
+                    <span class="background-notice-app app-border-r-10px p-2 d-inline-block">{{ message.message }}
+                        <span class="app-fs-0-8em mt-3 d-block app-opacity-05">{{ message.createdAt|date("d/m/Y H:i" ) }}</span>
+                    </span></p></div>
+
+                    {% endif %}
+                    <div class="col-12"></div>
+                {% endfor %}
+
+
+            </div>
+
+
+        </div>
+
+        {{ form_start(messageForm,{'label':false,'attr':{'class':' mt-auto  d-flex justify-content-between '}}) }}
+        {{ form_widget(messageForm.message,{'label':false,'attr':{'class':'h-75 '}}) }}
+        {{ form_widget(messageForm.submit,{'label' : 'envoyer', 'attr':{'class':'btn btn-primary app-fs-1-2em'}} ) }}
+        {{ form_end(messageForm) }}
+
     </div>
-    {% for  message in messages  %}
-        {% if(message.companyOwner) %}
 
-            <div>{{ message.createdAt|date("d/m/Y H:s" ) }}{{ message.companyOwner.nameOfCompany }}<img src="{{  asset(message.companyOwner.profileImage)}}" width="50" height="50"/><p class="{{  (message.companyOwner ==  conversation.who) ?  'recipient'  :  'talker'  }}">{{ message.message }}</p></div>
-        {% elseif(message.userOwner) %}
-            <div>{{ message.createdAt|date("d/m/Y H:s" ) }} - {{ message.userOwner.username }}<img src="{{  asset(message.userOwner.profileImage)}}" width="50" height="50"/><p class="{{  (message.userOwner ==  conversation.who) ?  'recipient'  :  'talker'  }}">{{ message.message }}</p></div>
-            {% else %}
-                <div>{{ message.createdAt|date("d/m/Y H:s" ) }} - {{ message.talkerDeleted.nameOfEntity }}<img src="{{  asset(message.talkerDeleted.profileImage)}}" width="50" height="50"/><p class="{{  (message.talkerDeleted.uuid ==  conversation.who.uuid) ?  'recipient'  :  'talker'  }}">{{ message.message }}</p></div>
-        {% endif %}
-
-        <br>
-
-    {% endfor %}
-    {{ form_start(messageForm) }}
-    <button type="submit">ok</button>
-    {{ form_end(messageForm) }}
+    <script>chatWindow =
+            document.getElementById('chat-window');
+        chatWindow.scrollTo(0, chatWindow.scrollHeight);</script>
 {% endblock %}

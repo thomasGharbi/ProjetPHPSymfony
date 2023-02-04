@@ -127,7 +127,7 @@ export default class ConfirmIdentity {
 
             const button_element = document.createElement('button');
             button_element.type = "submit";
-            button_element.className = "btn btn-success mt-3";
+            button_element.className = "btn btn-primary mt-3";
             button_element.textContent = "Confirmer";
 
 

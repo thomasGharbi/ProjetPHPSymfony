@@ -4,6 +4,7 @@ namespace App\Service;
 
 use App\Entity\User;
 use App\Repository\MessagesRepository;
+use App\Repository\NoticesRepository;
 use App\Repository\VisitorRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -13,6 +14,8 @@ class DeleteUser
 {
 
     private MessagesRepository $messagesRepository;
+    private NoticesRepository $noticesRepository;
+    private DeleteNotice      $deleteNotice;
     private EntityManagerInterface $entityManager;
     private ParameterBagInterface $parameterBag;
     private DeleteCompany         $deleteCompany;
@@ -21,12 +24,16 @@ class DeleteUser
 
     public function __construct(
         MessagesRepository     $messagesRepository,
+        NoticesRepository      $noticesRepository,
+        DeleteNotice           $deleteNotice,
         EntityManagerInterface $entityManager,
         ParameterBagInterface  $parameterBag,
         DeleteCompany          $deleteCompany,
         VisitorRepository      $visitorRepository)
     {
         $this->messagesRepository = $messagesRepository;
+        $this->noticesRepository = $noticesRepository;
+        $this->deleteNotice = $deleteNotice;
         $this->entityManager = $entityManager;
         $this->parameterBag = $parameterBag;
         $this->deleteCompany = $deleteCompany;
@@ -42,6 +49,7 @@ class DeleteUser
     {
 
         $messages = $this->messagesRepository->findBy(['userOwner' => $user]);
+        $notices = $this->noticesRepository->findBy(['user' => $user]);
 
 
         $profileImage = $this->userFilesManagement($user);
@@ -55,6 +63,13 @@ class DeleteUser
             $message->setTalkerDeleted($arrayTalkerDelete);
         }
 
+        if(is_array($notices) && !empty($notices)){
+            foreach ($notices as $notice){
+                $this->deleteNotice->deleteNotice($notice);
+            }
+        }
+
+
 
         $this->entityManager->remove($user);
         $this->entityManager->flush();
@@ -65,21 +80,26 @@ class DeleteUser
     /**
      * @param User $user
      * @return mixed
-     * déplace dans un dossier l'image de profile pour les conversations créées
+     * déplace dans un dossier, l'image de profile pour les conversations créées
      */
     public function userFilesManagement(User $user): mixed
     {
 
-        if($user->getProfileImage() == '/uploads/profil_image_default/user_profil_image_default.jpg'){
+
+
+        if($user->getProfileImage() == 'uploads/profile_image_default/user_profil_image_default.jpg'){
             return $user->getProfileImage();
         }
 
 
+
         $filesystem = new Filesystem();
 
-        $profileImage = str_replace('/', '\\' ,$this->parameterBag->get('app.profile_image_directory') . '\\' . substr((string)$user->getProfileImage(),30));
-        $newFile = str_replace('/', '\\' ,$this->parameterBag->get('app.entities_profile_image_directory_delete') . '\\' . substr((string)$user->getProfileImage(),30));
+        $profileImage = str_replace('/', '\\' ,$this->parameterBag->get('app.profile_image_directory') . substr((string)$user->getProfileImage(),21));
+        $newFile = str_replace('/', '\\' ,$this->parameterBag->get('app.entities_profile_image_directory_delete') . substr((string)$user->getProfileImage(),21));
+       // dd($profileImage,$newFile, $user->getProfileImage());
         $filesystem->rename($profileImage, $newFile);
+
 
 
         return $newFile;
@@ -102,7 +122,8 @@ class DeleteUser
 
                 if ($user == $companyInConversation) {
 
-                    $conversation->removeCompany($companyInConversation);
+
+                    $conversation->removeUser($companyInConversation);
                     $conversation->setTalkerDeleted($arrayTalkerDelete);
 
 

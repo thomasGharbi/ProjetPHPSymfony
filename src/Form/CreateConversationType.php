@@ -28,7 +28,8 @@ class CreateConversationType extends AbstractType
 
         ])
             ->add('talker', choiceType::class, [
-                'choices' => $dataEntities
+                'choices' => ['Envoyer en tant que' => $dataEntities]
+
 
             ]);
 

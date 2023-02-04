@@ -54,17 +54,17 @@ class UserDashboardType extends AbstractType
                     'Femme' => 'Femme',
                     'Homme' => 'Homme',
                     'non précisé' => 'non-précisé'
-                ], 'data' => $options['data']->getGender()
+                ], 'data' => $options['data']['gender']
 
             ])->add('birth', BirthdayType::class, [
                 'constraints' =>new Length(['max' => 20]),
                 'widget' => 'choice',
                 'input' => 'string',
-                'format' => 'dd/MM/yyyy',
-                'data' => $options['data']->getBirth()
-            ])->add('phone', TextType::class, )
+                'format' => 'ddMMyyyy',
+                'data' => $options['data']['birth']
+            ])->add('phone', TextType::class,['empty_data' => ''])
             ->add('email', EmailType::class, [
-                'data' => $options['data']->getEmail(),
+                'data' => $options['data']['email'],
                 'mapped' => false,
                 'constraints' => [
 
@@ -72,7 +72,7 @@ class UserDashboardType extends AbstractType
                     new Callback([
                         'callback' => static function (?string $value, ExecutionContextInterface $context) use ($rep, $options) {
 
-                            if (!empty($value) && $value != $options['data']->getEmail()) {
+                            if (!empty($value) && $value != $options['data']['email']) {
                                 $user = $rep->findBy(['email' => $value]);
 
                                 if ($user) {
@@ -88,13 +88,13 @@ class UserDashboardType extends AbstractType
                 ]
             ])
             ->add('username', TextType::class, [
-                'data' => $options['data']->getUsername(),
+                'data' => $options['data']['username'],
                 'mapped' => false,
                 'constraints' => [
                     new Callback([
                         'callback' => static function (?string $value, ExecutionContextInterface $context) use ($rep, $options) {
 
-                            if (!empty($value) && $value !== $options['data']->getUsername()) {
+                            if (!empty($value) && $value !== $options['data']['username']) {
                                 $user = $rep->findBy(['username' => $value]);
 
                                 if ($user) {
@@ -112,7 +112,7 @@ class UserDashboardType extends AbstractType
                         },
                     ]),
                 ]
-            ])->add('profil_image', ImagesType::class, [
+            ])->add('profile_image', ImagesType::class, [
               'data_class' => null,
                 'mapped' => false
 

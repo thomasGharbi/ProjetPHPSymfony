@@ -9,6 +9,7 @@ use App\Form\FormExtension\RepeatedPasswordType;
 use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -45,7 +46,7 @@ class RegistrationType extends HoneyPotType
         ])->add('birth', BirthdayType::class, [
             'widget' => 'choice',
             'input' => 'string',
-            'format' => 'dd/MM/yyyy'
+            'format' => 'ddMMyyyy'
         ])
             ->add('phone', TextType::class,
                 ['required' => false])

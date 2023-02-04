@@ -32,7 +32,7 @@ class ModifyPasswordController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        $isRequestedInTime = (new DateTimeImmutable('NOW') > $user->getAccountMustBeVerifiedBefore()) ? false : true;
+        $isRequestedInTime = ($user->getAccountMustBeVerifiedBefore() !== null && new DateTimeImmutable('NOW') > $user->getAccountMustBeVerifiedBefore()) ? false : true;
 
         if ($user->getForgotPasswordToken() === null || $user->getForgotPasswordToken() !== $token || !$isRequestedInTime) {
             throw new AccessDeniedException();
@@ -47,7 +47,7 @@ class ModifyPasswordController extends AbstractController
 
 
 
-    #[Route('/Modification_mot_de_passe', name: 'app_modify_password' , defaults: ['public_access' => false],methods: ['POST'])]
+    #[Route('/Modification_mot_de_passe', name: 'app_modify_password' , defaults: ['public_access' => false],methods: ['POST','GET'])]
     public function ModifyPassword(
 
         Request                $request, SessionInterface $session,
@@ -60,6 +60,8 @@ class ModifyPasswordController extends AbstractController
         if (!$user) {
             $userEmail = $session->get('modify-password-user-email');
             $user = $userRepository->findOneBy(['email' => $userEmail]);
+        }else{
+            $session->set('authorization-modify-password', true);
         }
 
 
@@ -86,7 +88,7 @@ class ModifyPasswordController extends AbstractController
             $session->set('autorization-modify-password', null);
             $session->set('modify-password-user-email', null);
 
-            //$manager->persist($user);
+
             $manager->flush();
 
             return $this->redirectToRoute('app_login');

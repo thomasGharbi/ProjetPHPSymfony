@@ -47,15 +47,7 @@ class RegistrationController extends AbstractController
         if($registrationForm->isSubmitted() && $registrationForm->isValid()) {
 
 
-            if(!$Captcha->isHCaptchaValid())
-            {
-                return  $this->redirectToRoute('app_login');
-            }
             $registrationToken = $tokenGenerator->generateToken();
-
-
-
-
 
             // converti les valeur du nom et prènom en "nocase".
             $creadentialsFormated = ['name' => strtolower($registrationForm->getData()->getName()),
@@ -78,7 +70,7 @@ class RegistrationController extends AbstractController
             $sendEmail->send([
                 'recipient' => $user->getEmail(),
                 'subject' => "vérification de votre compte",
-                'html_template' => "Security/Authentication/email/registrationEmail.html.twig",
+                'html_template' => "email/registrationEmail.html.twig",
                 'context' => [
                     'userID' => $user->getId(),
                     'registrationToken' => $registrationToken,
@@ -118,7 +110,7 @@ class RegistrationController extends AbstractController
 
         $entityManager->flush();
 
-        $this->addFlash('success', 'Votre compte vient d\'étre confirmé confirmé');
+        $this->addFlash('success', 'Votre compte vient d\'étre confirmé ');
 
         return $this->redirectToRoute('app_login');
 

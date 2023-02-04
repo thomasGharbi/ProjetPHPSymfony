@@ -65,7 +65,7 @@ class ConversationController extends AbstractController
 
         $user = $this->getUser();
 
-        if (!($user instanceof User)) {
+        if (!($user instanceof User) || !($user->getIsVerified())) {
             throw new AccessDeniedException();
         }
 

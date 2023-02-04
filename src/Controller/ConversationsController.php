@@ -41,6 +41,7 @@ class ConversationsController extends AbstractController
             $conversations[] = $conversationDetails->createConversationDetails($conversation, $user);
         }
 
+
         return $this->render('conversations/conversations.html.twig', [
             'controller_name' => 'ConversationsController', 'conversations' => $conversations,
             'entities' => $allEntities

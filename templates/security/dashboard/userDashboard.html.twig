@@ -1,62 +1,97 @@
 {% extends 'base.html.twig' %}
 
-
 {% block body %}
 
     {% block js %}
 
         <script type="module" src="{{ asset('/javascript/authentication/confirm_identity/confirm_identity_for_user_dashboard.js') }}"></script>
 
-
     {% endblock %}
-    <a href="{{ path('app_add_company') }}">Ajouter une entreprise</a>
-    <main>
+    <div class="container">
+
         {% if isVerified == false %}
-            <div class="alert alert-danger"><p>Votre compte n'est pas verifié vous ne pouvez rien modifié tant qu'il n'a
-                    pas était verifié</p></div>
+            <div class="alert alert-danger mt-3">
+                <span class="app-fs-0-8em">Votre compte n'est pas verifier, un email a été envoyer à l'adresse saisie afin de valider votre compte, en attendant vous ne pouvez pas modifier les informations personnels de votre compte.</span></div>
 
         {% endif %}
-        <img src="{{ asset(profil_image) }}" width="100" height="100"/>
-        <div class="container">
+        <div class=" background-notice-main-app app-border-r-10px row p-3 my-4">
 
 
-            {{ form_start(userDashboardForm) }}
+            <a href="{{ path('app_user_page', {uuidUser: user.uuid}) }}">
+                <img src="{{ asset(user.profileImage) }}" class="app-round-profile-company mb-2"/>
+                <span class=" ml-2 app-color-text app-fs-1-3em ">{{ user.username }}</span>
+            </a>
+            <div class="background-notice-app p-3 app-border-r-10px">
+                {{ form_start(userDashboardForm, { 'attr':{'class':'row'}}) }}
 
-            {{ form_label(userDashboardForm.name, 'Prénom') }}
-            {{ form_row(userDashboardForm.firstname) }}
-            {{ form_label(userDashboardForm.name, 'Nom') }}
-            {{ form_row(userDashboardForm.name) }}
-            {{ form_row(userDashboardForm.email) }}
-            {{ form_row(userDashboardForm.profil_image) }}
+                <div class="col-md-4 col-12 ">{{ form_row(userDashboardForm.profile_image, {'label': false}) }}</div>
+                <div class="col-12"></div>
+                <div class="col-md-4 col-12">{{ form_row(userDashboardForm.username, {'label': false, 'attr':{'class':''}}) }}</div>
+                <div class="col-12 mb-3"></div>
+                <div class="col-md-6 col-12">{{ form_row(userDashboardForm.firstname, {'label': false, 'attr':{'class':'col-6', 'placeholder': 'Prenom'}}) }}</div>
+                <div class="col-md-6 col-12">{{ form_row(userDashboardForm.name, {'label': false,'attr':{'class':'', 'placeholder': 'Nom'}}) }}</div>
+                <div class="col-md-6 col-12">{{ form_row(userDashboardForm.email, {'label': false, 'attr':{'class':'','placeholder': 'email'}}) }}</div>
+                <div class="col-md-6 col-12">{{ form_row(userDashboardForm.phone, {'label': false, 'attr':{'class':'', 'placeholder': 'Téléphone'}}) }}</div>
+                <div class="col-md-4 col-12">{{ form_row(userDashboardForm.birth, {'label': false, 'attr':{'class':''}}) }}</div>
+                <div class="col-md-12 "></div>
+                <div class="col-md-4 col-12">{{ form_row(userDashboardForm.gender, {'label': false, 'attr':{'class':''}}) }}</div>
+            </div>
+            <div class="col-md-12"></div>
 
 
-            <button id="button-modal" type="button" class="btn btn-primary"
-                    data-target="#confirm_identity_password_modal">Submiiiit
-            </button>
+            <div class="col-6 mt-2">
+                <button id="button-modal" type="button" class="btn btn-primary w-auto app-fs-1-1em " data-target="#confirm_identity_password_modal">modifier</button>
+            </div>
 
             {{ form_end(userDashboardForm) }}
 
-
-        </div> <h2> mes entreprise :</h2>
-
-            <div>
-
-                {% for key, company in list_companies  %}
-                {% if(company) %}
-
-                    <a href="{{ path('app_company_dashboard', { uuidCompany: company.uuid_of_company }) }}">{{ company.name_of_company  }}</a>
-
-
-
-{% endif %}
-                {% endfor %}
-
-
+            <div class="col-6 app-text-a-end mt-2">
+                <button class="btn btn-primary" ><a id="modify_password"   href="{{ path('app_modify_password') }}" class="app-white" >Modifier le mot de passe</a></button>
             </div>
 
 
-        {% include "_partials/_confirm_password_modal.html.twig" %}
-        <br>
-        <a id="modify_password"  href="mot-de-passe-oublié" >Modifier mon mot de passe</a>
-    </main>
+            <div class="col-md-6 mt-5 col-12">
+                <div class="p-3 w-auto background-notice-app app-border-r-10px">
+            {% if(list_companies is defined and list_companies is not empty) %}
+
+
+                    <div class="mb-3">
+                        <span class="app-fs-1-2em color-app ">Entreprises :</span>
+                    </div>
+                    {% for key, company in list_companies  %}
+
+
+                        <div class="mt-2">
+                            <a href="{{ path('app_company_dashboard', { uuidCompany: company.uuid_of_company }) }}" class="app-color-text"><img src="{{ asset(company.profile_image) }}" alt="" class="app-round-profile"><span class="app-fs-1-1em ml-3">{{ company.name_of_company}}</span></a>
+                        </div>
+
+                    {% endfor %}
+
+
+                {% endif %}
+                    {% if(list_companies|length < 3) %}
+                    <div class="{{ (list_companies is defined and list_companies is not empty) ? 'app-text-a-end' : '' }}">
+                        <button class="btn btn-primary b-0"><a href="{{ path('app_add_company') }}" class="app-fs-0-8em app-white">Ajouter une entreprise</a></button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="col-md-6 mt-md-0 mt-5 align-self-end">
+                {{form_start(userDelete, {'attr':{'class':'app-text-a-end mb-0'}})}}
+                <button  class="button-modal b-0 w-auto btn btn-danger" type="button"  id="button-delete-user" ><span>☠️</span>
+                    <span class="app-vertical-a-tt app-fs-0-8em app-white" >supprimé l'utilisateur</span></button>
+                {{form_end(userDelete)}}
+            </div>
+
+        </div>
+    </div>
+
+
+    {% include "_partials/_confirm_password_modal.html.twig" %}
+
+
+
+
+    {% include "_partials/_confirm_password_modal.html.twig" %}
+
 {% endblock %}

@@ -16,7 +16,7 @@ class ForgotPasswordController extends AbstractController
 {
 
 
-    #[Route('/mot-de-passe-oublie', name: 'app_forgot_password' , defaults: ['public_access' => true],methods: ['POST'])]
+    #[Route('/mot-de-passe-oublie', name: 'app_forgot_password' , defaults: ['public_access' => true],methods: ['POST','GET'])]
     public function forgotPassword(
 
         SendEmail               $sendEmail,
@@ -53,7 +53,7 @@ class ForgotPasswordController extends AbstractController
                 $sendEmail->send([
                     'recipient' => $emailEntered,
                     'subject' => "Mot de passe oublié",
-                    'html_template' => "Security/Authentication/email/forgotPasswordEmail.html.twig",
+                    'html_template' => "email/forgotPasswordEmail.html.twig",
                     'context' => [
                         'userID' => $user->getId(),
                         'forgotPasswordToken' => $forgotPasswordToken,

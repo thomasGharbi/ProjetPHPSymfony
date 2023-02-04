@@ -21,13 +21,11 @@ class SearchCompanyType extends AbstractType
                     'placeholder' => 'Rechercher une entreprise'
                 ]
             ])->add('params_search', ChoiceType::class, [
-                'choices' => ['' => '',
-                              'Mieux noté' => 'best_notices',
+                'choices' => ['Mieux noté' => 'best_notices',
                               'Moins bien noté' => 'worst_notices',
-                               'le plus de note' => 'most_notices'],
+                               'Le plus de noté' => 'most_notices'],
                 'required' => false
-            ])
-              ->add('submitSearch', submitType::class);
+            ])->add('submitSearch', submitType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

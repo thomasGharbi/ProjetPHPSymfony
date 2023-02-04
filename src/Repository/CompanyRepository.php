@@ -30,7 +30,8 @@ class CompanyRepository extends ServiceEntityRepository
     public function search(string $search, ?string $params):mixed
     {
 
-        $search = str_replace('@', '', $search);
+
+        $search = '"' . $search . '"';
 
         $query = $this->createQueryBuilder('company');
        // $query->where('a.active = 1');
@@ -38,6 +39,11 @@ class CompanyRepository extends ServiceEntityRepository
         if($search !== null){
             $query->andWhere('MATCH_AGAINST(company.nameOfCompany, company.sector, company.specialization, company.department, company.city, company.profileTitle, company.profileDescription, company.SIRETNumber, company.uuid)
              AGAINST (:search boolean)>0')->setParameter('search', $search);
+
+
+
+
+
 
             if($params == 'best_notices'){
                 $query = $query->orderBy('company.generalNotice', 'DESC');
@@ -52,6 +58,7 @@ class CompanyRepository extends ServiceEntityRepository
 
         }
         $query->setMaxResults(100);
+
         return $query->getQuery()->getResult();
     }
 

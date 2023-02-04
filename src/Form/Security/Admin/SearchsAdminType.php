@@ -22,8 +22,8 @@ class SearchsAdminType extends AbstractType
                 ]
             ])->add('params_search', ChoiceType::class, [
                 'choices' => [
-                    'Logs de Connexions' => 'AuthenticationLog',
                     'utilisateurs' => 'User',
+                    'Logs de Connexions' => 'AuthenticationLog',
                     'entreprises' => 'Company'],
 
             ])->add('submitSearch', submitType::class);

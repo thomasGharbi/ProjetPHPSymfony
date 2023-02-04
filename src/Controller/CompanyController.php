@@ -44,11 +44,12 @@ class CompanyController extends AbstractController
         $user = $this->getUser();
 
         $notices = $this->noticesArrayForView($company, $user);
-        $formView = $createNoticeForm = null;
+        $conversationFormView = $createNoticeForm = null;
 
 
         $addVisitor->addPointToVisitor('visitor_company', 2);
         //récupère dans un tableau, toutes les entreprises et l'utilisateur courant dans un tableau
+
         if (($user instanceof User) && $user !== $company->getUser() ) {
             $allEntities = [$user];
             foreach ($user->getCompanies() as $companyInArray) {
@@ -58,9 +59,15 @@ class CompanyController extends AbstractController
 
             $createConversationForm = $this->createForm($conversationType::class, $allEntities);
             $createConversationForm->handleRequest($request);
+            $conversationFormView =  $createConversationForm->createView();
 
-            if ($createConversationForm->isSubmitted() && $createConversationForm->isValid()) {
+
+
+
+            if ($createConversationForm->isSubmitted()) {
+
                 $talker = $createConversationForm->get('talker')->getData();
+
                 return $this->redirectToRoute('app_create_conversation', ['uuidRecipient' => $company->getUuid(), 'uuidTalker' => $talker]);
             }
 
@@ -68,9 +75,8 @@ class CompanyController extends AbstractController
 
             $createNoticeForm = $this->createForm(CreateNoticeType::class, $notice);
             $createNoticeForm->handleRequest($request);
-            $formView = $createConversationForm->createView();
 
-            if ($createNoticeForm->isSubmitted() && $createNoticeForm->isValid()) {
+            if ($createNoticeForm->isSubmitted() && $createNoticeForm->isValid() && $user->getIsVerified()) {
                 $images = $saveImages->uniteImages($createNoticeForm);
 
                 $notice->setUser($user)
@@ -93,7 +99,7 @@ class CompanyController extends AbstractController
 
 
         return $this->render('company.html.twig', [
-            'company' => $company, 'conversationForm' => $formView, 'noticeForm' => $createNoticeForm?->createView(), 'notices' => $notices
+            'company' => $company, 'conversationForm' => $conversationFormView, 'noticeForm' => $createNoticeForm?->createView(), 'notices' => $notices
         ]);
     }
 

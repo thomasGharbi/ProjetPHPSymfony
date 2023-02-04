@@ -21,7 +21,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class UserCompaniesDashboardController extends AbstractController
 {
-    #[Route('/espace-entreprise/{uuidCompany}', name: 'app_company_dashboard', defaults: ['public_access' => false], methods: ['GET'])]
+    #[Route('/espace-entreprise/{uuidCompany}', name: 'app_company_dashboard', defaults: ['public_access' => false], methods: ['GET','POST'])]
     public function companyDashboard(
         string                  $uuidCompany,
         Request                 $request,
@@ -55,12 +55,13 @@ class UserCompaniesDashboardController extends AbstractController
         $deleteCompanyForm->handleRequest($request);
 
         if ($deleteCompanyForm->isSubmitted() && $deleteCompanyForm->isValid()) {
+
             $confirmIdentitySecurity->checkIfBypassConfirmIdentity();
 
 
             $deleteCompany->deleteCompany($company);
-           // $entityManager->remove($company);
-           // $entityManager->flush();
+            // $entityManager->remove($company);
+            // $entityManager->flush();
             $this->addFlash('alert alert-primary', 'votre entreprise a été supprimez ');
             return $this->redirectToRoute('app_user_dashboard');
         }
@@ -68,6 +69,8 @@ class UserCompaniesDashboardController extends AbstractController
 
         $companyDashboardForm = $this->createForm(UserCompaniesDashboardType::class, $company);
         $companyDashboardForm->handleRequest($request);
+
+
 
         if ($companyDashboardForm->isSubmitted() && $companyDashboardForm->isValid()) {
 

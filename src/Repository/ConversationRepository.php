@@ -42,7 +42,7 @@ foreach ($entities as $entity){
 
 
 
-            $query = $query->orderBy('conversation.createdAt', 'ASC')
+            $query = $query->orderBy('conversation.createdAt', 'DESC')
 
             ->setMaxResults(100)
             ->getQuery()

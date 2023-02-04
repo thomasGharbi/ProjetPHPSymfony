@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\NoticesRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=NoticesRepository::class)
@@ -51,7 +52,12 @@ class Notices
 
     /**
      * @var string
-     * @ORM\Column(type="string", length=10000)
+     * @ORM\Column(type="string")
+     * @Assert\Length(
+     *      min = 30,
+     *      max = 1000,
+     *      minMessage = "La description doit contenir plus de {{ limit }} caractères",
+     *      maxMessage = "La description ne peut pas contenir moins de {{ limit }} caractères")
      */
     private $comment;
 

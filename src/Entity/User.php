@@ -225,7 +225,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
 
     public function __construct(){
-        $this->profileImage = '/uploads/profile_image_default/user_profil_image_default.jpg';
+        $this->profileImage = 'uploads/profile_image_default/user_profil_image_default.jpg';
         $this->companies = new ArrayCollection();
         $this->notices = new ArrayCollection();
         $this->conversations = new ArrayCollection();

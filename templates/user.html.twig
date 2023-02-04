@@ -2,38 +2,69 @@
 
 
 
+
 {% block body %}
-    {% block js %}<script type="module" src="{{ asset('/javascript/add_input_form_conversation.js') }}"></script>{% endblock %}
-    <p></p>
-{{ user.firstName }}
-    {% if (conversationForm) %}
-        {{ form_start(conversationForm) }}
-        {{ form_end(conversationForm) }}
-    {% endif %}
-    <img src="{{ asset( user.profileImage) }}" width="100" height="100"/>
-nom d'utilisateur : {{ user.username }}<br>
+    {% block js %}
+        <script type="module" src="{{ asset('/javascript/add_input_form_conversation.js') }}"></script>{% endblock %}
+    <script src="{{ asset('javascript/viewerjs-master/docs/js/viewer.js') }}"></script>
+    <link rel="stylesheet" href="{{ asset('javascript/viewerjs-master/docs/css/viewer.css') }}">
 
-    {% if user.isVerified %}
-        vérifé
-        {% else %}
-        non-vérifié
-    {% endif %}<br>
-    compte créé le : {{ user.createdAt|date("d/m/Y" ) }}
+    <div class="row container mx-auto">
 
-    <hr><br>
-        {% for notice in notices %}
-            <div>titre : {{ notice.title }} <br> domaine : {{ notice.serviceType }} <br> ville :{{ notice.servicePlace }}
-                <br> commentaire : {{ notice.comment }} <br> note generale : {{ notice.generalNotice }} <br> note de qualité : {{ notice.qualityNotice }}
-                <br>note de rapidité : {{ notice.speedNotice }} <br> note de prix : {{ notice.priceNotice }} {% if him_self %}
-                    <a href="{{ path('app_delete_notice',{uuidNotice:notice.uuid}) }}">suppimer l'avis</a>
-                {% endif %} </div>
-            {% for image in notice.images %}
-                {% if image is defined %}
-                    <img src="{{ asset( image) }}" width="100" height="100"/>
+        <div class="col-11 mx-auto my-4  mx-sm-0 background-notice-main-app app-border-r-10px ">
+            <div class="app-text-a-end mt-2">
+                <span class="app-opacity-05">Créé le {{ user.createdAt|date("d/m/Y") }}</span>
+            </div>
+            <div class="pt-2 pl-2 background-notice-app app-border-r-10px">
+
+                <img class="app-round-profile-company" src="/{{ user.profileImage }}" alt="">
+                <span class="ml-3 app-fs-1-3em">{{ user.username }}</span>
+
+                {% if user.companies is not null %}
+                    <div class="d-flex justify-content-end pb-3">
+                        {% for company in user.companies %}
+
+                            <div class="mx-md-2 my-1">
+                                <a href="{{ path('app_company_page', { uuidCompany: company.uuid }) }}" class="app-color-text ">
+                                    <img class="app-round-profile mr-md-1" src="/{{ company.profileImage }}" alt="">
+                                    <span class="d-inline-block app-fs-0-8em">{{ company.nameOfCompany }}</span>
+                                </a>
+                            </div>
+
+                        {% endfor %}
+                    </div>
                 {% endif %}
-            {% endfor %}
+            </div>
+            <div class="my-3">
+                {% if conversationForm is not null and navbar().user.isVerified %}
 
-        {% endfor %}
+                    {{ form_start(conversationForm, { 'label': '✉️ envoyer un message','attr':{'class':''}}) }}
+
+                    {{ form_row(conversationForm.createConversation, { 'label': '✉️ envoyer un message','attr':{'class':'btn btn-dark app-fs-0-8em '}}) }}
+
+                    {{ form_row(conversationForm.talker,{'attr':{'class':''}}) }}
+
+                    {{ form_end(conversationForm) }}
+
+                {% endif %}
+            </div>
+        </div>
+        {% set entity = user %}
+        {% if notices is defined %}
+            <span class="color-app app-fs-1-2em">({{ notices|length }}) Avis</span>
+            {% set countOfNotice = 0 %}
+            {% for notice in notices %}
+                {% set countOfNotice = countOfNotice+1 %}
+
+                {% include('Extensions/notices.html.twig') %}
+            {% endfor %}
+        {% endif %}
+    </div>
+
+
+
+
+
 
 
 {% endblock %}

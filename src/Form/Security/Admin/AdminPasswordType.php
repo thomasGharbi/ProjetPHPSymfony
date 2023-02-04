@@ -20,7 +20,7 @@ class AdminPasswordType extends AbstractType{
                     'class' => 'form-control',
 
                 ]
-            ])->add('submitSearch', submitType::class);
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -2,72 +2,93 @@
 {% block javascripts %}
 
     <script src="https://www.google.com/recaptcha/api.js"></script>
-{% include '_partials/_captcha_callback_script.html.twig' %}
+    {% include '_partials/_captcha_callback_script.html.twig' %}
 {% endblock %}
-{% block title %}<h1>Connexion</h1>{% endblock %}
+
 
 {% block body %}
 
 
-    <form id="demo-form" method="post" >
+    <div class="container mt-5 row mx-auto">
         {% if error %}
-            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-
+            <div class="alert alert-danger  mx-auto col-lg-8" style="text-align: center;"><span class="app-fs-0-8em">{{ error.messageKey|trans(error.messageData, 'security') }}</span></div>
         {% endif %}
-
-
-        {% if app.user %}
-            <div class="mb-3">
-                You are logged in as {{ app.user.username }}, <a href="{{ path('app_logout') }}">Logout</a>
-            </div>
-        {% endif %}
-        {% for type, messages in app.session.flashbag.all() %}
-            {% for message in messages %}
-                {% if type == 'danger' %}
-                    <div class="alert alert-{{type}}">{{message}}</div>
-                {% endif %}
-
-
-
-            {% endfor %}
+        {% for message in app.flashes('success') %}
+            <div class="alert alert-success  mx-auto col-lg-8" style="text-align: center;"><span class="app-fs-0-8em">{{ message }}</span></div>
         {% endfor %}
-        <h1 class="h3 mb-3 font-weight-normal">Connexion</h1>
-        <label for="inputEmail">Email</label>
-        <input type="email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control" autocomplete="email" required autofocus>
-        <label for="inputPassword">Password</label>
-        <input type="password" name="password" id="inputPassword" class="form-control" autocomplete="current-password" required>
+        <div class="background-notice-app col-12 col-lg-8  mx-auto row">
 
-        <input type="hidden" name="_csrf_token"
-               value="{{ csrf_token('authenticate') }}">
+            <form id="demo-form" method="post" class="col-12 pt-3 row">
 
-        {#
-        Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
-        See https://symfony.com/doc/current/security/remember_me.html
 
-        <div class="checkbox mb-3">
-            <label>
-                <input type="checkbox" name="_remember_me"> Remember me
-            </label>
+                {% if app.user %}
+                    <div class="mb-3 d-md-flex justify-content-between">
+                        <span class="app-color-text d-inline-block">Vous êtes déjà connecté en tant que <a href="{{ path('app_user_dashboard') }}" class=""><span class="color-app app-fs-1-2em">{{ app.user.username }}</span></a></span>
+                        <a href="{{ path('app_logout') }}" class="d-none d-md-block" >
+                           <span class="color-app app-fs-1-2em  ">Se Déconnecter</span>
+                        </a>
+                    </div>
+                {% endif %}
+                {% for type, messages in app.session.flashbag.all() %}
+                    {% for message in messages %}
+                        {% if type == 'danger' %}
+                            <div class="alert alert-{{ type }} app-fs-0-8em">{{ message }}.</div>
+                        {% endif %}
+
+
+
+                    {% endfor %}
+                {% endfor %}
+                <div class="col-10 col-lg-8 mx-auto ">
+                    <h1 class="h3 mb-3 app-fs-1-5em color-app " >CONNEXION</h1>
+
+                    <input type="email" placeholder="Email" value="{{ last_username }}" name="email" id="inputEmail" class="form-control mb-3" autocomplete="email" required autofocus>
+
+                    <input type="password" placeholder="Mot de passe" name="password" id="inputPassword" class="form-control mb-3" autocomplete="current-password" required>
+
+                    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+
+                    <button class="g-recaptcha btn btn-primary mb-3 "
+                            data-sitekey="{{ captcha_site_key }}"
+                            data-callback='onSubmit'
+                            data-action='submit'
+                            type="submit">Se connecter
+                    </button>
+                </div>
+
+            </form>
+
+
+            <div class=" col-10 col-lg-8 mx-auto d-flex justify-content-between pl-1">
+                <a href="{{ path('app_forgot_password') }}" class="color-app app-fs-1-2em" >
+                    mot de passe oublié
+                </a>
+                <a href="{{ path('app_registration') }}" class="color-app app-fs-1-2em" >
+                    s'inscrire
+                </a>
+            </div>
+
+
+            <hr class=" mt-5 w-75 mx-auto app-opacity-01" >
+
+            <div class=" col-11 col-lg-8 mx-auto d-md-flex justify-content-between py-4 pl-1">
+                    <a href="{{ path('app_oauth_Google') }}" class="w-100 my-1">
+                <button class="btn btn-dark mx-auto w-100 ">
+                    <img src="{{ asset('app/logo/google.png') }}" alt="" width="50px">
+                        <span class="app-white app-fs-0-8em">se connecter avec Google</span>
+                </button>
+                    </a>
+                <div class="app-w10 my-2"></div>
+                    <a href="{{ path('app_oauth_Github') }}" class=" w-100 my-1 ">
+                <button class="btn btn-dark w-100 ">
+                    <img src="{{ asset('app/logo/github.png') }}" alt="" height="35px">
+                        <span class="app-white ml-2 app-fs-0-8em">se connecter avec github</span>
+                </button>
+                    </a>
+            </div>
         </div>
-        #}
 
 
-
-
-        <button class="g-recaptcha"
-                data-sitekey="{{ captcha_site_key }}"
-                data-callback='onSubmit'
-                data-action='submit'
-                type="submit">Se connecter</button>
-
-    </form>
-
-
-
-<a href="{{ path('app_forgot_password') }}">mot de passe oublié</a><br>
-    <a href="{{ path('app_registration') }}">s'inscrire</a><br>
-
-
-    <a href="{{ path('app_oauth_Google') }}">se connecter avec google</a><br>
-    <a href="{{ path('app_oauth_Github') }}">se connecter avec github</a>
+    </div>
 {% endblock %}

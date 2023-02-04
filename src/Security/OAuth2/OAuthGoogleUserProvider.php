@@ -216,7 +216,7 @@ class OAuthGoogleUserProvider implements UserProviderInterface
         $this->sendEmail->send([
             'recipient' => $googleUserData['email'],
             'subject' => "Inscription Avec Google",
-            'html_template' => "Security/Authentication/email/OAuth2/AccountOAuthRandomPassword.html.twig",
+            'html_template' => "email/OAuth2/AccountOAuthRandomPassword.html.twig",
             'context' => [
                 'oauthProvider' => 'Google',
                 'randomPassword' => $googleUserData['random_password'],
@@ -237,7 +237,7 @@ class OAuthGoogleUserProvider implements UserProviderInterface
         $this->sendEmail->send([
             'recipient' => $googleUserData['email'],
             'subject' => "vérification de votre compte",
-            'html_template' => "Security/Authentication/email/OAuth2/AccountOAuthNotVerified.html.twig",
+            'html_template' => "email/OAuth2/AccountOAuthNotVerified.html.twig",
             'context' => [
                 'randomPassword' => $googleUserData['random_password'],
                 'userID' => $googleUserData['oauth_id'],

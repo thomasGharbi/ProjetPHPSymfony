@@ -33,6 +33,7 @@ class AdminController extends AbstractController
     private DeleteUser $deleteUser;
     private SessionInterface $session;
     private BrutForceChecker $brutForceChecker;
+    private string|null $adminType = null;
 
 
     public function __construct(
@@ -58,7 +59,9 @@ class AdminController extends AbstractController
     #[Route('/admin-demo', name: 'app_admin', defaults: ['public_access' => false],methods: ['GET','POST'])]
     public function adminDashboard(VisitorRepository $visitorRepository, Request $request): Response|RedirectResponse
     {
+
         $user = $this->getUser();
+        $adminDemoMessage = null;
         if (!($user instanceof User)) {
             throw new AccessDeniedException();
         }
@@ -81,6 +84,7 @@ class AdminController extends AbstractController
             $searchsForm->handleRequest($request);
 
             if ($searchsForm->isSubmitted() && $searchsForm->isValid()) {
+
                 $params = $searchsForm->get('params_search')->getData();
                 $search = $searchsForm->get('search')->getData();
                 $entities['entity'] = $params;
@@ -88,10 +92,14 @@ class AdminController extends AbstractController
 
             }
         }
+        if($this->session->get('admin-demo-message') !== null){
+            $adminDemoMessage = $this->session->get('admin-demo-message');
+        }
 
 
-        return $this->render('admin/index.html.twig', [
-            'controller_name' => 'AdminController', 'admin_password_form' => $passwordForm?->createView(), 'search_form' => $searchsForm?->createView(), 'entities' => $entities, 'visitors' => $visitors
+
+        return $this->render('admin.html.twig', [
+            'controller_name' => 'AdminController', 'admin_password_form' => $passwordForm?->createView(), 'search_form' => $searchsForm?->createView(), 'entities' => $entities, 'visitors' => $visitors, 'admin_type' => $this->adminType,'admin_demo_message' => $adminDemoMessage
         ]);
     }
 
@@ -104,15 +112,17 @@ class AdminController extends AbstractController
      */
     public function checkIfIsGranted(string $passwordEntered, User $user, Request $request): RedirectResponse
     {
+
         if ($this->isGranted('admin_demo', $passwordEntered)) {
 
+            $this->adminType = 'admin_demo';
             $this->session->set('admin_authentification', 'admin_demo');
 
 
             return $this->redirectToRoute('app_admin');
 
         } elseif ($this->isGranted('admin', $passwordEntered)) {
-
+            $this->adminType = 'admin';
             $this->session->set('admin_authentification', 'admin');
 
             return $this->redirectToRoute('app_admin');
@@ -138,6 +148,7 @@ class AdminController extends AbstractController
         } elseif ($params == 'User') {
             return $this->userRepository->searchForAdmin($search);
         } elseif ($params == 'AuthenticationLog') {
+
             return $this->AuthRepository->searchForAdmin($search);
         }
         throw new LogicException();
@@ -162,7 +173,9 @@ class AdminController extends AbstractController
 
 
         }
-    }
+    }else{
+            $this->session->set('admin-demo-message','Vous êtes sur une demo de l\'administration vous ne pouvez donc rien modifier');
+        }
 
 
         return $this->redirectToRoute('app_admin');

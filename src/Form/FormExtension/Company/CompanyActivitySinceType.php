@@ -29,7 +29,7 @@ class CompanyActivitySinceType extends AbstractType
 
         parent::configureOptions($resolver);
         $resolver->setDefaults([
-            'choices' => $this->addYears($this->arrayYears),
+            'choices' => ['Année de création de l\'entreprise' => $this->addYears($this->arrayYears)],
 
         ]);
     }

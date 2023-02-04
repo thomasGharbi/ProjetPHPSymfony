@@ -14,11 +14,13 @@ use App\Repository\CompanyRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Callback;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
 class UserCompaniesDashboardType extends AbstractType
@@ -47,6 +49,7 @@ class UserCompaniesDashboardType extends AbstractType
 
         $builder->add('nameOfCompany', TextType::class,[
             'label' => 'Nom de l\'entreprise :',
+            'empty_data' => ''
 
         ])->add('SIRETNumber', TextType::class,[
             'label' => 'Numéro SIRET :  (12345678912345)',
@@ -77,9 +80,11 @@ class UserCompaniesDashboardType extends AbstractType
             ]
         ])->add('nameOfCompanyManager', TextType::class,[
             'label' => 'Nom du ou des responsable :',
+            'empty_data' => ''
 
         ])->add('firstnameOfCompanyManager', TextType::class,[
             'label' => 'Prénom du ou des responsable :',
+            'empty_data' => ''
 
         ])->add('phone', TextType::class, [
             'label' => 'Numéro de téléphone de l\'entreprise :',
@@ -90,6 +95,7 @@ class UserCompaniesDashboardType extends AbstractType
         ])->add('sector', CompanySectorType::class,[
             'label' => 'Secteur d\'activité :',
             'data' => $this->sector,
+
 
         ])->add('otherSector', TextType::class, [
             'label' => 'autres secteur',
@@ -111,6 +117,7 @@ class UserCompaniesDashboardType extends AbstractType
 
         ])->add('inActivitySince', CompanyActivitySinceType::class, [
             'label' => 'Année de création :',
+            'empty_data' => ''
 
         ])->add('address', TextType::class,[
             'label' => 'Adresse :',
@@ -120,9 +127,11 @@ class UserCompaniesDashboardType extends AbstractType
 
         ])->add('city', TextType::class,[
             'label' => 'Ville :',
+            'empty_data' => ''
 
         ])->add('postalCode', TextType::class,[
             'label' => 'Code postal :',
+            'empty_data' => ''
 
 
         ])->add('areaActivity', CompanyActivityZoneType::class,[
@@ -135,10 +144,12 @@ class UserCompaniesDashboardType extends AbstractType
             ]
         )->add('profileTitle', TextType::class, [
             'label' => 'Titre de présentation de l\'entreprise :',
+            'empty_data' => ''
 
 
-        ])->add('profileDescription', TextType::class, [
+        ])->add('profileDescription', TextAreaType::class, [
             'label' => 'Description de présentation de l\'entreprise :',
+            'empty_data' => ''
 
         ])->add('image1', ImagesType::class, [
             'mapped' => false,

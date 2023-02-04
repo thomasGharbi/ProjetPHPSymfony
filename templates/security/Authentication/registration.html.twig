@@ -1,40 +1,67 @@
 {% extends 'base.html.twig' %}
 {% block javascripts %}
 
-    <script src="https://www.google.com/recaptcha/api.js"></script>
-    {% include '_partials/_captcha_callback_script.html.twig' %}
+
+
 {% endblock %}
 {% block body %}
 
-<div class="container">
-<form id="demo-form" method="POST">
-{{form_start(registrationForm)}}
+    <div class="container mx-auto row">
 
-{{form_label(registrationForm.name, 'Prénom')}} 
-{{form_row(registrationForm.firstname)}}
-{{form_label(registrationForm.name, 'Nom')}} 
-{{form_row(registrationForm.name)}}
-{{form_row(registrationForm.email)}}
-    <fieldset class="additional-values">
-        {{ form_label(registrationForm.adreeess) }}
-        {{ form_errors(registrationForm.adreeess) }}
-        {{ form_widget(registrationForm.adreeess) }}
-    </fieldset>
-    <fieldset class="additional-values">
-        {{ form_label(registrationForm.villle) }}
-        {{ form_errors(registrationForm.villle) }}
-        {{ form_widget(registrationForm.villle) }}
-    </fieldset>
+        <div class="row background-notice-app col-md-9 col-12 mx-auto mt-5 p-3">
+            <span class="color-app app-fs-1-2em col-12 mb-3">Inscription</span>
+            {{ form_start(registrationForm, { 'attr':{'class':'row'}}) }}
 
-    <button class="g-recaptcha"
-            data-sitekey="{{ captcha_site_key }}"
-            data-callback='onSubmit'
-            data-action='submit'
-            type="submit">S'inscrire</button>
+            <div class="col-6 mb-3">
+                {{ form_row(registrationForm.name, { 'label': false,'attr':{'class':'','placeholder':'Nom'}}) }}
+            </div>
+            <div class="col-6 mb-3">
+                {{ form_row(registrationForm.firstname, { 'label': false,'attr':{'class':'','placeholder':'Prénom'}}) }}
+            </div>
+            <div class=" col-12 mb-3">{{ form_row(registrationForm.username, { 'label': false,'attr':{'class':'','placeholder':'Nom d\'utilisateur'}}) }}</div>
+            <div class=" col-12 mb-3">{{ form_row(registrationForm.email, { 'label': false,'attr':{'class':'','placeholder':'Email'}}) }}<span class="position-absolute app-opacity-05" >*</span></div>
+            <div class="col-md-6 col-12 mb-3">{{ form_row(registrationForm.phone, { 'label': false,'attr':{'class':'','placeholder':'Numéro de téléphone'}}) }}</div>
+            <div class="col-md-2 col-12 mb-3">{{ form_row(registrationForm.gender, { 'label': false,'attr':{'class':'',}}) }}</div>
+            <div class="col-md-4 col-12 mb-3">{{ form_row(registrationForm.birth, { 'label': false,'attr':{'class':'',}}) }}</div>
 
-{{form_end(registrationForm)}}
+            <div class="col-md-6 col-12">{{ form_row(registrationForm.password.first, { 'label': false,'attr':{'class':'','placeholder':'Mot de passe'}}) }}</div>
+            <div class="col-md-6 col-12">{{ form_row(registrationForm.password.second, { 'label': false,'attr':{'class':'','placeholder':'Saisir à nouveau'}}) }}</div>
 
 
-</form>
-</div>
+            <fieldset class="additional-values">
+                {{ form_label(registrationForm.adreeess) }}
+                {{ form_errors(registrationForm.adreeess) }}
+                {{ form_widget(registrationForm.adreeess) }}
+            </fieldset>
+            <fieldset class="additional-values">
+                {{ form_label(registrationForm.villle) }}
+                {{ form_errors(registrationForm.villle) }}
+                {{ form_widget(registrationForm.villle) }}
+            </fieldset>
+
+            <button class="btn btn-primary mb-3" type="submit">S'inscrire</button>
+
+            {{ form_end(registrationForm) }}
+            <hr class="my-3 w-75 mx-auto app-opacity-01">
+
+
+            <div class="col-md-8 col-11 mx-auto d-md-flex justify-content-between py-4 pl-1">
+                <button class="btn btn-dark mx-md-0 mx-auto w-100 my-1">
+                    <img src="{{ asset('app/logo/google.png') }}" alt="" width="50px">
+                    <a href="{{ path('app_oauth_Google') }}">
+                        <span class="app-white app-fs-0-8em">se connecter avec Google</span>
+                    </a>
+                </button>
+                <div class="app-w10"></div>
+                <button class="btn btn-dark mx-md-0 mx-auto w-100 my-1">
+                    <img src="{{ asset('app/logo/github.png') }}" alt="" height="35px">
+                    <a href="{{ path('app_oauth_Github') }}">
+                        <span class="app-white ml-2 app-fs-0-8em">se connecter avec github</span>
+                    </a>
+                </button>
+            </div>
+            <span class="app-fs-0-8em app-opacity-05">* Facultatif</span>
+        </div>
+    </div>
+
 {% endblock %}

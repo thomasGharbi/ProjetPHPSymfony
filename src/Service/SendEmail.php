@@ -54,6 +54,7 @@ class SendEmail
 
 
        try {
+
            $this->mailer->send($email);
        } catch (TransportExceptionInterface $mailerExeption) {
            throw $mailerExeption;

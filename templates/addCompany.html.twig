@@ -1,15 +1,62 @@
 {% extends 'base.html.twig' %}
 {% block body %}
-    <h1>bonjour</h1>
+
     <script type="module" src="{{ asset('/javascript/add_inputs_form_company.js') }}"></script>
+    <div class="container">
+        <div class="background-notice-app p-4 pb-0 app-border-r-10px mt-5">
+            <h4 class="color-app mb-4">Ajouter une entreprise</h4>
 
-    {{form_start(addCompanyForm, { 'attr' : { 'id' : 'form_file'}})}}
+            {{ form_start(addCompanyForm, { 'attr' : { 'id' : 'form_file', 'class':'row'}}) }}
+            <div class="col-12 mx-auto px-0 pt-3 row background-notice-main-app  app-border-r-10px mb-3">
+                <span class="app-color-text app-opacity-05 mb-2">Informations de l'entreprise</span>
+                <div class="col-sm-5 col-12">{{ form_row(addCompanyForm.nameOfCompany, {'label': false,'attr' : {'class':'','placeholder':'Nom de l\'entreprise'}}) }}</div>
+                <div class="col-sm-7 col-12">{{ form_row(addCompanyForm.SIRETNumber, {'label': false,'attr' : {'class':'','placeholder':'Numéro SIRET de l\'entreprise'}}) }}</div>
+                <div class="col-sm-6 col-12">{{ form_row(addCompanyForm.nameOfCompanyManager, {'label': false,'attr' : {'class':'','placeholder':'Nom du gérant d\'entreprise'}}) }}</div>
+                <div class="col-sm-6 col-12">{{ form_row(addCompanyForm.firstnameOfCompanyManager, {'label': false,'attr' : {'class':'','placeholder':'Prénom du gérant d\'entreprise'}}) }}</div>
+                <div class="col-sm-6 col-12">{{ form_row(addCompanyForm.phone, {'label': false,'attr' : {'class':'','placeholder':'Numéro de téléphone de l\'entreprise'}}) }}</div>
+                <div class="col-sm-6 col-12">{{ form_row(addCompanyForm.email, {'label': false,'attr' : {'class':'','placeholder':'Email de l\'entreprise'}}) }}</div>
+            </div>
+            <div class="col-12 mx-auto px-0 pt-3 row background-notice-main-app  app-border-r-10px mb-3">
+                <span class="app-color-text app-opacity-05  mb-2">Adresse de l'entreprise</span>
+                <div class="col-12">{{ form_row(addCompanyForm.address, {'label': false,'attr' : {'class':'','placeholder':'Adresse'}}) }}</div>
+                <div class="col-sm-5 col-6">{{ form_row(addCompanyForm.city, {'label': false,'attr' : {'class':'','placeholder':'Ville'}}) }}</div>
+                <div class="col-sm-3 col-6">{{ form_row(addCompanyForm.postalCode, {'label': false,'attr' : {'class':'','placeholder':'Code postal'}}) }}</div>
+                <div class="col-sm-4 col-12">{{ form_row(addCompanyForm.department, {'label': false,'attr' : {'class':'','placeholder':''}}) }}</div>
+
+            </div>
+            <div class="col-12 mx-auto px-0 pt-3 row background-notice-main-app  app-border-r-10px mb-3">
+                <span class="app-color-text app-opacity-05  mb-2">Activité de l'entreprise</span>
+                <div class="col-sm-6 col-12">{{ form_row(addCompanyForm.sector, {'label': false,'attr' : {'class':'','placeholder':'Secteur d\'activité'}}) }}</div>
+                <div class="col-sm-6 col-12">{{ form_row(addCompanyForm.specialization, {'label': false,'attr' : {'class':'','placeholder':'Spécialisation de l\'entreprise'}}) }}</div>
+                <div class=" col-12 ">
+                    <div id="company_otherSector"
+                         class="w-25 mb-0">{{ form_row(addCompanyForm.otherSector, {'label': false,'attr' : {'class':'','placeholder':'Autre secteur d\'activité'}}) }}</div>
+                </div>
+                <div class="col-sm-6 col-12">{{ form_row(addCompanyForm.inActivitySince, {'label': false,'attr' : {'class':'','placeholder':''}}) }}</div>
+                <div class="col-sm-6 col-12">{{ form_row(addCompanyForm.areaActivity, {'label': false,'attr' : {'class':'','placeholder':''}}) }}</div>
+
+            </div>
+            <div class="col-12 mx-auto px-0 pt-3 row background-notice-main-app  app-border-r-10px mb-3">
+                <span class="color-app app-color-text app-opacity-05 mb-2">Profile de l'entreprise</span>
+            <div class="col-sm-6 col-12">{{ form_row(addCompanyForm.profileTitle, {'label': false,'attr' : {'class':'','placeholder':'Titre'}}) }}</div>
+                <div class="col-sm-6 col-12">{{ form_row(addCompanyForm.profileImage, {'label': false,'attr' : {'class':'','placeholder':''}}) }}</div>
+            <div class="col-12">{{ form_row(addCompanyForm.profileDescription, {'label': false,'attr' : {'class':'','placeholder':'Description'}}) }}</div>
+
+                </div>
+
+            <span class="app-color-text app-opacity-05  mb-2">Images de présentations</span>
+            <div class="images_add_company col-12">{{ form_row(addCompanyForm.image1, {'label': false,'attr' : {'class':'mb-3','placeholder':''}}) }}</div>
+<div class="images_add_company col-sm-6 col-12">{{ form_row(addCompanyForm.image2, {'label': false,'attr' : {'class':'mb-3','placeholder':''}}) }}</div>
+            <div class="images_add_company col-sm-6 col-12">{{ form_row(addCompanyForm.image3, {'label': false,'attr' : {'class':'mb-3','placeholder':''}}) }}</div>
+            <div class="images_add_company col-sm-6 col-12">{{ form_row(addCompanyForm.image4, {'label': false,'attr' : {'class':'mb-3','placeholder':''}}) }}</div>
+            <div class="images_add_company col-sm-6 col-12">{{ form_row(addCompanyForm.image5, {'label': false,'attr' : {'class':'mb-3','placeholder':''}}) }}</div>
+
+            <button class="btn btn-primary my-3 col-12" type="submit">Créer mon entreprise</button>
+
+            {{ form_end(addCompanyForm) }}
+
+        </div>
+    </div>
 
 
-
-    <button class=""
-
-            type="submit">Submit</button>
-
-    {{form_end(addCompanyForm)}}
 {% endblock %}

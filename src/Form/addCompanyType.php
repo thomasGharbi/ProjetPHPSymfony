@@ -11,6 +11,7 @@ use App\Form\FormExtension\DepartmentType;
 use App\Form\FormExtension\ImagesType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -80,7 +81,7 @@ class addCompanyType extends AbstractType {
             'required' => true
             ])->add('profileTitle', TextType::class, [
             'label' => 'Titre de présentation de l\'entreprise :'
-        ])->add('profileDescription', TextType::class, [
+        ])->add('profileDescription', TextareaType::class, [
             'label' => 'Description de présentation de l\'entreprise :'
         ])->add('image1', ImagesType::class, [
             'mapped' => false,
